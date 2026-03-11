@@ -215,6 +215,48 @@
         <div class="stat-card"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px;">Pendiente</div><div style="font-size:22px;font-weight:700;color:#f59e0b;">$624.000</div></div>
         <div class="stat-card"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px;">Tasa de pago</div><div style="font-size:22px;font-weight:700;color:#60a5fa;">87%</div></div>
       </div>
+      <!-- Gráfico Evolutivo Ingresos vs Egresos -->
+      <div class="card" style="margin-bottom:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <i data-lucide="bar-chart-3" style="width:20px;height:20px;color:#3b82f6"></i>
+            <h3 style="font-weight:600;color:white;font-size:16px;">Evolución Financiera</h3>
+            <span style="font-size:12px;color:#94a3b8;">Últimos 6 meses</span>
+          </div>
+          <div style="display:flex;border-radius:8px;overflow:hidden;border:1px solid #334155;">
+            <button id="btn-barras" onclick="setChartView('barras')" style="padding:6px 14px;font-size:12px;font-weight:500;background:#2563eb;color:white;border:none;cursor:pointer;min-height:36px;">Barras</button>
+            <button id="btn-area" onclick="setChartView('area')" style="padding:6px 14px;font-size:12px;font-weight:500;background:#1e293b;color:#94a3b8;border:none;cursor:pointer;min-height:36px;">Tendencia</button>
+          </div>
+        </div>
+        <!-- KPIs -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px;">
+          <div style="background:#052e16;border:1px solid #14532d;border-radius:12px;padding:12px 16px;">
+            <div style="font-size:12px;color:#4ade80;font-weight:500;">Total Ingresos</div>
+            <div style="font-size:20px;font-weight:700;color:#86efac;margin-top:2px;">$24.6M</div>
+          </div>
+          <div style="background:#450a0a;border:1px solid #7f1d1d;border-radius:12px;padding:12px 16px;">
+            <div style="font-size:12px;color:#fca5a5;font-weight:500;">Total Egresos</div>
+            <div style="font-size:20px;font-weight:700;color:#fecaca;margin-top:2px;">$23.2M</div>
+          </div>
+          <div style="background:#172554;border:1px solid #1e3a8a;border-radius:12px;padding:12px 16px;">
+            <div style="font-size:12px;color:#93c5fd;font-weight:500;">Balance</div>
+            <div style="font-size:20px;font-weight:700;color:#bfdbfe;margin-top:2px;display:flex;align-items:center;gap:4px;"><i data-lucide="trending-up" style="width:16px;height:16px;color:#22c55e"></i> $1.4M</div>
+          </div>
+        </div>
+        <!-- Chart container -->
+        <div id="chart-container" style="position:relative;"></div>
+        <!-- Leyenda -->
+        <div style="display:flex;justify-content:center;gap:24px;margin-top:12px;">
+          <div style="display:flex;align-items:center;gap:6px;"><span style="width:12px;height:12px;border-radius:50%;background:#10b981;display:inline-block;"></span><span style="font-size:13px;color:#94a3b8;">Ingresos (recaudación)</span></div>
+          <div style="display:flex;align-items:center;gap:6px;"><span style="width:12px;height:12px;border-radius:50%;background:#f43f5e;display:inline-block;"></span><span style="font-size:13px;color:#94a3b8;">Egresos (gastos operacionales)</span></div>
+        </div>
+        <!-- Insight IA -->
+        <div style="background:#052e16;border:1px solid #14532d;border-radius:12px;padding:12px 16px;margin-top:12px;display:flex;gap:10px;align-items:flex-start;">
+          <i data-lucide="trending-up" style="width:18px;height:18px;color:#22c55e;flex-shrink:0;margin-top:2px;"></i>
+          <div style="font-size:13px;color:#86efac;"><strong>Balance positivo este mes.</strong> Los ingresos superan a los egresos por $286.000. La recaudación se mantiene estable.</div>
+        </div>
+      </div>
+
       <div style="display:flex;gap:6px;margin-bottom:16px;">
         <span class="tab active">Todos (48)</span><span class="tab">Pendiente (4)</span><span class="tab">Pagado (38)</span><span class="tab">Vencido (4)</span><span class="tab">En cobranza (2)</span>
       </div>
@@ -544,6 +586,122 @@
         </div>
       `);
     }
+
+    // ======= CHART: Ingresos vs Egresos =======
+    const chartData = [
+      { mes:'Oct', ingresos:3850000, egresos:3420000 },
+      { mes:'Nov', ingresos:4100000, egresos:3680000 },
+      { mes:'Dic', ingresos:4350000, egresos:4950000 },
+      { mes:'Ene', ingresos:3920000, egresos:3510000 },
+      { mes:'Feb', ingresos:4200000, egresos:3750000 },
+      { mes:'Mar', ingresos:4176000, egresos:3890000 },
+    ];
+    const maxVal = Math.max(...chartData.flatMap(d=>[d.ingresos,d.egresos])) * 1.15;
+    let currentChartView = 'barras';
+
+    function fmtCLP(n) { return n >= 1e6 ? '$'+(n/1e6).toFixed(1)+'M' : '$'+Math.round(n/1000)+'K'; }
+
+    function setChartView(view) {
+      currentChartView = view;
+      document.getElementById('btn-barras').style.background = view==='barras' ? '#2563eb' : '#1e293b';
+      document.getElementById('btn-barras').style.color = view==='barras' ? 'white' : '#94a3b8';
+      document.getElementById('btn-area').style.background = view==='area' ? '#2563eb' : '#1e293b';
+      document.getElementById('btn-area').style.color = view==='area' ? 'white' : '#94a3b8';
+      renderChart();
+    }
+
+    function renderChart() {
+      const container = document.getElementById('chart-container');
+      if (!container) return;
+      const H = 200, W = 580;
+
+      if (currentChartView === 'barras') {
+        const barW = 24, gap = 8, groupW = barW*2+gap;
+        const totalW = chartData.length * (groupW+36) + 60;
+        let svg = '<svg viewBox="0 0 '+Math.max(totalW,W)+' '+(H+45)+'" style="width:100%;height:auto;" role="img" aria-label="Gráfico de barras Ingresos vs Egresos">';
+        // Grid
+        for (let p of [0,0.25,0.5,0.75,1]) {
+          const y = H - p*H + 10;
+          svg += '<line x1="50" x2="'+Math.max(totalW-10,W)+'" y1="'+y+'" y2="'+y+'" stroke="#334155" stroke-dasharray="'+(p===0?'':'4 4')+'" stroke-width="1"/>';
+          svg += '<text x="46" y="'+(y+4)+'" text-anchor="end" fill="#64748b" font-size="11">'+fmtCLP(p*maxVal)+'</text>';
+        }
+        // Bars
+        chartData.forEach((d,i) => {
+          const gx = 60 + i*(groupW+36);
+          const iH = (d.ingresos/maxVal)*H, eH = (d.egresos/maxVal)*H;
+          svg += '<g class="chart-group" onmouseenter="showChartTip('+i+')" onmouseleave="hideChartTip()" style="cursor:pointer">';
+          svg += '<rect x="'+(gx-6)+'" y="10" width="'+(groupW+12)+'" height="'+H+'" rx="6" fill="transparent" class="chart-hover-bg" data-idx="'+i+'"/>';
+          svg += '<rect x="'+gx+'" y="'+(H+10-iH)+'" width="'+barW+'" height="'+iH+'" rx="4" fill="#10b981"/>';
+          svg += '<rect x="'+(gx+barW+gap)+'" y="'+(H+10-eH)+'" width="'+barW+'" height="'+eH+'" rx="4" fill="#f43f5e"/>';
+          svg += '<text x="'+(gx+barW+gap/2)+'" y="'+(H+30)+'" text-anchor="middle" fill="#94a3b8" font-size="13" font-weight="500">'+d.mes+'</text>';
+          svg += '</g>';
+        });
+        svg += '</svg>';
+        container.innerHTML = svg + '<div id="chart-tooltip" style="display:none;position:absolute;z-index:20;background:#f8fafc;color:#0f172a;border-radius:12px;padding:12px 16px;box-shadow:0 8px 30px rgba(0,0,0,.4);pointer-events:none;min-width:180px;"></div>';
+      } else {
+        const padL = 55;
+        const areaW = W - padL - 10;
+        const step = areaW / (chartData.length-1);
+        function toY(v) { return H-(v/maxVal)*H; }
+        let svg = '<svg viewBox="0 0 '+W+' '+(H+45)+'" style="width:100%;height:auto;" role="img">';
+        svg += '<defs><linearGradient id="gI" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#10b981" stop-opacity="0.35"/><stop offset="100%" stop-color="#10b981" stop-opacity="0.02"/></linearGradient>';
+        svg += '<linearGradient id="gE" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f43f5e" stop-opacity="0.25"/><stop offset="100%" stop-color="#f43f5e" stop-opacity="0.02"/></linearGradient></defs>';
+        svg += '<g transform="translate('+padL+',10)">';
+        // Grid
+        for (let p of [0,0.25,0.5,0.75,1]) {
+          const y = H-p*H;
+          svg += '<line x1="0" x2="'+areaW+'" y1="'+y+'" y2="'+y+'" stroke="#334155" stroke-dasharray="'+(p===0?'':'4 4')+'"/>';
+          svg += '<text x="-8" y="'+(y+4)+'" text-anchor="end" fill="#64748b" font-size="11">'+fmtCLP(p*maxVal)+'</text>';
+        }
+        // Area ingresos
+        let pathI = chartData.map((d,i)=>(i===0?'M':'L')+(i*step)+','+toY(d.ingresos)).join(' ');
+        let pathE = chartData.map((d,i)=>(i===0?'M':'L')+(i*step)+','+toY(d.egresos)).join(' ');
+        const lastX = (chartData.length-1)*step;
+        svg += '<path d="'+pathI+' L'+lastX+','+H+' L0,'+H+' Z" fill="url(#gI)"/>';
+        svg += '<path d="'+pathI+'" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
+        svg += '<path d="'+pathE+' L'+lastX+','+H+' L0,'+H+' Z" fill="url(#gE)"/>';
+        svg += '<path d="'+pathE+'" fill="none" stroke="#f43f5e" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
+        // Points
+        chartData.forEach((d,i) => {
+          const x = i*step;
+          svg += '<g onmouseenter="showChartTip('+i+')" onmouseleave="hideChartTip()" style="cursor:pointer">';
+          svg += '<rect x="'+(x-18)+'" y="0" width="36" height="'+(H+30)+'" fill="transparent"/>';
+          svg += '<circle cx="'+x+'" cy="'+toY(d.ingresos)+'" r="5" fill="#10b981" stroke="white" stroke-width="2"/>';
+          svg += '<circle cx="'+x+'" cy="'+toY(d.egresos)+'" r="5" fill="#f43f5e" stroke="white" stroke-width="2"/>';
+          svg += '<text x="'+x+'" y="'+(H+22)+'" text-anchor="middle" fill="#94a3b8" font-size="13">'+d.mes+'</text>';
+          svg += '</g>';
+        });
+        svg += '</g></svg>';
+        container.innerHTML = svg + '<div id="chart-tooltip" style="display:none;position:absolute;z-index:20;background:#f8fafc;color:#0f172a;border-radius:12px;padding:12px 16px;box-shadow:0 8px 30px rgba(0,0,0,.4);pointer-events:none;min-width:180px;"></div>';
+      }
+    }
+
+    function showChartTip(idx) {
+      const d = chartData[idx];
+      const tip = document.getElementById('chart-tooltip');
+      if (!tip) return;
+      const saldo = d.ingresos - d.egresos;
+      const saldoColor = saldo >= 0 ? '#22c55e' : '#ef4444';
+      tip.innerHTML = '<div style="font-weight:600;margin-bottom:6px;">'+d.mes+'</div>'
+        + '<div style="display:flex;align-items:center;gap:6px;font-size:13px;margin-bottom:3px;"><span style="width:8px;height:8px;border-radius:50%;background:#10b981;display:inline-block;"></span>Ingresos: <strong>$'+d.ingresos.toLocaleString('es-CL')+'</strong></div>'
+        + '<div style="display:flex;align-items:center;gap:6px;font-size:13px;margin-bottom:3px;"><span style="width:8px;height:8px;border-radius:50%;background:#f43f5e;display:inline-block;"></span>Egresos: <strong>$'+d.egresos.toLocaleString('es-CL')+'</strong></div>'
+        + '<div style="font-size:12px;color:'+saldoColor+';margin-top:4px;">Saldo: $'+saldo.toLocaleString('es-CL')+'</div>';
+      tip.style.display = 'block';
+      tip.style.left = Math.min(idx * 90 + 60, 380) + 'px';
+      tip.style.top = '0px';
+    }
+
+    function hideChartTip() {
+      const tip = document.getElementById('chart-tooltip');
+      if (tip) tip.style.display = 'none';
+    }
+
+    // Render chart when gastos page loads
+    const origShowPage = showPage;
+    showPage = function(page) {
+      origShowPage(page);
+      if (page === 'gastos') setTimeout(renderChart, 50);
+    };
 
     function procesarPago() {
       const btn = document.getElementById('btn-pagar');

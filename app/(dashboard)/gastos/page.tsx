@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { GastoComun, type Perfil } from '@/types'
 import { DollarSign, AlertTriangle } from 'lucide-react'
 import GastosClient from '@/components/gastos/GastosClient'
+import GastosChart from '@/components/gastos/GastosChart'
 
 export const metadata = { title: 'Gastos Comunes' }
 
@@ -104,6 +105,9 @@ export default async function GastosPage({
           </div>
         </div>
       </div>
+
+      {/* Gráfico evolutivo Ingresos vs Egresos */}
+      <GastosChart />
 
       {/* Cliente interactivo */}
       <GastosClient

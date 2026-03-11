@@ -98,4 +98,5 @@ declare module 'lucide-react' {
   export const BadgeCheck: Icon
   export const ToggleLeft: Icon
   export const ToggleRight: Icon
+  export const BarChart3: Icon
 }

@@ -1,0 +1,147 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 249 250 251;
+    --foreground: 17 24 39;
+    --card: 255 255 255;
+    --border: 229 231 235;
+    --primary: 37 99 235;
+    --primary-foreground: 255 255 255;
+    --muted: 243 244 246;
+    --muted-foreground: 107 114 128;
+    --success: 22 163 74;
+    --warning: 217 119 6;
+    --danger: 220 38 38;
+  }
+
+  .dark {
+    --background: 17 24 39;
+    --foreground: 249 250 251;
+    --card: 31 41 55;
+    --border: 55 65 81;
+    --primary: 59 130 246;
+    --primary-foreground: 255 255 255;
+    --muted: 31 41 55;
+    --muted-foreground: 156 163 175;
+  }
+
+  /* Accesibilidad: mínimo 16px, line-height 1.5 */
+  html {
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-neutral-50 text-neutral-900 dark:bg-neutral-900 dark:text-neutral-50;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Focus visible para accesibilidad por teclado */
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary-500;
+  }
+
+  /* Scrollbar personalizado */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-neutral-100 dark:bg-neutral-800;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-neutral-300 dark:bg-neutral-600 rounded-full;
+  }
+}
+
+@layer components {
+  /* Botón base — target mínimo 44px (WCAG 2.2) */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg
+           font-medium text-base transition-all duration-150
+           focus-visible:outline-2 focus-visible:outline-offset-2
+           disabled:opacity-50 disabled:cursor-not-allowed
+           min-h-[44px];
+  }
+
+  .btn-primary {
+    @apply btn bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800
+           focus-visible:outline-primary-600 shadow-sm;
+  }
+
+  .btn-secondary {
+    @apply btn bg-white text-neutral-700 border border-neutral-200
+           hover:bg-neutral-50 active:bg-neutral-100
+           dark:bg-neutral-800 dark:text-neutral-200 dark:border-neutral-700
+           dark:hover:bg-neutral-700;
+  }
+
+  .btn-danger {
+    @apply btn bg-red-600 text-white hover:bg-red-700 active:bg-red-800;
+  }
+
+  /* Card */
+  .card {
+    @apply bg-white dark:bg-neutral-800 rounded-xl border border-neutral-200
+           dark:border-neutral-700 shadow-card p-5;
+  }
+
+  /* Input */
+  .input {
+    @apply w-full rounded-lg border border-neutral-300 dark:border-neutral-600
+           bg-white dark:bg-neutral-800 px-3 py-2.5 text-base
+           text-neutral-900 dark:text-neutral-100
+           placeholder:text-neutral-400 dark:placeholder:text-neutral-500
+           focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20
+           disabled:bg-neutral-50 disabled:cursor-not-allowed
+           min-h-[44px] transition-colors;
+  }
+
+  /* Badge estados */
+  .badge-pendiente {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+           bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300;
+  }
+  .badge-pagado {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+           bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300;
+  }
+  .badge-vencido {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+           bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300;
+  }
+  .badge-cobranza {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+           bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300;
+  }
+
+  /* Agente chat bubble */
+  .chat-user {
+    @apply bg-primary-600 text-white rounded-2xl rounded-br-sm px-4 py-3 max-w-[80%] ml-auto;
+  }
+  .chat-assistant {
+    @apply bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700
+           rounded-2xl rounded-bl-sm px-4 py-3 max-w-[85%] shadow-sm;
+  }
+}
+
+@layer utilities {
+  /* Texto mínimo accesible */
+  .text-accessible {
+    @apply text-base leading-relaxed;
+  }
+
+  /* Animaciones suaves */
+  .animate-fade-in {
+    animation: fadeIn 0.15s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}

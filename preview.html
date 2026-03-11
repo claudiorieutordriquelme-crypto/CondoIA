@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CondoIA — Preview</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: { 50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',400:'#60a5fa',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8',800:'#1e40af',900:'#1e3a8a' },
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+    .animate-fade-in { animation: fadeIn .3s ease-out }
+    .card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px; }
+    .btn-primary { display:inline-flex; align-items:center; gap:6px; background:#2563eb; color:#fff; padding:10px 18px; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; border:none; min-height:44px; }
+    .btn-primary:hover { background:#1d4ed8 }
+    .badge-pendiente { font-size:12px; padding:2px 10px; border-radius:99px; background:#fef3c7; color:#92400e; display:inline-flex; align-items:center; gap:4px; }
+    .badge-pagado { font-size:12px; padding:2px 10px; border-radius:99px; background:#d1fae5; color:#065f46; display:inline-flex; align-items:center; gap:4px; }
+    .badge-vencido { font-size:12px; padding:2px 10px; border-radius:99px; background:#fee2e2; color:#991b1b; display:inline-flex; align-items:center; gap:4px; }
+    .badge-cobranza { font-size:12px; padding:2px 10px; border-radius:99px; background:#fce7f3; color:#9d174d; display:inline-flex; align-items:center; gap:4px; }
+    .sidebar-link { display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:10px; color:#94a3b8; font-size:14px; cursor:pointer; min-height:44px; transition: all .15s; }
+    .sidebar-link:hover, .sidebar-link.active { background:#1e3a5f; color:#60a5fa; }
+    .stat-card { background:linear-gradient(135deg,#1e293b,#0f172a); border:1px solid #334155; border-radius:14px; padding:20px; }
+    body { background:#0f172a; color:#e2e8f0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin:0; }
+    ::-webkit-scrollbar { width:6px; } ::-webkit-scrollbar-track { background:#0f172a; } ::-webkit-scrollbar-thumb { background:#334155; border-radius:3px; }
+    .input { background:#1e293b; border:1px solid #334155; border-radius:8px; padding:10px 14px; color:#e2e8f0; width:100%; font-size:14px; min-height:44px; }
+    .tab { padding:8px 16px; border-radius:8px; font-size:13px; cursor:pointer; color:#94a3b8; min-height:44px; display:inline-flex; align-items:center; }
+    .tab.active { background:#1e3a5f; color:#60a5fa; font-weight:600; }
+  </style>
+</head>
+<body>
+  <div id="app" style="display:flex; height:100vh;">
+    <!-- Sidebar -->
+    <aside id="sidebar" style="width:260px; background:#0f172a; border-right:1px solid #1e293b; padding:16px; overflow-y:auto; flex-shrink:0;">
+      <div style="display:flex; align-items:center; gap:10px; padding:8px 10px; margin-bottom:20px;">
+        <div style="width:36px;height:36px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+          <i data-lucide="building-2" style="width:20px;height:20px;color:white"></i>
+        </div>
+        <div>
+          <div style="font-weight:700;font-size:16px;color:white;">CondoIA</div>
+          <div style="font-size:11px;color:#64748b;">Administración inteligente</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:#475569;padding:0 10px 6px;text-transform:uppercase;letter-spacing:1px;">Principal</div>
+      <nav id="nav">
+        <div class="sidebar-link active" onclick="showPage('dashboard')"><i data-lucide="layout-dashboard" style="width:18px;height:18px"></i> Dashboard</div>
+        <div class="sidebar-link" onclick="showPage('gastos')"><i data-lucide="dollar-sign" style="width:18px;height:18px"></i> Gastos Comunes</div>
+        <div class="sidebar-link" onclick="showPage('copropietarios')"><i data-lucide="users" style="width:18px;height:18px"></i> Copropietarios</div>
+        <div class="sidebar-link" onclick="showPage('asambleas')"><i data-lucide="calendar-days" style="width:18px;height:18px"></i> Asambleas</div>
+        <div class="sidebar-link" onclick="showPage('documentos')"><i data-lucide="file-text" style="width:18px;height:18px"></i> Documentos</div>
+        <div class="sidebar-link" onclick="showPage('mantenimiento')"><i data-lucide="wrench" style="width:18px;height:18px"></i> Mantenimiento</div>
+        <div class="sidebar-link" onclick="showPage('proveedores')"><i data-lucide="store" style="width:18px;height:18px"></i> Proveedores</div>
+      </nav>
+      <div style="font-size:11px;color:#475569;padding:12px 10px 6px;text-transform:uppercase;letter-spacing:1px;">IA & Legal</div>
+      <nav>
+        <div class="sidebar-link" onclick="showPage('agentes')"><i data-lucide="sparkles" style="width:18px;height:18px"></i> Agentes IA</div>
+        <div class="sidebar-link" onclick="showPage('reglamento')"><i data-lucide="scale" style="width:18px;height:18px"></i> Reglamento</div>
+      </nav>
+      <div style="font-size:11px;color:#475569;padding:12px 10px 6px;text-transform:uppercase;letter-spacing:1px;">Configuración</div>
+      <nav>
+        <div class="sidebar-link" onclick="showPage('perfil')"><i data-lucide="user" style="width:18px;height:18px"></i> Mi Perfil</div>
+        <div class="sidebar-link" onclick="showPage('configuracion')"><i data-lucide="settings" style="width:18px;height:18px"></i> Configuración</div>
+        <div class="sidebar-link" onclick="showPage('admin')"><i data-lucide="shield" style="width:18px;height:18px"></i> Admin</div>
+      </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main style="flex:1; overflow-y:auto;">
+      <!-- Topbar -->
+      <header style="background:#0f172a; border-bottom:1px solid #1e293b; padding:12px 24px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:10;">
+        <div>
+          <span id="page-title" style="font-weight:600; color:white; font-size:16px;">Dashboard</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:16px;">
+          <div style="position:relative; cursor:pointer;">
+            <i data-lucide="bell" style="width:20px;height:20px;color:#94a3b8"></i>
+            <span style="position:absolute;top:-4px;right:-4px;width:8px;height:8px;background:#ef4444;border-radius:50%;"></span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+            <div style="width:32px;height:32px;background:#334155;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+              <i data-lucide="user" style="width:16px;height:16px;color:#94a3b8"></i>
+            </div>
+            <span style="font-size:13px; color:#cbd5e1;">Claudio R.</span>
+          </div>
+        </div>
+      </header>
+
+      <div id="content" style="padding:24px; max-width:1200px;" class="animate-fade-in">
+        <!-- Pages loaded dynamically -->
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const pages = {};
+
+    // ======= DASHBOARD =======
+    pages.dashboard = `
+      <div style="margin-bottom:20px;">
+        <h1 style="font-size:24px;font-weight:700;color:white;">Buenos días, Claudio</h1>
+        <p style="font-size:14px;color:#94a3b8;margin-top:2px;">Condominio Los Andes — Resumen del mes</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;">
+        <div class="stat-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <span style="font-size:13px;color:#94a3b8;">Unidades</span>
+            <i data-lucide="building-2" style="width:18px;height:18px;color:#3b82f6"></i>
+          </div>
+          <div style="font-size:28px;font-weight:700;color:white;">48</div>
+          <div style="font-size:12px;color:#22c55e;margin-top:4px;">↑ 2 nuevas este mes</div>
+        </div>
+        <div class="stat-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <span style="font-size:13px;color:#94a3b8;">Recaudación</span>
+            <i data-lucide="dollar-sign" style="width:18px;height:18px;color:#22c55e"></i>
+          </div>
+          <div style="font-size:28px;font-weight:700;color:white;">$4.2M</div>
+          <div style="font-size:12px;color:#22c55e;margin-top:4px;">↑ 87% del total</div>
+        </div>
+        <div class="stat-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <span style="font-size:13px;color:#94a3b8;">Morosidad</span>
+            <i data-lucide="alert-triangle" style="width:18px;height:18px;color:#f59e0b"></i>
+          </div>
+          <div style="font-size:28px;font-weight:700;color:white;">6</div>
+          <div style="font-size:12px;color:#ef4444;margin-top:4px;">↑ 2 unidades</div>
+        </div>
+        <div class="stat-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <span style="font-size:13px;color:#94a3b8;">Solicitudes</span>
+            <i data-lucide="wrench" style="width:18px;height:18px;color:#a78bfa"></i>
+          </div>
+          <div style="font-size:28px;font-weight:700;color:white;">12</div>
+          <div style="font-size:12px;color:#f59e0b;margin-top:4px;">3 pendientes</div>
+        </div>
+      </div>
+      <div style="background:#172554;border:1px solid #1e3a8a;border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+        <i data-lucide="calendar-days" style="width:20px;height:20px;color:#60a5fa;flex-shrink:0"></i>
+        <div><span style="font-size:14px;font-weight:500;color:#bfdbfe;">Próxima asamblea:</span> <span style="font-size:14px;color:#93c5fd;">Asamblea Ordinaria — sábado 22 de marzo 2026</span></div>
+      </div>
+      <!-- Acceso Rápido: Portón, Cámaras, Pago -->
+      <div class="card" style="margin-bottom:24px;">
+        <h3 style="font-weight:600;color:white;margin-bottom:14px;display:flex;align-items:center;gap:8px;"><i data-lucide="zap" style="width:18px;height:18px;color:#f59e0b"></i> Acceso Rápido</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+          <button onclick="openPortonModal()" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px;border-radius:12px;background:#d97706;color:white;border:none;cursor:pointer;min-height:88px;font-weight:600;font-size:14px;transition:all .15s;" onmouseover="this.style.background='#b45309'" onmouseout="this.style.background='#d97706'">
+            <i data-lucide="door-open" style="width:24px;height:24px"></i>
+            Abrir Portón
+          </button>
+          <button onclick="openCamarasModal()" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px;border-radius:12px;background:#475569;color:white;border:none;cursor:pointer;min-height:88px;font-weight:600;font-size:14px;transition:all .15s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'">
+            <i data-lucide="video" style="width:24px;height:24px"></i>
+            Cámaras
+          </button>
+          <button onclick="openPagoModal()" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px;border-radius:12px;background:#16a34a;color:white;border:none;cursor:pointer;min-height:88px;font-weight:600;font-size:14px;transition:all .15s;" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'">
+            <i data-lucide="wallet" style="width:24px;height:24px"></i>
+            Pagar Gasto
+          </button>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="card">
+          <h3 style="font-weight:600;color:white;margin-bottom:14px;display:flex;align-items:center;gap:8px;"><i data-lucide="sparkles" style="width:18px;height:18px;color:#a78bfa"></i> Acciones rápidas</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <button class="btn-primary" style="justify-content:center;" onclick="showPage('gastos')"><i data-lucide="dollar-sign" style="width:16px;height:16px"></i> Generar gastos</button>
+            <button class="btn-primary" style="justify-content:center;background:#7c3aed;" onclick="showPage('agentes')"><i data-lucide="sparkles" style="width:16px;height:16px"></i> Consultar IA</button>
+            <button class="btn-primary" style="justify-content:center;background:#059669;" onclick="showPage('asambleas')"><i data-lucide="calendar-days" style="width:16px;height:16px"></i> Nueva asamblea</button>
+            <button class="btn-primary" style="justify-content:center;background:#d97706;" onclick="showPage('mantenimiento')"><i data-lucide="wrench" style="width:16px;height:16px"></i> Solicitudes</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3 style="font-weight:600;color:white;margin-bottom:14px;display:flex;align-items:center;gap:8px;"><i data-lucide="clock" style="width:18px;height:18px;color:#f59e0b"></i> Actividad reciente</h3>
+          <div style="space-y:8px;">
+            <div style="padding:8px 0;border-bottom:1px solid #1e293b;font-size:13px;color:#cbd5e1;">Pago recibido — Unidad 12B — <span style="color:#22c55e">$85.000</span></div>
+            <div style="padding:8px 0;border-bottom:1px solid #1e293b;font-size:13px;color:#cbd5e1;">Solicitud mantención — Unidad 5A — Plomería</div>
+            <div style="padding:8px 0;border-bottom:1px solid #1e293b;font-size:13px;color:#cbd5e1;">Gasto vencido — Unidad 3C — <span style="color:#ef4444">$120.000</span></div>
+            <div style="padding:8px 0;font-size:13px;color:#cbd5e1;">Asamblea programada — 22 marzo 2026</div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // ======= GASTOS COMUNES =======
+    pages.gastos = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <div>
+          <h1 style="font-size:24px;font-weight:700;color:white;">Gastos Comunes</h1>
+          <p style="font-size:14px;color:#94a3b8;margin-top:2px;">Gestión según Art. 22-27 Ley 21.442</p>
+        </div>
+        <button class="btn-primary"><i data-lucide="plus" style="width:16px;height:16px"></i> Generar gastos del período</button>
+      </div>
+      <div style="background:#172554;border:1px solid #1e3a8a;border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+        <i data-lucide="scale" style="width:20px;height:20px;color:#60a5fa;flex-shrink:0"></i>
+        <div style="font-size:13px;color:#93c5fd;">
+          <span style="font-weight:600;color:#bfdbfe;">Ley 21.442:</span> Los gastos comunes se calculan según coeficiente de dominio (Art. 22). Interés máximo por mora: tasa corriente +50% (Art. 27).
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+        <button style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:8px 14px;color:#94a3b8;cursor:pointer;min-height:44px;">← Anterior</button>
+        <span style="font-size:16px;font-weight:600;color:white;min-width:120px;text-align:center;">Marzo 2026</span>
+        <button style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:8px 14px;color:#94a3b8;cursor:pointer;min-height:44px;">Siguiente →</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;">
+        <div class="stat-card"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px;">Total emitido</div><div style="font-size:22px;font-weight:700;color:white;">$4.800.000</div></div>
+        <div class="stat-card"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px;">Recaudado</div><div style="font-size:22px;font-weight:700;color:#22c55e;">$4.176.000</div></div>
+        <div class="stat-card"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px;">Pendiente</div><div style="font-size:22px;font-weight:700;color:#f59e0b;">$624.000</div></div>
+        <div class="stat-card"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px;">Tasa de pago</div><div style="font-size:22px;font-weight:700;color:#60a5fa;">87%</div></div>
+      </div>
+      <div style="display:flex;gap:6px;margin-bottom:16px;">
+        <span class="tab active">Todos (48)</span><span class="tab">Pendiente (4)</span><span class="tab">Pagado (38)</span><span class="tab">Vencido (4)</span><span class="tab">En cobranza (2)</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        ${[
+          {u:'1A',m:'$100.000',e:'pagado',f:'2026-03-05'},
+          {u:'2B',m:'$85.000',e:'pagado',f:'2026-03-03'},
+          {u:'3C',m:'$120.000',e:'vencido',f:'2026-02-28'},
+          {u:'4D',m:'$95.000',e:'pendiente',f:'2026-03-15'},
+          {u:'5A',m:'$110.000',e:'pagado',f:'2026-03-01'},
+          {u:'6B',m:'$130.000',e:'en_cobranza',f:'2026-01-15'},
+          {u:'7C',m:'$100.000',e:'pagado',f:'2026-03-07'},
+          {u:'8D',m:'$85.000',e:'pendiente',f:'2026-03-15'},
+        ].map(g => {
+          const badge = g.e === 'pagado' ? 'badge-pagado' : g.e === 'vencido' ? 'badge-vencido' : g.e === 'en_cobranza' ? 'badge-cobranza' : 'badge-pendiente';
+          const label = g.e === 'en_cobranza' ? 'En cobranza' : g.e.charAt(0).toUpperCase() + g.e.slice(1);
+          return '<div class="card" style="display:flex;align-items:center;gap:16px;padding:14px 18px;cursor:pointer;"><div style="min-width:50px;text-align:center;"><span style="font-size:18px;font-weight:700;color:#60a5fa;">'+g.u+'</span></div><div style="flex:1;"><div style="font-size:14px;font-weight:500;color:white;">Unidad '+g.u+'</div><div style="font-size:12px;color:#64748b;">Vencimiento: '+g.f+'</div></div><div style="font-size:16px;font-weight:600;color:white;min-width:100px;text-align:right;">'+g.m+'</div><span class="'+badge+'">'+label+'</span></div>';
+        }).join('')}
+      </div>
+    `;
+
+    // ======= COPROPIETARIOS =======
+    pages.copropietarios = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <div><h1 style="font-size:24px;font-weight:700;color:white;">Copropietarios</h1><p style="font-size:14px;color:#94a3b8;margin-top:2px;">Directorio de unidades y propietarios</p></div>
+        <button class="btn-primary"><i data-lucide="plus" style="width:16px;height:16px"></i> Agregar unidad</button>
+      </div>
+      <input class="input" placeholder="Buscar por nombre, unidad o RUT..." style="margin-bottom:16px;" />
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+        ${['María González|1A|Propietaria|$0|al_dia','Carlos Pérez|2B|Propietario|$0|al_dia','Ana Muñoz|3C|Propietaria|$120.000|morosa','Luis Soto|4D|Arrendatario|$95.000|pendiente','Rosa Díaz|5A|Propietaria|$0|al_dia','Pedro López|6B|Propietario|$260.000|morosa'].map(p => {
+          const [n,u,t,d,s] = p.split('|');
+          const badge = s==='al_dia' ? 'badge-pagado' : s==='morosa' ? 'badge-vencido' : 'badge-pendiente';
+          const label = s==='al_dia' ? 'Al día' : s==='morosa' ? 'Moroso/a' : 'Pendiente';
+          return '<div class="card" style="cursor:pointer;"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;"><div style="width:40px;height:40px;background:#334155;border-radius:50%;display:flex;align-items:center;justify-content:center;"><span style="color:#94a3b8;font-weight:600;">'+n[0]+'</span></div><div><div style="font-weight:600;color:white;font-size:14px;">'+n+'</div><div style="font-size:12px;color:#64748b;">Unidad '+u+' · '+t+'</div></div></div><div style="display:flex;justify-content:space-between;align-items:center;"><span class="'+badge+'">'+label+'</span>'+(d!=='$0'?'<span style="font-size:13px;color:#ef4444;font-weight:500;">Debe: '+d+'</span>':'<span style="font-size:13px;color:#22c55e;">✓ Sin deuda</span>')+'</div></div>';
+        }).join('')}
+      </div>
+    `;
+
+    // ======= ASAMBLEAS =======
+    pages.asambleas = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <div><h1 style="font-size:24px;font-weight:700;color:white;">Asambleas</h1><p style="font-size:14px;color:#94a3b8;margin-top:2px;">Gestión según Art. 17-21 Ley 21.442</p></div>
+        <button class="btn-primary"><i data-lucide="plus" style="width:16px;height:16px"></i> Nueva asamblea</button>
+      </div>
+      <div style="background:#172554;border:1px solid #1e3a8a;border-radius:12px;padding:14px 18px;margin-bottom:20px;">
+        <div style="display:flex;gap:10px;align-items:flex-start;">
+          <i data-lucide="calendar-days" style="width:18px;height:18px;color:#60a5fa;flex-shrink:0;margin-top:2px"></i>
+          <div style="font-size:13px;color:#93c5fd;">
+            <p style="font-weight:600;color:#bfdbfe;margin-bottom:4px;">Requisitos legales Ley 21.442:</p>
+            <p>• Convocatoria mínimo <b>5 días hábiles</b> de anticipación (Art. 17)</p>
+            <p>• Segunda citación <b>30 minutos</b> después de la primera (Art. 18)</p>
+            <p>• Quórum ordinaria: <b>+50%</b> de los copropietarios con derecho a voto</p>
+            <p>• Acta debe registrarse en <b>15 días hábiles</b> (Art. 19)</p>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        ${[
+          {d:'22',m:'Mar',t:'Asamblea Ordinaria Anual',e:'convocada',tipo:'ordinaria',q:''},
+          {d:'15',m:'Feb',t:'Asamblea Extraordinaria — Presupuesto 2026',e:'finalizada',tipo:'extraordinaria',q:'72'},
+          {d:'10',m:'Ene',t:'Asamblea de Emergencia — Daño estructural',e:'finalizada',tipo:'de_emergencia',q:'85'},
+        ].map(a => {
+          const eConf = a.e==='convocada'?{l:'Convocada',c:'badge-pendiente'}:a.e==='finalizada'?{l:'Finalizada',c:'badge-pagado'}:{l:'En curso',c:'badge-cobranza'};
+          return '<div class="card" style="display:flex;align-items:center;gap:16px;padding:14px 18px;cursor:pointer;"><div style="text-align:center;min-width:50px;"><p style="font-size:24px;font-weight:700;color:#60a5fa;">'+a.d+'</p><p style="font-size:12px;color:#64748b;text-transform:uppercase;">'+a.m+'</p></div><div style="flex:1;"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span style="font-weight:600;color:white;font-size:14px;">'+a.t+'</span><span class="'+eConf.c+'">'+eConf.l+'</span><span style="font-size:12px;padding:2px 8px;background:#1e293b;border-radius:99px;color:#94a3b8;">'+a.tipo+'</span></div>'+(a.q?'<p style="font-size:12px;color:#64748b;margin-top:4px;">Quórum: '+a.q+'%</p>':'')+'</div><span style="color:#334155;">→</span></div>';
+        }).join('')}
+      </div>
+    `;
+
+    // ======= DOCUMENTOS =======
+    pages.documentos = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <div><h1 style="font-size:24px;font-weight:700;color:white;">Documentos</h1><p style="font-size:14px;color:#94a3b8;margin-top:2px;">Repositorio documental — Firma electrónica Ley 19.799</p></div>
+        <button class="btn-primary"><i data-lucide="upload" style="width:16px;height:16px"></i> Subir documento</button>
+      </div>
+      <div style="display:flex;gap:6px;margin-bottom:16px;">
+        <span class="tab active">Todos</span><span class="tab">Actas</span><span class="tab">Reglamentos</span><span class="tab">Contratos</span><span class="tab">Certificados</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+        ${['Acta Asamblea Feb 2026|acta|2026-02-20|✓ Firmado','Reglamento Interno 2025|reglamento|2025-12-01|✓ Firmado','Contrato Mantención|contrato|2025-11-15|Pendiente','Certificado Deuda Unidad 3C|certificado|2026-03-01|✓ Firmado','Presupuesto Anual 2026|financiero|2026-01-10|✓ Firmado','Póliza de Seguro|otro|2025-06-01|Vigente'].map(d => {
+          const [t,tipo,f,estado] = d.split('|');
+          const firmado = estado.includes('Firmado');
+          return '<div class="card" style="cursor:pointer;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><span style="font-size:11px;padding:2px 8px;background:#1e3a5f;border-radius:6px;color:#60a5fa;text-transform:capitalize;">'+tipo+'</span>'+(firmado?'<span style="color:#22c55e;font-size:12px;">✓ Firmado</span>':'<span style="color:#f59e0b;font-size:12px;">'+estado+'</span>')+'</div><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><i data-lucide="file-text" style="width:20px;height:20px;color:#60a5fa"></i><span style="font-weight:600;color:white;font-size:14px;">'+t+'</span></div><div style="font-size:12px;color:#64748b;">'+f+'</div></div>';
+        }).join('')}
+      </div>
+    `;
+
+    // ======= MANTENIMIENTO =======
+    pages.mantenimiento = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <div><h1 style="font-size:24px;font-weight:700;color:white;">Solicitudes de Mantenimiento</h1><p style="font-size:14px;color:#94a3b8;margin-top:2px;">Gestión de solicitudes y seguimiento</p></div>
+        <button class="btn-primary"><i data-lucide="plus" style="width:16px;height:16px"></i> Nueva solicitud</button>
+      </div>
+      <div style="display:flex;gap:6px;margin-bottom:16px;">
+        <span class="tab active">Todas (12)</span><span class="tab">Pendientes (3)</span><span class="tab">En progreso (4)</span><span class="tab">Completadas (5)</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        ${[
+          {t:'Filtración baño depto 5A',c:'Plomería',p:'Alta',e:'en_progreso',u:'5A'},
+          {t:'Ascensor ruido anormal',c:'Electricidad',p:'Crítica',e:'pendiente',u:'Común'},
+          {t:'Pintura pasillo piso 3',c:'General',p:'Baja',e:'completada',u:'Común'},
+          {t:'Cerradura portón estacionamiento',c:'Cerrajería',p:'Media',e:'en_progreso',u:'Común'},
+          {t:'Gotera techo bodega 2',c:'Plomería',p:'Alta',e:'pendiente',u:'2B'},
+        ].map(s => {
+          const eClass = s.e==='completada'?'badge-pagado':s.e==='pendiente'?'badge-pendiente':'badge-cobranza';
+          const eLabel = s.e==='en_progreso'?'En progreso':s.e==='completada'?'Completada':'Pendiente';
+          const pColor = s.p==='Crítica'?'#ef4444':s.p==='Alta'?'#f59e0b':s.p==='Media'?'#3b82f6':'#22c55e';
+          return '<div class="card" style="display:flex;align-items:center;gap:14px;padding:14px 18px;cursor:pointer;"><div style="width:8px;height:40px;background:'+pColor+';border-radius:4px;flex-shrink:0;"></div><div style="flex:1;"><div style="font-weight:600;color:white;font-size:14px;">'+s.t+'</div><div style="font-size:12px;color:#64748b;margin-top:2px;">Unidad '+s.u+' · '+s.c+' · Prioridad: <span style="color:'+pColor+'">'+s.p+'</span></div></div><span class="'+eClass+'">'+eLabel+'</span></div>';
+        }).join('')}
+      </div>
+    `;
+
+    // ======= PROVEEDORES =======
+    pages.proveedores = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <div><h1 style="font-size:24px;font-weight:700;color:white;">Proveedores</h1><p style="font-size:14px;color:#94a3b8;margin-top:2px;">Marketplace de servicios verificados</p></div>
+        <button class="btn-primary"><i data-lucide="plus" style="width:16px;height:16px"></i> Agregar proveedor</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+        ${['Servicios Eléctricos SPA|Electricidad|★★★★★|+56 9 1234 5678|Verificado','PlomClean Ltda|Plomería|★★★★☆|+56 9 8765 4321|Verificado','PintaPro|Pintura|★★★★☆|+56 9 5555 1234|Verificado','JardinMax|Jardinería|★★★☆☆|+56 9 4444 5678|Pendiente','SecurTech|Seguridad|★★★★★|+56 9 3333 2222|Verificado','Ascensores Chile|Ascensores|★★★★☆|+56 2 2222 3333|Verificado'].map(p => {
+          const [n,c,r,t,v] = p.split('|');
+          return '<div class="card" style="cursor:pointer;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><span style="font-size:11px;padding:2px 8px;background:#1e3a5f;border-radius:6px;color:#60a5fa;">'+c+'</span><span style="font-size:12px;color:'+(v==='Verificado'?'#22c55e':'#f59e0b')+';">'+v+'</span></div><div style="font-weight:600;color:white;font-size:15px;margin-bottom:6px;">'+n+'</div><div style="color:#f59e0b;font-size:14px;margin-bottom:8px;">'+r+'</div><div style="font-size:12px;color:#64748b;display:flex;align-items:center;gap:6px;"><i data-lucide="phone" style="width:12px;height:12px"></i> '+t+'</div></div>';
+        }).join('')}
+      </div>
+    `;
+
+    // ======= AGENTES IA =======
+    pages.agentes = `
+      <div style="margin-bottom:20px;">
+        <h1 style="font-size:24px;font-weight:700;color:white;">Agentes IA</h1>
+        <p style="font-size:14px;color:#94a3b8;margin-top:2px;">Asistentes especializados con Claude AI</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">
+        <div class="card" style="cursor:pointer;border-color:#3b82f6;"><div style="width:48px;height:48px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;"><i data-lucide="shield" style="width:24px;height:24px;color:white"></i></div><h3 style="font-weight:700;color:white;font-size:16px;margin-bottom:4px;">Administrador</h3><p style="font-size:13px;color:#94a3b8;margin-bottom:12px;">Gestión legal, certificados, convocatorias y cobranza según Ley 21.442</p><span style="font-size:12px;color:#60a5fa;">Claude Opus 4.6 →</span></div>
+        <div class="card" style="cursor:pointer;border-color:#22c55e;"><div style="width:48px;height:48px;background:linear-gradient(135deg,#22c55e,#15803d);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;"><i data-lucide="dollar-sign" style="width:24px;height:24px;color:white"></i></div><h3 style="font-weight:700;color:white;font-size:16px;margin-bottom:4px;">Tesorero</h3><p style="font-size:13px;color:#94a3b8;margin-bottom:12px;">Análisis financiero, reportes mensuales, clasificación de gastos y presupuestos</p><span style="font-size:12px;color:#22c55e;">Claude Opus 4.6 →</span></div>
+        <div class="card" style="cursor:pointer;border-color:#a78bfa;"><div style="width:48px;height:48px;background:linear-gradient(135deg,#a78bfa,#7c3aed);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;"><i data-lucide="file-text" style="width:24px;height:24px;color:white"></i></div><h3 style="font-weight:700;color:white;font-size:16px;margin-bottom:4px;">Secretario</h3><p style="font-size:13px;color:#94a3b8;margin-bottom:12px;">Transcripción de actas, generación de documentos y comunicaciones</p><span style="font-size:12px;color:#a78bfa;">Claude Opus 4.6 →</span></div>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #334155;">
+          <div style="width:36px;height:36px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i data-lucide="shield" style="width:18px;height:18px;color:white"></i></div>
+          <div><span style="font-weight:600;color:white;font-size:14px;">Administrador IA</span><span style="font-size:11px;color:#64748b;margin-left:8px;">Claude Opus 4.6</span></div>
+        </div>
+        <div style="min-height:200px;padding:12px 0;">
+          <div style="display:flex;gap:10px;margin-bottom:16px;">
+            <div style="width:32px;height:32px;background:#1e3a5f;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="sparkles" style="width:16px;height:16px;color:#60a5fa"></i></div>
+            <div style="background:#1e293b;border-radius:12px;padding:12px 16px;font-size:14px;color:#cbd5e1;max-width:80%;">Hola Claudio, soy el Administrador IA de CondoIA. Puedo ayudarte con certificados de deuda, convocatorias a asamblea, gestión de cobranza y consultas legales sobre la Ley 21.442. ¿En qué te puedo ayudar?</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;border-top:1px solid #334155;padding-top:12px;">
+          <input class="input" placeholder="Escribe tu consulta al agente..." style="flex:1;" />
+          <button class="btn-primary"><i data-lucide="send" style="width:16px;height:16px"></i></button>
+        </div>
+      </div>
+    `;
+
+    // ======= REGLAMENTO =======
+    pages.reglamento = `
+      <div style="margin-bottom:20px;">
+        <h1 style="font-size:24px;font-weight:700;color:white;">Ley 21.442 — Copropiedad Inmobiliaria</h1>
+        <p style="font-size:14px;color:#94a3b8;margin-top:2px;">Guía interactiva de la ley vigente</p>
+      </div>
+      ${['Título I — Disposiciones Generales (Art. 1-7)|Definiciones, ámbito de aplicación, clasificación de condominios, bienes comunes y unidades.','Título II — De la Comunidad (Art. 8-16)|Derechos y obligaciones de copropietarios, reglamento de copropiedad, administración.','Título III — De las Asambleas (Art. 17-21)|Convocatoria, quórum, votaciones, actas y publicidad de acuerdos.','Título IV — Gastos Comunes (Art. 22-27)|Obligación de pago, cálculo por coeficiente, mora e intereses, fondo de reserva.','Título V — Del Administrador (Art. 36-47)|Funciones, deberes, rendición de cuentas, responsabilidades legales.','Título VI — Solución de Conflictos (Art. 48-55)|Mediación, arbitraje, sanciones y procedimiento judicial.'].map((item,i) => {
+        const [title,desc] = item.split('|');
+        return '<div class="card" style="margin-bottom:8px;cursor:pointer;"><div style="display:flex;justify-content:space-between;align-items:center;"><div><h3 style="font-weight:600;color:white;font-size:14px;">'+title+'</h3><p style="font-size:13px;color:#94a3b8;margin-top:4px;">'+desc+'</p></div><i data-lucide="chevron-down" style="width:18px;height:18px;color:#64748b;flex-shrink:0"></i></div></div>';
+      }).join('')}
+    `;
+
+    // ======= PERFIL =======
+    pages.perfil = `
+      <div style="margin-bottom:20px;"><h1 style="font-size:24px;font-weight:700;color:white;">Mi Perfil</h1><p style="font-size:14px;color:#94a3b8;margin-top:2px;">Información personal y preferencias</p></div>
+      <div class="card" style="max-width:600px;">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;">
+          <div style="width:72px;height:72px;background:#334155;border-radius:50%;display:flex;align-items:center;justify-content:center;"><span style="font-size:28px;font-weight:700;color:#94a3b8;">CR</span></div>
+          <div><div style="font-size:18px;font-weight:700;color:white;">Claudio Rieutord</div><div style="font-size:13px;color:#64748b;">Administrador · Condominio Los Andes</div></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div><label style="font-size:13px;color:#94a3b8;display:block;margin-bottom:4px;">Nombre completo</label><input class="input" value="Claudio Rieutord" /></div>
+          <div><label style="font-size:13px;color:#94a3b8;display:block;margin-bottom:4px;">Email</label><input class="input" value="crieutord@entel.cl" /></div>
+          <div><label style="font-size:13px;color:#94a3b8;display:block;margin-bottom:4px;">Teléfono</label><input class="input" value="+56 9 1234 5678" /></div>
+          <div><label style="font-size:13px;color:#94a3b8;display:block;margin-bottom:4px;">RUT</label><input class="input" value="12.345.678-9" /></div>
+          <div style="display:flex;gap:8px;margin-top:8px;"><button class="btn-primary"><i data-lucide="save" style="width:16px;height:16px"></i> Guardar cambios</button></div>
+        </div>
+      </div>
+    `;
+
+    // ======= CONFIGURACION =======
+    pages.configuracion = `
+      <div style="margin-bottom:20px;"><h1 style="font-size:24px;font-weight:700;color:white;">Configuración</h1><p style="font-size:14px;color:#94a3b8;margin-top:2px;">Ajustes del condominio y la plataforma</p></div>
+      <div style="display:flex;flex-direction:column;gap:12px;max-width:700px;">
+        <div class="card"><h3 style="font-weight:600;color:white;margin-bottom:12px;">Datos del Condominio</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;"><div><label style="font-size:13px;color:#94a3b8;display:block;margin-bottom:4px;">Nombre</label><input class="input" value="Condominio Los Andes" /></div><div><label style="font-size:13px;color:#94a3b8;display:block;margin-bottom:4px;">Dirección</label><input class="input" value="Av. Las Condes 12345" /></div><div><label style="font-size:13px;color:#94a3b8;display:block;margin-bottom:4px;">RUT</label><input class="input" value="76.123.456-7" /></div><div><label style="font-size:13px;color:#94a3b8;display:block;margin-bottom:4px;">Total unidades</label><input class="input" value="48" /></div></div></div>
+        <div class="card"><h3 style="font-weight:600;color:white;margin-bottom:12px;">Gastos Comunes</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;"><div><label style="font-size:13px;color:#94a3b8;display:block;margin-bottom:4px;">Monto base</label><input class="input" value="$100.000" /></div><div><label style="font-size:13px;color:#94a3b8;display:block;margin-bottom:4px;">Día vencimiento</label><input class="input" value="15" /></div></div></div>
+        <div class="card"><h3 style="font-weight:600;color:white;margin-bottom:12px;">Agentes IA</h3><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:14px;color:#cbd5e1;">Modelo Claude</span><span style="font-size:14px;color:#60a5fa;font-weight:500;">Opus 4.6</span></div></div>
+        <button class="btn-primary" style="align-self:flex-start;"><i data-lucide="save" style="width:16px;height:16px"></i> Guardar configuración</button>
+      </div>
+    `;
+
+    // ======= ADMIN =======
+    pages.admin = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <div><h1 style="font-size:24px;font-weight:700;color:white;">Panel de Administración</h1><p style="font-size:14px;color:#94a3b8;margin-top:2px;">Gestión de usuarios y roles</p></div>
+        <button class="btn-primary"><i data-lucide="plus" style="width:16px;height:16px"></i> Invitar usuario</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;">
+        <div class="stat-card"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px;">Total usuarios</div><div style="font-size:22px;font-weight:700;color:white;">52</div></div>
+        <div class="stat-card"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px;">Activos hoy</div><div style="font-size:22px;font-weight:700;color:#22c55e;">18</div></div>
+        <div class="stat-card"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px;">Invitaciones pendientes</div><div style="font-size:22px;font-weight:700;color:#f59e0b;">3</div></div>
+      </div>
+      <div class="card">
+        <table style="width:100%;border-collapse:collapse;">
+          <thead><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:10px;font-size:12px;color:#64748b;">Usuario</th><th style="text-align:left;padding:10px;font-size:12px;color:#64748b;">Email</th><th style="text-align:left;padding:10px;font-size:12px;color:#64748b;">Rol</th><th style="text-align:left;padding:10px;font-size:12px;color:#64748b;">Estado</th></tr></thead>
+          <tbody>
+            ${['Claudio Rieutord|crieutord@entel.cl|Administrador|Activo','María González|mgonzalez@mail.com|Copropietaria|Activo','Carlos Pérez|cperez@mail.com|Copropietario|Activo','Ana Muñoz|amunoz@mail.com|Tesorera|Activo','Luis Soto|lsoto@mail.com|Arrendatario|Inactivo'].map(u => {
+              const [n,e,r,s] = u.split('|');
+              return '<tr style="border-bottom:1px solid #1e293b;"><td style="padding:10px;font-size:14px;color:white;">'+n+'</td><td style="padding:10px;font-size:13px;color:#94a3b8;">'+e+'</td><td style="padding:10px;"><span style="font-size:12px;padding:2px 8px;background:#1e3a5f;border-radius:6px;color:#60a5fa;">'+r+'</span></td><td style="padding:10px;font-size:13px;color:'+(s==='Activo'?'#22c55e':'#64748b')+';">'+s+'</td></tr>';
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    const pageTitles = {
+      dashboard:'Dashboard', gastos:'Gastos Comunes', copropietarios:'Copropietarios',
+      asambleas:'Asambleas', documentos:'Documentos', mantenimiento:'Mantenimiento',
+      proveedores:'Proveedores', agentes:'Agentes IA', reglamento:'Reglamento',
+      perfil:'Mi Perfil', configuracion:'Configuración', admin:'Administración'
+    };
+
+    function showPage(page) {
+      document.getElementById('content').innerHTML = pages[page] || '<p>Página en desarrollo</p>';
+      document.getElementById('content').className = 'animate-fade-in';
+      document.getElementById('page-title').textContent = pageTitles[page] || page;
+      document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.sidebar-link').forEach(el => {
+        if (el.getAttribute('onclick')?.includes(page)) el.classList.add('active');
+      });
+      lucide.createIcons();
+    }
+
+    showPage('dashboard');
+    lucide.createIcons();
+
+    // ======= MODALES DE ACCESO RÁPIDO =======
+    function createModal(id, content) {
+      const overlay = document.createElement('div');
+      overlay.id = id;
+      overlay.style.cssText = 'position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);padding:16px;';
+      overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+      overlay.innerHTML = content;
+      document.body.appendChild(overlay);
+      lucide.createIcons();
+      return overlay;
+    }
+
+    function openPortonModal() {
+      createModal('modal-porton', `
+        <div style="background:#1e293b;border:1px solid #334155;border-radius:16px;padding:24px;width:100%;max-width:380px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <h3 style="font-size:18px;font-weight:700;color:white;">Apertura de Portón</h3>
+            <button onclick="document.getElementById('modal-porton').remove()" style="background:none;border:none;cursor:pointer;padding:4px;color:#94a3b8;"><i data-lucide="x" style="width:20px;height:20px"></i></button>
+          </div>
+          <div style="text-align:center;">
+            <div style="width:64px;height:64px;border-radius:50%;background:#451a03;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+              <i data-lucide="door-open" style="width:32px;height:32px;color:#f59e0b"></i>
+            </div>
+            <p style="font-size:14px;color:#94a3b8;margin-bottom:20px;">Se realizará una llamada al sistema de apertura remota del portón del condominio.</p>
+            <a href="tel:+56988156948" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:#d97706;color:white;border-radius:12px;font-weight:600;font-size:15px;text-decoration:none;min-height:48px;">
+              <i data-lucide="phone-call" style="width:20px;height:20px"></i>
+              Llamar para abrir
+            </a>
+            <p style="font-size:12px;color:#64748b;margin-top:12px;">Número: +56 9 8815 6948</p>
+          </div>
+        </div>
+      `);
+    }
+
+    function openCamarasModal() {
+      createModal('modal-camaras', `
+        <div style="background:#1e293b;border:1px solid #334155;border-radius:16px;padding:24px;width:100%;max-width:420px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <h3 style="font-size:18px;font-weight:700;color:white;">Cámaras de Seguridad</h3>
+            <button onclick="document.getElementById('modal-camaras').remove()" style="background:none;border:none;cursor:pointer;padding:4px;color:#94a3b8;"><i data-lucide="x" style="width:20px;height:20px"></i></button>
+          </div>
+          <div style="text-align:center;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
+              ${['Entrada Principal','Estacionamiento','Piscina','Hall Acceso'].map(cam => `
+                <div style="aspect-ratio:16/9;background:linear-gradient(135deg,#334155,#1e293b);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;border:1px solid #475569;">
+                  <i data-lucide="video" style="width:24px;height:24px;color:#64748b"></i>
+                  <span style="font-size:10px;color:#94a3b8;margin-top:4px;font-weight:500;">${cam}</span>
+                  <div style="position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:#ef4444;"></div>
+                </div>
+              `).join('')}
+            </div>
+            <p style="font-size:12px;color:#64748b;">Próximamente — Integración con sistema CCTV del condominio</p>
+          </div>
+        </div>
+      `);
+    }
+
+    function openPagoModal() {
+      createModal('modal-pago', `
+        <div style="background:#1e293b;border:1px solid #334155;border-radius:16px;padding:24px;width:100%;max-width:380px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <h3 style="font-size:18px;font-weight:700;color:white;">Pago de Gastos Comunes</h3>
+            <button onclick="document.getElementById('modal-pago').remove()" style="background:none;border:none;cursor:pointer;padding:4px;color:#94a3b8;"><i data-lucide="x" style="width:20px;height:20px"></i></button>
+          </div>
+          <div id="pago-content">
+            <div style="background:#0f172a;border-radius:12px;padding:16px;margin-bottom:16px;">
+              <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:8px;"><span style="color:#94a3b8;">Período</span><span style="color:white;font-weight:500;">Marzo 2026</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:8px;"><span style="color:#94a3b8;">Gasto común</span><span style="color:white;font-weight:500;">$85.430</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:8px;"><span style="color:#94a3b8;">Fondo de reserva</span><span style="color:white;font-weight:500;">$12.500</span></div>
+              <hr style="border-color:#334155;margin:8px 0;" />
+              <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:700;"><span style="color:#cbd5e1;">Total</span><span style="color:white;">$97.930</span></div>
+            </div>
+            <div style="margin-bottom:16px;">
+              <label style="font-size:13px;font-weight:500;color:#94a3b8;display:block;margin-bottom:8px;">Método de pago</label>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+                <button style="padding:10px;border-radius:8px;border:1px solid #334155;background:none;color:#e2e8f0;font-size:13px;font-weight:500;cursor:pointer;min-height:44px;" onmouseover="this.style.borderColor='#16a34a';this.style.background='#052e16'" onmouseout="this.style.borderColor='#334155';this.style.background='none'">WebPay</button>
+                <button style="padding:10px;border-radius:8px;border:1px solid #334155;background:none;color:#e2e8f0;font-size:13px;font-weight:500;cursor:pointer;min-height:44px;" onmouseover="this.style.borderColor='#16a34a';this.style.background='#052e16'" onmouseout="this.style.borderColor='#334155';this.style.background='none'">Khipu</button>
+                <button style="padding:10px;border-radius:8px;border:1px solid #334155;background:none;color:#e2e8f0;font-size:13px;font-weight:500;cursor:pointer;min-height:44px;" onmouseover="this.style.borderColor='#16a34a';this.style.background='#052e16'" onmouseout="this.style.borderColor='#334155';this.style.background='none'">Transfer.</button>
+              </div>
+            </div>
+            <button onclick="procesarPago()" id="btn-pagar" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:#16a34a;color:white;border:none;border-radius:12px;font-weight:600;font-size:15px;cursor:pointer;min-height:48px;">
+              <i data-lucide="wallet" style="width:20px;height:20px"></i>
+              Pagar $97.930
+            </button>
+            <p style="font-size:11px;color:#64748b;text-align:center;margin-top:10px;">Demo — Pago ficticio sin transacción real</p>
+          </div>
+        </div>
+      `);
+    }
+
+    function procesarPago() {
+      const btn = document.getElementById('btn-pagar');
+      btn.innerHTML = '<svg style="animation:spin 1s linear infinite;width:20px;height:20px" viewBox="0 0 24 24"><circle style="opacity:0.25" cx="12" cy="12" r="10" stroke="white" stroke-width="4" fill="none"/><path style="opacity:0.75" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg> Procesando...';
+      btn.style.background = '#15803d';
+      btn.disabled = true;
+      setTimeout(() => {
+        const content = document.getElementById('pago-content');
+        const ref = Math.random().toString(36).slice(2, 10).toUpperCase();
+        content.innerHTML = `
+          <div style="text-align:center;padding:20px 0;">
+            <div style="width:64px;height:64px;border-radius:50%;background:#052e16;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+              <i data-lucide="check-circle" style="width:32px;height:32px;color:#22c55e"></i>
+            </div>
+            <p style="font-size:20px;font-weight:700;color:#22c55e;">Pago Exitoso</p>
+            <p style="font-size:13px;color:#94a3b8;margin-top:8px;">Comprobante N° ${ref}</p>
+            <p style="font-size:13px;color:#64748b;margin-top:4px;">$97.930 — Marzo 2026</p>
+          </div>
+        `;
+        lucide.createIcons();
+      }, 2000);
+    }
+  </script>
+  <style>@keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }</style>
+</body>
+</html>

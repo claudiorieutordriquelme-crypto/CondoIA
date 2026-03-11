@@ -5,6 +5,7 @@ import {
   CalendarCheck, TrendingUp, ArrowUpRight
 } from 'lucide-react'
 import Link from 'next/link'
+import QuickAccessPanel from '@/components/dashboard/QuickAccessPanel'
 
 export const metadata = { title: 'Dashboard' }
 
@@ -145,6 +146,9 @@ export default async function DashboardPage() {
           </div>
         ))}
       </div>
+
+      {/* Acceso rápido: Portón, Cámaras, Pago */}
+      <QuickAccessPanel />
 
       {/* Acciones rápidas por rol */}
       <div className="grid gap-4 md:grid-cols-2">

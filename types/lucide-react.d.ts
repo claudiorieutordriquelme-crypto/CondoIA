@@ -79,6 +79,10 @@ declare module 'lucide-react' {
   export const FilePlus: Icon
   export const Calendar: Icon
   export const CreditCard: Icon
+  export const DoorOpen: Icon
+  export const Video: Icon
+  export const Wallet: Icon
+  export const PhoneCall: Icon
   export const Landmark: Icon
   export const Percent: Icon
   export const CircleDot: Icon

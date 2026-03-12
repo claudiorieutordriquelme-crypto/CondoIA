@@ -2016,6 +2016,54 @@
         </div>
     </div>
 
+    <!-- Acta / Notas Modal -->
+    <div id="acta-modal" class="modal-overlay justify-center items-center" onclick="if(event.target===this) closeModal('acta')">
+        <div class="modal-content glass-card p-8 rounded-lg max-w-2xl w-full mx-4">
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">Acta de Asamblea</h3>
+                    <p class="text-xs text-slate-400"><span id="acta-titulo">—</span> • <span id="acta-fecha">—</span></p>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-sm text-slate-400 mb-2 block font-medium">Notas del evento</label>
+                    <textarea id="acta-notas" rows="5" placeholder="Registre los temas discutidos, acuerdos y observaciones..." class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition placeholder-slate-600 leading-relaxed"></textarea>
+                </div>
+                <div>
+                    <label class="text-sm text-slate-400 mb-2 block font-medium">Compromisos registrados</label>
+                    <div id="acta-compromisos" class="space-y-2 max-h-40 overflow-y-auto">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+                <div class="p-4 rounded-xl bg-slate-800/30 border border-slate-700/50">
+                    <p class="text-xs text-slate-400 font-medium mb-3">Agregar nuevo compromiso</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div class="md:col-span-3">
+                            <input id="acta-comp-texto" type="text" placeholder="Descripción del compromiso..." class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:border-blue-500/50 focus:outline-none transition placeholder-slate-600">
+                        </div>
+                        <div>
+                            <input id="acta-comp-resp" type="text" placeholder="Responsable" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:border-blue-500/50 focus:outline-none transition placeholder-slate-600">
+                        </div>
+                        <div>
+                            <input id="acta-comp-fecha" type="date" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                        </div>
+                        <div class="flex items-end">
+                            <button onclick="saveActa(); openActaModal(currentActaId)" class="w-full px-3 py-2 rounded-lg text-xs font-medium bg-violet-500/20 text-violet-400 hover:bg-violet-500/30 transition">+ Agregar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex gap-3 mt-5">
+                <button onclick="closeModal('acta')" class="secondary-button flex-1 px-4 py-3 rounded-lg font-medium text-sm">Cancelar</button>
+                <button onclick="saveActa()" class="gradient-button flex-1 px-4 py-3 rounded-lg text-white font-medium text-sm">Guardar Acta</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Add Notification Rule Modal -->
     <div id="add-notif-rule-modal" class="modal-overlay justify-center items-center" onclick="if(event.target===this) closeModal('add-notif-rule')">
         <div class="modal-content glass-card p-8 rounded-lg max-w-lg w-full mx-4">
@@ -2887,15 +2935,15 @@
 
         // Asambleas Functions
         const asambleasData = [
-            { id: 'a1', titulo: 'Asamblea Ordinaria Anual 2026', tipo: 'ordinaria', fecha: '2026-04-15', hora: '19:00', lugar: 'Sala de Reuniones Piso 1', estado: 'programada', descripcion: 'Revisión de gestión anual, aprobación de presupuesto 2026-2027, elección de nueva directiva', quorum: 'simple', asistencia: null },
-            { id: 'a2', titulo: 'Reunión Comité Administración', tipo: 'comite', fecha: '2026-03-28', hora: '18:30', lugar: 'Sala de Reuniones Piso 1', estado: 'confirmada', descripcion: 'Revisión avance obras, seguimiento proveedores, aprobación gastos extraordinarios', quorum: 'simple', asistencia: null },
-            { id: 'a3', titulo: 'Asamblea Extraordinaria - Seguridad', tipo: 'extraordinaria', fecha: '2026-03-20', hora: '19:00', lugar: 'Virtual (Zoom)', estado: 'confirmada', descripcion: 'Aprobación sistema de cámaras IP, contratación guardia 24/7, presupuesto seguridad', quorum: 'calificada', asistencia: null },
-            { id: 'a4', titulo: 'Reunión Directiva Febrero', tipo: 'directiva', fecha: '2026-02-15', hora: '18:00', lugar: 'Oficina Administración', estado: 'realizada', descripcion: 'Planificación primer trimestre, revisión contratos mantención', quorum: 'simple', asistencia: 85 },
-            { id: 'a5', titulo: 'Asamblea Ordinaria Ene 2026', tipo: 'ordinaria', fecha: '2026-01-20', hora: '19:00', lugar: 'Sala de Reuniones Piso 1', estado: 'realizada', descripcion: 'Presentación balance 2025, plan de mejoras primer semestre', quorum: 'simple', asistencia: 72 },
-            { id: 'a6', titulo: 'Asamblea Extraordinaria - Fachada', tipo: 'extraordinaria', fecha: '2025-11-10', hora: '19:00', lugar: 'Sala de Reuniones Piso 1', estado: 'realizada', descripcion: 'Aprobación proyecto pintura fachada norte, adjudicación proveedor', quorum: 'calificada', asistencia: 68 },
-            { id: 'a7', titulo: 'Asamblea Ordinaria Nov 2025', tipo: 'ordinaria', fecha: '2025-11-05', hora: '19:00', lugar: 'Sala de Reuniones Piso 1', estado: 'realizada', descripcion: 'Revisión trimestral, aprobación gastos mantención ascensor', quorum: 'simple', asistencia: 80 },
-            { id: 'a8', titulo: 'Reunión Directiva Octubre', tipo: 'directiva', fecha: '2025-10-15', hora: '18:00', lugar: 'Virtual (Zoom)', estado: 'realizada', descripcion: 'Evaluación presupuesto anual, planificación cierre de año', quorum: 'simple', asistencia: 90 },
-            { id: 'a9', titulo: 'Asamblea Extraordinaria - Ascensores', tipo: 'extraordinaria', fecha: '2025-09-08', hora: '19:00', lugar: 'Sala de Reuniones Piso 1', estado: 'cancelada', descripcion: 'Cotización modernización ascensores — cancelada por falta de quórum', quorum: 'calificada', asistencia: null }
+            { id: 'a1', titulo: 'Asamblea Ordinaria Anual 2026', tipo: 'ordinaria', fecha: '2026-04-15', hora: '19:00', lugar: 'Sala de Reuniones Piso 1', estado: 'programada', descripcion: 'Revisión de gestión anual, aprobación de presupuesto 2026-2027, elección de nueva directiva', quorum: 'simple', asistencia: null, rsvp: { confirmados: ['c1','c3','c5'], rechazados: ['c7'], pendientes: ['c2','c4','c6','c8'] }, notas: null, compromisos: null },
+            { id: 'a2', titulo: 'Reunión Comité Administración', tipo: 'comite', fecha: '2026-03-28', hora: '18:30', lugar: 'Sala de Reuniones Piso 1', estado: 'confirmada', descripcion: 'Revisión avance obras, seguimiento proveedores, aprobación gastos extraordinarios', quorum: 'simple', asistencia: null, rsvp: { confirmados: ['c1','c2','c3','c4','c5'], rechazados: ['c6'], pendientes: ['c7','c8'] }, notas: null, compromisos: null },
+            { id: 'a3', titulo: 'Asamblea Extraordinaria - Seguridad', tipo: 'extraordinaria', fecha: '2026-03-20', hora: '19:00', lugar: 'Virtual (Zoom)', estado: 'confirmada', descripcion: 'Aprobación sistema de cámaras IP, contratación guardia 24/7, presupuesto seguridad', quorum: 'calificada', asistencia: null, rsvp: { confirmados: ['c1','c2','c3','c4','c5','c6'], rechazados: [], pendientes: ['c7','c8'] }, notas: null, compromisos: null },
+            { id: 'a4', titulo: 'Reunión Directiva Febrero', tipo: 'directiva', fecha: '2026-02-15', hora: '18:00', lugar: 'Oficina Administración', estado: 'realizada', descripcion: 'Planificación primer trimestre, revisión contratos mantención', quorum: 'simple', asistencia: 85, rsvp: { confirmados: ['c1','c2','c3','c4','c5','c6','c7'], rechazados: ['c8'], pendientes: [] }, notas: 'Se revisaron los contratos de mantención vigentes. Se acordó renegociar el contrato de ascensores por vencer en marzo. Se aprobó presupuesto Q1 por unanimidad.', compromisos: [{ texto: 'Renegociar contrato ascensores', responsable: 'Administrador', fecha: '2026-03-01', estado: 'cumplido' }, { texto: 'Enviar resumen financiero Q4 2025', responsable: 'Tesorero', fecha: '2026-02-28', estado: 'cumplido' }] },
+            { id: 'a5', titulo: 'Asamblea Ordinaria Ene 2026', tipo: 'ordinaria', fecha: '2026-01-20', hora: '19:00', lugar: 'Sala de Reuniones Piso 1', estado: 'realizada', descripcion: 'Presentación balance 2025, plan de mejoras primer semestre', quorum: 'simple', asistencia: 72, rsvp: { confirmados: ['c1','c2','c3','c4','c5','c6'], rechazados: ['c7','c8'], pendientes: [] }, notas: 'Se presentó el balance anual 2025 con resultado positivo. Se aprobó plan de mejoras que incluye pintura de fachada y modernización de áreas comunes.', compromisos: [{ texto: 'Cotizar pintura fachada', responsable: 'Comité', fecha: '2026-02-15', estado: 'cumplido' }, { texto: 'Licitar proyecto áreas comunes', responsable: 'Administrador', fecha: '2026-03-30', estado: 'pendiente' }] },
+            { id: 'a6', titulo: 'Asamblea Extraordinaria - Fachada', tipo: 'extraordinaria', fecha: '2025-11-10', hora: '19:00', lugar: 'Sala de Reuniones Piso 1', estado: 'realizada', descripcion: 'Aprobación proyecto pintura fachada norte, adjudicación proveedor', quorum: 'calificada', asistencia: 68, rsvp: { confirmados: ['c1','c2','c3','c4','c5'], rechazados: ['c6','c7','c8'], pendientes: [] }, notas: 'Se adjudicó la pintura de fachada a Pinturas del Sur SpA por $4.200.000 + IVA. Plazo de ejecución: 45 días.', compromisos: [{ texto: 'Firmar contrato pintura', responsable: 'Administrador', fecha: '2025-11-20', estado: 'cumplido' }] },
+            { id: 'a7', titulo: 'Asamblea Ordinaria Nov 2025', tipo: 'ordinaria', fecha: '2025-11-05', hora: '19:00', lugar: 'Sala de Reuniones Piso 1', estado: 'realizada', descripcion: 'Revisión trimestral, aprobación gastos mantención ascensor', quorum: 'simple', asistencia: 80, rsvp: { confirmados: ['c1','c2','c3','c4','c5','c6','c7'], rechazados: ['c8'], pendientes: [] }, notas: null, compromisos: null },
+            { id: 'a8', titulo: 'Reunión Directiva Octubre', tipo: 'directiva', fecha: '2025-10-15', hora: '18:00', lugar: 'Virtual (Zoom)', estado: 'realizada', descripcion: 'Evaluación presupuesto anual, planificación cierre de año', quorum: 'simple', asistencia: 90, rsvp: { confirmados: ['c1','c2','c3','c4','c5','c6','c7','c8'], rechazados: [], pendientes: [] }, notas: null, compromisos: null },
+            { id: 'a9', titulo: 'Asamblea Extraordinaria - Ascensores', tipo: 'extraordinaria', fecha: '2025-09-08', hora: '19:00', lugar: 'Sala de Reuniones Piso 1', estado: 'cancelada', descripcion: 'Cotización modernización ascensores — cancelada por falta de quórum', quorum: 'calificada', asistencia: null, rsvp: { confirmados: ['c1','c2'], rechazados: ['c3','c4','c5','c6','c7','c8'], pendientes: [] }, notas: null, compromisos: null }
         ];
 
         let asambleaView = 'proximas';
@@ -2990,26 +3038,37 @@
                             </span>` : ''}
                         </div>
                         <p class="mt-3 text-xs text-slate-500 leading-relaxed">${a.descripcion}</p>
+                        ${a.rsvp ? renderRSVPBar(a) : ''}
+                        ${a.estado === 'realizada' && a.notas ? renderActaPreview(a) : ''}
                     </div>
                     <div class="flex border-t border-slate-700/40">
                         ${a.estado !== 'cancelada' && a.estado !== 'realizada' ? `
+                        <button onclick="rsvpAsamblea('${a.id}', 'confirmar')" class="flex-1 py-2.5 text-xs font-medium text-emerald-400 hover:bg-emerald-500/10 transition flex items-center justify-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            Confirmar
+                        </button>
+                        <div class="w-px bg-slate-700/40"></div>
+                        <button onclick="rsvpAsamblea('${a.id}', 'rechazar')" class="flex-1 py-2.5 text-xs font-medium text-red-400 hover:bg-red-500/10 transition flex items-center justify-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            No asistiré
+                        </button>
+                        <div class="w-px bg-slate-700/40"></div>
                         <button class="flex-1 py-2.5 text-xs font-medium text-slate-400 hover:text-blue-400 hover:bg-blue-500/5 transition flex items-center justify-center gap-1.5">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
                             Editar
-                        </button>
-                        <div class="w-px bg-slate-700/40"></div>
-                        <button class="flex-1 py-2.5 text-xs font-medium text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/5 transition flex items-center justify-center gap-1.5">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                            Notificar
-                        </button>` : `
-                        <button class="flex-1 py-2.5 text-xs font-medium text-slate-400 hover:text-blue-400 hover:bg-blue-500/5 transition flex items-center justify-center gap-1.5">
+                        </button>` : a.estado === 'realizada' ? `
+                        <button onclick="openActaModal('${a.id}')" class="flex-1 py-2.5 text-xs font-medium text-slate-400 hover:text-blue-400 hover:bg-blue-500/5 transition flex items-center justify-center gap-1.5">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            Ver Acta
+                            ${a.notas ? 'Ver / Editar Acta' : 'Crear Acta'}
                         </button>
                         <div class="w-px bg-slate-700/40"></div>
-                        <button class="flex-1 py-2.5 text-xs font-medium text-slate-400 hover:text-purple-400 hover:bg-purple-500/5 transition flex items-center justify-center gap-1.5">
+                        <button onclick="generateActaDoc('${a.id}')" class="flex-1 py-2.5 text-xs font-medium text-slate-400 hover:text-purple-400 hover:bg-purple-500/5 transition flex items-center justify-center gap-1.5">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                            Descargar
+                            Generar Acta
+                        </button>` : `
+                        <button class="flex-1 py-2.5 text-xs font-medium text-slate-500 flex items-center justify-center gap-1.5 cursor-default">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+                            Cancelada
                         </button>`}
                     </div>
                 </div>`;
@@ -3027,6 +3086,167 @@
                 const avgAtt = Math.round(allRealized.reduce((s, a) => s + (a.asistencia || 0), 0) / allRealized.length);
                 document.getElementById('asm-stat-asistencia').textContent = avgAtt + '%';
             }
+        }
+
+        function renderRSVPBar(a) {
+            const total = copropietariosData.length;
+            const conf = a.rsvp.confirmados.length;
+            const rech = a.rsvp.rechazados.length;
+            const pend = a.rsvp.pendientes.length;
+            const confPct = total > 0 ? (conf / total * 100) : 0;
+            const rechPct = total > 0 ? (rech / total * 100) : 0;
+            const pendPct = total > 0 ? (pend / total * 100) : 0;
+            const isUpcoming = ['programada','confirmada','en_curso'].includes(a.estado);
+
+            return `
+                <div class="mt-3 p-3 rounded-lg bg-slate-800/30 border border-slate-700/30">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-medium text-slate-400">${isUpcoming ? 'Asistencia esperada' : 'Asistencia confirmada'}</span>
+                        <span class="text-xs font-bold ${confPct >= 66 ? 'text-emerald-400' : confPct >= 50 ? 'text-amber-400' : 'text-red-400'}">${conf}/${total} (${Math.round(confPct)}%)</span>
+                    </div>
+                    <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden flex">
+                        <div class="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all" style="width:${confPct}%"></div>
+                        <div class="h-full bg-gradient-to-r from-red-500 to-red-400 transition-all" style="width:${rechPct}%"></div>
+                        <div class="h-full bg-gradient-to-r from-slate-600 to-slate-500 transition-all" style="width:${pendPct}%"></div>
+                    </div>
+                    <div class="flex justify-between mt-1.5 text-xs">
+                        <span class="text-emerald-400/70 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>${conf} confirmados</span>
+                        <span class="text-red-400/70 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-red-400"></span>${rech} rechazados</span>
+                        <span class="text-slate-500 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>${pend} pendientes</span>
+                    </div>
+                </div>`;
+        }
+
+        function renderActaPreview(a) {
+            let html = '<div class="mt-3 p-3 rounded-lg bg-blue-500/5 border border-blue-500/15">';
+            html += '<p class="text-xs font-medium text-blue-400 mb-1.5 flex items-center gap-1.5"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Acta registrada</p>';
+            html += '<p class="text-xs text-slate-400 line-clamp-2">' + a.notas.substring(0, 150) + (a.notas.length > 150 ? '...' : '') + '</p>';
+            if (a.compromisos && a.compromisos.length > 0) {
+                html += '<p class="text-xs text-slate-500 mt-1.5">' + a.compromisos.length + ' compromiso(s) registrado(s)</p>';
+            }
+            html += '</div>';
+            return html;
+        }
+
+        function rsvpAsamblea(asambleaId, accion) {
+            const a = asambleasData.find(x => x.id === asambleaId);
+            if (!a || !a.rsvp) return;
+
+            // Simulate current user = c1
+            const userId = 'c1';
+
+            // Remove from all lists
+            a.rsvp.confirmados = a.rsvp.confirmados.filter(id => id !== userId);
+            a.rsvp.rechazados = a.rsvp.rechazados.filter(id => id !== userId);
+            a.rsvp.pendientes = a.rsvp.pendientes.filter(id => id !== userId);
+
+            if (accion === 'confirmar') {
+                a.rsvp.confirmados.push(userId);
+            } else {
+                a.rsvp.rechazados.push(userId);
+            }
+
+            renderAsambleas();
+
+            // Toast
+            const toast = document.getElementById('payment-toast');
+            document.getElementById('payment-toast-name').textContent = accion === 'confirmar' ? 'Asistencia confirmada' : 'Asistencia rechazada';
+            document.getElementById('payment-toast-detail').textContent = a.titulo;
+            toast.classList.add('active');
+            setTimeout(() => toast.classList.remove('active'), 3000);
+        }
+
+        let currentActaId = null;
+
+        function openActaModal(asambleaId) {
+            currentActaId = asambleaId;
+            const a = asambleasData.find(x => x.id === asambleaId);
+            if (!a) return;
+
+            document.getElementById('acta-titulo').textContent = a.titulo;
+            document.getElementById('acta-fecha').textContent = a.fecha + ' — ' + a.hora;
+            document.getElementById('acta-notas').value = a.notas || '';
+
+            // Render compromisos
+            const compContainer = document.getElementById('acta-compromisos');
+            if (a.compromisos && a.compromisos.length > 0) {
+                compContainer.innerHTML = a.compromisos.map((c, i) => `
+                    <div class="flex items-center gap-3 p-2.5 rounded-lg bg-slate-800/30">
+                        <span class="w-5 h-5 rounded-full flex items-center justify-center text-xs flex-shrink-0 ${c.estado === 'cumplido' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}">${c.estado === 'cumplido' ? '✓' : '!'}</span>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs text-white">${c.texto}</p>
+                            <p class="text-xs text-slate-500">${c.responsable} — ${c.fecha}</p>
+                        </div>
+                        <span class="text-xs px-2 py-0.5 rounded-md ${c.estado === 'cumplido' ? 'bg-emerald-500/15 text-emerald-400' : 'bg-amber-500/15 text-amber-400'}">${c.estado}</span>
+                    </div>
+                `).join('');
+            } else {
+                compContainer.innerHTML = '<p class="text-xs text-slate-600 text-center py-3">Sin compromisos registrados</p>';
+            }
+
+            openModal('acta');
+        }
+
+        function saveActa() {
+            if (!currentActaId) return;
+            const a = asambleasData.find(x => x.id === currentActaId);
+            if (!a) return;
+
+            a.notas = document.getElementById('acta-notas').value.trim();
+
+            // Parse new compromiso if filled
+            const compTexto = document.getElementById('acta-comp-texto').value.trim();
+            const compResp = document.getElementById('acta-comp-resp').value.trim();
+            const compFecha = document.getElementById('acta-comp-fecha').value;
+
+            if (compTexto) {
+                if (!a.compromisos) a.compromisos = [];
+                a.compromisos.push({ texto: compTexto, responsable: compResp || 'Sin asignar', fecha: compFecha || 'Sin fecha', estado: 'pendiente' });
+                document.getElementById('acta-comp-texto').value = '';
+                document.getElementById('acta-comp-resp').value = '';
+                document.getElementById('acta-comp-fecha').value = '';
+            }
+
+            closeModal('acta');
+            renderAsambleas();
+
+            const toast = document.getElementById('payment-toast');
+            document.getElementById('payment-toast-name').textContent = 'Acta guardada';
+            document.getElementById('payment-toast-detail').textContent = a.titulo;
+            toast.classList.add('active');
+            setTimeout(() => toast.classList.remove('active'), 3000);
+        }
+
+        function generateActaDoc(asambleaId) {
+            const a = asambleasData.find(x => x.id === asambleaId);
+            if (!a) return;
+
+            // Auto-generate acta and register in Documentos
+            const actaName = 'Acta ' + a.titulo;
+            const exists = documentsData.find(d => d.name === actaName);
+
+            if (!exists) {
+                documentsData.unshift({
+                    name: actaName,
+                    category: 'actas',
+                    version: 'v1.0',
+                    date: a.fecha,
+                    expiry: null,
+                    author: 'Sistema CondoIA',
+                    status: 'vigente'
+                });
+            }
+
+            // Toast
+            const toast = document.getElementById('payment-toast');
+            document.getElementById('payment-toast-name').textContent = exists ? 'Acta ya registrada' : 'Acta generada y registrada';
+            document.getElementById('payment-toast-detail').textContent = actaName + ' → Sección Documentos';
+            toast.classList.add('active');
+            setTimeout(() => toast.classList.remove('active'), 4000);
+
+            // Regenerate docs if on that page
+            if (typeof renderDocuments === 'function') renderDocuments();
+            generateNotifications();
         }
 
         function addAsamblea() {

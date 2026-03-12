@@ -1504,13 +1504,25 @@
                         </div>
                     </div>
 
-                    <!-- Filters -->
+                    <!-- Tabs Activos / Históricos + Agregar button -->
+                    <div class="flex items-center gap-4">
+                        <div class="flex gap-1 bg-slate-800/50 rounded-lg p-1">
+                            <button onclick="switchCompView('activos')" id="comp-tab-activos" class="px-4 py-2 text-sm font-medium rounded-md bg-blue-500/15 text-blue-400 transition">Activos</button>
+                            <button onclick="switchCompView('historicos')" id="comp-tab-historicos" class="px-4 py-2 text-sm font-medium rounded-md text-slate-400 hover:bg-slate-700/50 transition">Históricos</button>
+                        </div>
+                        <div class="flex-1"></div>
+                        <button onclick="openCompromisoModal()" class="gradient-button px-4 py-2 rounded-lg text-white text-sm font-medium flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                            Agregar Compromiso
+                        </button>
+                    </div>
+
+                    <!-- Filters + List -->
                     <div class="glass-card rounded-xl overflow-hidden">
                         <div class="p-4 border-b border-slate-700/50 flex items-center gap-3 flex-wrap">
-                            <div class="flex gap-1 bg-slate-800/50 rounded-lg p-1">
+                            <div id="comp-estado-filters" class="flex gap-1 bg-slate-800/50 rounded-lg p-1">
                                 <button onclick="filterCompromisos('todos')" class="comp-filter-btn active px-3 py-1.5 text-xs font-medium rounded-md bg-blue-500/15 text-blue-400">Todos</button>
                                 <button onclick="filterCompromisos('pendiente')" class="comp-filter-btn px-3 py-1.5 text-xs font-medium rounded-md text-slate-400 hover:bg-slate-700/50">Pendientes</button>
-                                <button onclick="filterCompromisos('cumplido')" class="comp-filter-btn px-3 py-1.5 text-xs font-medium rounded-md text-slate-400 hover:bg-slate-700/50">Cumplidos</button>
                                 <button onclick="filterCompromisos('vencido')" class="comp-filter-btn px-3 py-1.5 text-xs font-medium rounded-md text-slate-400 hover:bg-slate-700/50">Vencidos</button>
                             </div>
                             <select id="comp-filter-resp" onchange="renderCompromisos()" class="bg-slate-800/40 border border-slate-700 rounded-lg px-3 py-1.5 text-white text-xs focus:border-blue-500/50 focus:outline-none transition">
@@ -1532,8 +1544,8 @@
                         </div>
                         <div id="compromisos-empty" class="hidden p-12 text-center">
                             <svg class="w-10 h-10 text-slate-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-                            <p class="text-sm text-slate-500">No hay compromisos registrados</p>
-                            <p class="text-xs text-slate-600 mt-1">Los compromisos se generan desde las actas de asambleas</p>
+                            <p class="text-sm text-slate-500" id="compromisos-empty-text">No hay compromisos activos</p>
+                            <p class="text-xs text-slate-600 mt-1" id="compromisos-empty-sub">Los compromisos se generan desde las actas de asambleas o el botón Agregar</p>
                         </div>
                     </div>
                 </div>
@@ -2124,6 +2136,60 @@
             <div class="flex gap-3 mt-5">
                 <button onclick="closeModal('acta')" class="secondary-button flex-1 px-4 py-3 rounded-lg font-medium text-sm">Cancelar</button>
                 <button onclick="saveActa()" class="gradient-button flex-1 px-4 py-3 rounded-lg text-white font-medium text-sm">Guardar Acta</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Compromiso Modal -->
+    <div id="compromiso-modal" class="modal-overlay justify-center items-center" onclick="if(event.target===this) closeModal('compromiso')">
+        <div class="modal-content glass-card p-8 rounded-lg max-w-lg w-full mx-4">
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                </div>
+                <div>
+                    <h3 id="compromiso-modal-title" class="text-xl font-bold text-white">Nuevo Compromiso</h3>
+                    <p class="text-xs text-slate-400">Asociar a una asamblea realizada</p>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-sm text-slate-400 mb-2 block font-medium">Asamblea asociada *</label>
+                    <select id="comp-modal-asamblea" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+                <div>
+                    <label class="text-sm text-slate-400 mb-2 block font-medium">Descripción del compromiso *</label>
+                    <input id="comp-modal-texto" type="text" placeholder="Ej: Renegociar contrato de mantención..." class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition placeholder-slate-600">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-sm text-slate-400 mb-2 block font-medium">Responsable</label>
+                        <select id="comp-modal-resp" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                            <option value="Administrador">Administrador</option>
+                            <option value="Tesorero">Tesorero</option>
+                            <option value="Comité">Comité</option>
+                            <option value="Secretario">Secretario</option>
+                            <option value="Conserje">Conserje</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-sm text-slate-400 mb-2 block font-medium">Fecha límite</label>
+                        <input id="comp-modal-fecha" type="date" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                    </div>
+                </div>
+                <div id="comp-modal-estado-container" class="hidden">
+                    <label class="text-sm text-slate-400 mb-2 block font-medium">Estado</label>
+                    <select id="comp-modal-estado" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                        <option value="pendiente">Pendiente</option>
+                        <option value="cumplido">Cumplido</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex gap-3 mt-5">
+                <button onclick="closeModal('compromiso')" class="secondary-button flex-1 px-4 py-3 rounded-lg font-medium text-sm">Cancelar</button>
+                <button onclick="saveCompromiso()" class="gradient-button flex-1 px-4 py-3 rounded-lg text-white font-medium text-sm">Guardar</button>
             </div>
         </div>
     </div>
@@ -3317,6 +3383,30 @@
 
         // === COMPROMISOS PAGE ===
         let compFilterEstado = 'todos';
+        let compView = 'activos'; // activos | historicos
+        let editingCompromiso = null; // { asambleaId, index } or null
+
+        function switchCompView(view) {
+            compView = view;
+            compFilterEstado = 'todos';
+            document.getElementById('comp-tab-activos').className = view === 'activos'
+                ? 'px-4 py-2 text-sm font-medium rounded-md bg-blue-500/15 text-blue-400 transition'
+                : 'px-4 py-2 text-sm font-medium rounded-md text-slate-400 hover:bg-slate-700/50 transition';
+            document.getElementById('comp-tab-historicos').className = view === 'historicos'
+                ? 'px-4 py-2 text-sm font-medium rounded-md bg-blue-500/15 text-blue-400 transition'
+                : 'px-4 py-2 text-sm font-medium rounded-md text-slate-400 hover:bg-slate-700/50 transition';
+
+            // Update estado filter buttons for the view
+            const filtersEl = document.getElementById('comp-estado-filters');
+            if (view === 'activos') {
+                filtersEl.innerHTML = '<button onclick="filterCompromisos(\'todos\')" class="comp-filter-btn active px-3 py-1.5 text-xs font-medium rounded-md bg-blue-500/15 text-blue-400">Todos</button>' +
+                    '<button onclick="filterCompromisos(\'pendiente\')" class="comp-filter-btn px-3 py-1.5 text-xs font-medium rounded-md text-slate-400 hover:bg-slate-700/50">Pendientes</button>' +
+                    '<button onclick="filterCompromisos(\'vencido\')" class="comp-filter-btn px-3 py-1.5 text-xs font-medium rounded-md text-slate-400 hover:bg-slate-700/50">Vencidos</button>';
+            } else {
+                filtersEl.innerHTML = '<button class="comp-filter-btn active px-3 py-1.5 text-xs font-medium rounded-md bg-emerald-500/15 text-emerald-400">Cumplidos</button>';
+            }
+            renderCompromisos();
+        }
 
         function filterCompromisos(estado) {
             compFilterEstado = estado;
@@ -3361,6 +3451,82 @@
             renderCompromisos();
         }
 
+        function openCompromisoModal(asambleaId, index) {
+            editingCompromiso = (asambleaId !== undefined && index !== undefined) ? { asambleaId, index } : null;
+
+            // Populate asamblea dropdown with realized asambleas
+            const sel = document.getElementById('comp-modal-asamblea');
+            sel.innerHTML = asambleasData
+                .filter(a => a.estado === 'realizada')
+                .map(a => '<option value="' + a.id + '">' + a.titulo + ' (' + a.fecha + ')</option>')
+                .join('');
+
+            const estadoContainer = document.getElementById('comp-modal-estado-container');
+
+            if (editingCompromiso) {
+                // Editing existing
+                const a = asambleasData.find(x => x.id === asambleaId);
+                const c = a.compromisos[index];
+                document.getElementById('compromiso-modal-title').textContent = 'Editar Compromiso';
+                sel.value = asambleaId;
+                sel.disabled = true;
+                document.getElementById('comp-modal-texto').value = c.texto;
+                document.getElementById('comp-modal-resp').value = c.responsable;
+                document.getElementById('comp-modal-fecha').value = (c.fecha && c.fecha !== 'Sin fecha') ? c.fecha : '';
+                estadoContainer.classList.remove('hidden');
+                document.getElementById('comp-modal-estado').value = c.estado === 'vencido' ? 'pendiente' : c.estado;
+            } else {
+                // New compromiso
+                document.getElementById('compromiso-modal-title').textContent = 'Nuevo Compromiso';
+                sel.disabled = false;
+                document.getElementById('comp-modal-texto').value = '';
+                document.getElementById('comp-modal-resp').value = 'Administrador';
+                document.getElementById('comp-modal-fecha').value = '';
+                estadoContainer.classList.add('hidden');
+                if (asambleaId) sel.value = asambleaId;
+            }
+
+            openModal('compromiso');
+        }
+
+        function saveCompromiso() {
+            const asambleaId = document.getElementById('comp-modal-asamblea').value;
+            const texto = document.getElementById('comp-modal-texto').value.trim();
+            if (!texto || !asambleaId) {
+                alert('Complete la descripción y seleccione una asamblea');
+                return;
+            }
+
+            const a = asambleasData.find(x => x.id === asambleaId);
+            if (!a) return;
+            if (!a.compromisos) a.compromisos = [];
+
+            const resp = document.getElementById('comp-modal-resp').value;
+            const fecha = document.getElementById('comp-modal-fecha').value || 'Sin fecha';
+
+            if (editingCompromiso) {
+                // Update existing
+                const c = a.compromisos[editingCompromiso.index];
+                c.texto = texto;
+                c.responsable = resp;
+                c.fecha = fecha;
+                c.estado = document.getElementById('comp-modal-estado').value;
+            } else {
+                // Add new
+                a.compromisos.push({ texto, responsable: resp, fecha, estado: 'pendiente' });
+            }
+
+            closeModal('compromiso');
+            renderCompromisos();
+
+            const toast = document.getElementById('payment-toast');
+            document.getElementById('payment-toast-name').textContent = editingCompromiso ? 'Compromiso actualizado' : 'Compromiso registrado';
+            document.getElementById('payment-toast-detail').textContent = texto;
+            toast.classList.add('active');
+            setTimeout(() => toast.classList.remove('active'), 3000);
+            editingCompromiso = null;
+        }
+
         function renderCompromisos() {
             const container = document.getElementById('compromisos-container');
             const emptyEl = document.getElementById('compromisos-empty');
@@ -3381,11 +3547,20 @@
                 asmSelect.value = currentVal;
             }
 
-            // Filter
+            // Split by view: activos = pendiente + vencido, historicos = cumplido
+            if (compView === 'activos') {
+                all = all.filter(c => c.estado === 'pendiente' || c.estado === 'vencido');
+            } else {
+                all = all.filter(c => c.estado === 'cumplido');
+            }
+
+            // Filter by estado within the view
             const filterResp = document.getElementById('comp-filter-resp')?.value || 'todos';
             const filterAsm = document.getElementById('comp-filter-asamblea')?.value || 'todos';
 
-            if (compFilterEstado !== 'todos') all = all.filter(c => c.estado === compFilterEstado);
+            if (compView === 'activos' && compFilterEstado !== 'todos') {
+                all = all.filter(c => c.estado === compFilterEstado);
+            }
             if (filterResp !== 'todos') all = all.filter(c => c.responsable === filterResp);
             if (filterAsm !== 'todos') all = all.filter(c => c.asambleaId === filterAsm);
 
@@ -3393,7 +3568,7 @@
             const estadoOrder = { vencido: 0, pendiente: 1, cumplido: 2 };
             all.sort((a, b) => (estadoOrder[a.estado] || 1) - (estadoOrder[b.estado] || 1));
 
-            // Stats (from unfiltered)
+            // Stats (from ALL unfiltered compromisos)
             const allUnfiltered = getAllCompromisos();
             const totalComp = allUnfiltered.length;
             const pendientes = allUnfiltered.filter(c => c.estado === 'pendiente').length;
@@ -3407,6 +3582,12 @@
             document.getElementById('comp-stat-vencidos').textContent = vencidos;
             document.getElementById('comp-stat-pct').textContent = pct + '%';
             document.getElementById('comp-count').textContent = all.length + ' compromiso' + (all.length !== 1 ? 's' : '');
+
+            // Update empty state text
+            const emptyText = document.getElementById('compromisos-empty-text');
+            const emptySub = document.getElementById('compromisos-empty-sub');
+            if (emptyText) emptyText.textContent = compView === 'activos' ? 'No hay compromisos activos' : 'No hay compromisos en históricos';
+            if (emptySub) emptySub.textContent = compView === 'activos' ? 'Los compromisos se generan desde las actas de asambleas o el botón Agregar' : 'Los compromisos cumplidos aparecerán aquí';
 
             if (emptyEl) {
                 emptyEl.classList.toggle('hidden', all.length > 0);
@@ -3438,6 +3619,9 @@
                             '</div>' +
                             '<p class="text-xs text-slate-600 mt-1 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Origen: ' + c.asambleaTitulo + ' (' + c.asambleaFecha + ')</p>' +
                         '</div>' +
+                        '<button onclick="openCompromisoModal(\'' + c.asambleaId + '\',' + c.index + ')" class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-500 hover:text-blue-400 hover:bg-blue-500/10 transition flex-shrink-0" title="Editar compromiso">' +
+                            '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>' +
+                        '</button>' +
                     '</div>' +
                 '</div>';
             }).join('');

@@ -1304,10 +1304,13 @@
                                 📍 Temblores
                             </button>
                             <button onclick="switchEmergenciaTab('meteorologicas')" class="tab-button flex-1 px-6 py-4 text-sm font-medium text-slate-400">
-                                🌤️ Alertas Meteorológicas
+                                🌤️ Meteorológicas
                             </button>
                             <button onclick="switchEmergenciaTab('incendios')" class="tab-button flex-1 px-6 py-4 text-sm font-medium text-slate-400">
                                 🔥 Incendios
+                            </button>
+                            <button onclick="switchEmergenciaTab('alertas_sos')" class="tab-button flex-1 px-6 py-4 text-sm font-medium text-slate-400">
+                                🚨 Alertas SOS
                             </button>
                         </div>
 
@@ -1396,6 +1399,53 @@
                                     <span class="badge-high px-3 py-1 rounded-full text-xs font-medium">ALTA</span>
                                 </div>
                                 <p class="text-sm text-slate-300 mt-2">Verificar suministros de emergencia. Mantener puertas y ventanas cerradas si hay humo. Monitorear aire environment.</p>
+                            </div>
+                        </div>
+
+                        <!-- ALERTAS SOS TAB -->
+                        <div id="alertas_sos-tab" class="p-6 space-y-4 hidden">
+                            <!-- Stats -->
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                <div class="glass-card rounded-lg p-3 text-center">
+                                    <p id="sos-stat-total" class="text-xl font-bold text-white">0</p>
+                                    <p class="text-xs text-slate-500 mt-0.5">Total Alertas</p>
+                                </div>
+                                <div class="glass-card rounded-lg p-3 text-center">
+                                    <p id="sos-stat-activas" class="text-xl font-bold text-red-400">0</p>
+                                    <p class="text-xs text-slate-500 mt-0.5">Activas</p>
+                                </div>
+                                <div class="glass-card rounded-lg p-3 text-center">
+                                    <p id="sos-stat-resueltas" class="text-xl font-bold text-emerald-400">0</p>
+                                    <p class="text-xs text-slate-500 mt-0.5">Resueltas</p>
+                                </div>
+                                <div class="glass-card rounded-lg p-3 text-center">
+                                    <p id="sos-stat-tiempo" class="text-xl font-bold text-blue-400">--</p>
+                                    <p class="text-xs text-slate-500 mt-0.5">T. Respuesta Prom.</p>
+                                </div>
+                            </div>
+                            <!-- Filter -->
+                            <div class="flex items-center gap-3">
+                                <div class="flex gap-1 bg-slate-800/50 rounded-lg p-1">
+                                    <button onclick="filterSOSAlerts('todas')" class="sos-filter-btn active px-3 py-1.5 text-xs font-medium rounded-md bg-blue-500/15 text-blue-400">Todas</button>
+                                    <button onclick="filterSOSAlerts('activa')" class="sos-filter-btn px-3 py-1.5 text-xs font-medium rounded-md text-slate-400 hover:bg-slate-700/50">Activas</button>
+                                    <button onclick="filterSOSAlerts('resuelta')" class="sos-filter-btn px-3 py-1.5 text-xs font-medium rounded-md text-slate-400 hover:bg-slate-700/50">Resueltas</button>
+                                </div>
+                                <select onchange="filterSOSByType(this.value)" class="bg-slate-800/40 border border-slate-700 rounded-lg px-3 py-1.5 text-white text-xs focus:border-blue-500/50 focus:outline-none transition">
+                                    <option value="todas">Todos los tipos</option>
+                                    <option value="asalto">Asalto</option>
+                                    <option value="incendio">Incendio</option>
+                                    <option value="sin_luz">Sin Luz</option>
+                                    <option value="accidente">Accidente</option>
+                                </select>
+                            </div>
+                            <!-- Alerts list -->
+                            <div id="sos-alerts-container" class="space-y-3">
+                                <!-- Rendered by JS -->
+                            </div>
+                            <div id="sos-alerts-empty" class="hidden p-10 text-center">
+                                <svg class="w-10 h-10 text-slate-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <p class="text-sm text-slate-500">No hay alertas SOS registradas</p>
+                                <p class="text-xs text-slate-600 mt-1">Las alertas activadas por el botón de pánico aparecerán aquí</p>
                             </div>
                         </div>
                     </div>
@@ -2867,28 +2917,200 @@
             btn.className = 'sos-tipo-btn flex items-center gap-2.5 p-3 rounded-lg transition text-left ring-2 ring-white/30 ' + colorMap[tipo];
         }
 
+        // SOS Alert History
+        let sosAlertHistory = [
+            { id: 'sos_1', tipo: 'asalto', propietario: 'Roberto López', depto: 'Depto 105', fecha: '2026-03-10', hora: '23:45', detalle: 'Persona sospechosa en estacionamiento subterráneo', estado: 'resuelta', resueltoPor: 'Administrador', resueltoFecha: '2026-03-11 00:12' },
+            { id: 'sos_2', tipo: 'sin_luz', propietario: 'María García', depto: 'Depto 302', fecha: '2026-03-08', hora: '19:30', detalle: 'Corte total de electricidad en pisos 3 y 4', estado: 'resuelta', resueltoPor: 'María García', resueltoFecha: '2026-03-08 20:15' },
+            { id: 'sos_3', tipo: 'incendio', propietario: 'Ana Torres', depto: 'Depto 201', fecha: '2026-03-05', hora: '14:20', detalle: 'Humo proveniente de cuarto de basura', estado: 'resuelta', resueltoPor: 'Administrador', resueltoFecha: '2026-03-05 14:45' },
+        ];
+        let sosFilterEstado = 'todas';
+        let sosFilterTipo = 'todas';
+
         function confirmSOS() {
             var detalle = document.getElementById('sos-detalle').value.trim();
             var tipoLabel = selectedSOSTipo ? sosTipoLabels[selectedSOSTipo] : 'EMERGENCIA';
             var totalResidentes = copropietariosData.length;
+
+            // Record alert in history
+            var now = new Date();
+            var alertId = 'sos_' + Date.now();
+            sosAlertHistory.unshift({
+                id: alertId,
+                tipo: selectedSOSTipo || 'emergencia',
+                propietario: 'Claudio Rieutord', // Current logged-in user
+                depto: 'Admin',
+                fecha: now.toISOString().split('T')[0],
+                hora: now.toTimeString().slice(0, 5),
+                detalle: detalle || 'Alerta de emergencia activada',
+                estado: 'activa',
+                resueltoPor: null,
+                resueltoFecha: null
+            });
 
             closeModal('sos-confirm');
             var banner = document.getElementById('sos-banner');
             banner.classList.add('active');
             document.getElementById('sos-banner-text').textContent = 'ALERTA ' + tipoLabel + ' — Notificando a ' + totalResidentes + ' residentes, administrador y emergencias...';
 
+            // Store current alert ID for banner dismiss
+            banner.dataset.alertId = alertId;
+
             // Simulate Supabase Realtime broadcast progress
             setTimeout(function() {
                 document.getElementById('sos-banner-text').textContent = tipoLabel + ' — Admin ✓ | ' + totalResidentes + ' residentes ✓ | Conserjería ✓ | Carabineros ✓';
             }, 2500);
 
-            // Auto-dismiss after 20 seconds
-            setTimeout(function() { dismissSOS(); }, 20000);
+            // Add notification
+            if (typeof addNotifMaintenance === 'function') {
+                notificaciones.unshift({
+                    id: 'sos_notif_' + Date.now(),
+                    tipo: 'pagos',
+                    icono: 'alerta',
+                    color: 'red',
+                    titulo: 'ALERTA SOS — ' + tipoLabel,
+                    mensaje: 'Activada por Claudio Rieutord • ' + (detalle || 'Sin detalle'),
+                    tiempo: 'Ahora',
+                    leida: false,
+                    prioridad: 'alta'
+                });
+                updateNotifBadge();
+            }
+
+            // Re-render alerts tab if visible
+            renderSOSAlerts();
+
+            // Do NOT auto-dismiss - must be manually resolved
         }
 
         function dismissSOS() {
-            document.getElementById('sos-banner').classList.remove('active');
+            var banner = document.getElementById('sos-banner');
+            var alertId = banner.dataset.alertId;
+            banner.classList.remove('active');
         }
+
+        function resolveSOSAlert(alertId, resolvedor) {
+            var alert = sosAlertHistory.find(a => a.id === alertId);
+            if (!alert) return;
+
+            var now = new Date();
+            alert.estado = 'resuelta';
+            alert.resueltoPor = resolvedor;
+            alert.resueltoFecha = now.toISOString().split('T')[0] + ' ' + now.toTimeString().slice(0, 5);
+
+            // Dismiss banner if this is the current active alert
+            var banner = document.getElementById('sos-banner');
+            if (banner.dataset.alertId === alertId) {
+                banner.classList.remove('active');
+            }
+
+            renderSOSAlerts();
+
+            // Show toast
+            var toast = document.getElementById('payment-toast');
+            document.getElementById('payment-toast-name').textContent = 'Alerta SOS resuelta';
+            document.getElementById('payment-toast-detail').textContent = 'Resuelta por ' + resolvedor;
+            toast.classList.add('active');
+            setTimeout(() => toast.classList.remove('active'), 4000);
+        }
+
+        function filterSOSAlerts(estado) {
+            sosFilterEstado = estado;
+            document.querySelectorAll('.sos-filter-btn').forEach(btn => {
+                btn.className = 'sos-filter-btn px-3 py-1.5 text-xs font-medium rounded-md text-slate-400 hover:bg-slate-700/50';
+            });
+            event.target.className = 'sos-filter-btn active px-3 py-1.5 text-xs font-medium rounded-md bg-blue-500/15 text-blue-400';
+            renderSOSAlerts();
+        }
+
+        function filterSOSByType(tipo) {
+            sosFilterTipo = tipo;
+            renderSOSAlerts();
+        }
+
+        function renderSOSAlerts() {
+            var container = document.getElementById('sos-alerts-container');
+            var emptyEl = document.getElementById('sos-alerts-empty');
+            if (!container) return;
+
+            var filtered = sosAlertHistory;
+            if (sosFilterEstado !== 'todas') filtered = filtered.filter(a => a.estado === sosFilterEstado);
+            if (sosFilterTipo !== 'todas') filtered = filtered.filter(a => a.tipo === sosFilterTipo);
+
+            // Stats
+            var statTotal = document.getElementById('sos-stat-total');
+            var statActivas = document.getElementById('sos-stat-activas');
+            var statResueltas = document.getElementById('sos-stat-resueltas');
+            var statTiempo = document.getElementById('sos-stat-tiempo');
+            if (statTotal) statTotal.textContent = sosAlertHistory.length;
+            if (statActivas) statActivas.textContent = sosAlertHistory.filter(a => a.estado === 'activa').length;
+            if (statResueltas) statResueltas.textContent = sosAlertHistory.filter(a => a.estado === 'resuelta').length;
+            if (statTiempo) {
+                var resueltas = sosAlertHistory.filter(a => a.resueltoFecha);
+                if (resueltas.length > 0) statTiempo.textContent = '~25 min';
+                else statTiempo.textContent = '--';
+            }
+
+            if (emptyEl) {
+                emptyEl.classList.toggle('hidden', filtered.length > 0);
+                container.classList.toggle('hidden', filtered.length === 0);
+            }
+
+            var tipoIcons = {
+                asalto: { emoji: '🚨', color: 'red', label: 'Asalto' },
+                incendio: { emoji: '🔥', color: 'orange', label: 'Incendio' },
+                sin_luz: { emoji: '💡', color: 'amber', label: 'Sin Luz' },
+                accidente: { emoji: '🚑', color: 'blue', label: 'Accidente' },
+                emergencia: { emoji: '⚠️', color: 'red', label: 'Emergencia' }
+            };
+
+            container.innerHTML = filtered.map(function(a) {
+                var tipo = tipoIcons[a.tipo] || tipoIcons.emergencia;
+                var isActiva = a.estado === 'activa';
+                var borderColor = isActiva ? 'border-l-red-500' : 'border-l-emerald-500';
+                var pulseClass = isActiva ? 'pulse-critical' : '';
+
+                return '<div class="glass-card rounded-lg overflow-hidden border-l-4 ' + borderColor + ' ' + pulseClass + '">' +
+                    '<div class="p-4">' +
+                        '<div class="flex items-start justify-between mb-3">' +
+                            '<div class="flex items-center gap-3">' +
+                                '<div class="w-10 h-10 rounded-xl bg-' + tipo.color + '-500/15 flex items-center justify-center text-lg">' + tipo.emoji + '</div>' +
+                                '<div>' +
+                                    '<div class="flex items-center gap-2">' +
+                                        '<p class="font-semibold text-white text-sm">' + tipo.label.toUpperCase() + '</p>' +
+                                        (isActiva ? '<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-red-500/20 text-red-400 animate-pulse">ACTIVA</span>' : '<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-400">Resuelta</span>') +
+                                    '</div>' +
+                                    '<p class="text-xs text-slate-400 mt-0.5">' + a.propietario + ' — ' + a.depto + '</p>' +
+                                '</div>' +
+                            '</div>' +
+                            '<div class="text-right">' +
+                                '<p class="text-xs text-slate-400">' + a.fecha + '</p>' +
+                                '<p class="text-xs text-slate-500">' + a.hora + '</p>' +
+                            '</div>' +
+                        '</div>' +
+                        (a.detalle ? '<p class="text-sm text-slate-300 mb-3 pl-13 ml-13" style="margin-left:52px">' + a.detalle + '</p>' : '') +
+                        '<div class="flex items-center justify-between" style="margin-left:52px">' +
+                            (isActiva ?
+                                '<div class="flex items-center gap-2">' +
+                                    '<div class="sos-realtime-dot"></div>' +
+                                    '<span class="text-xs text-red-400 font-medium">Alerta en curso — esperando resolución</span>' +
+                                '</div>' +
+                                '<div class="flex gap-2">' +
+                                    '<button onclick="resolveSOSAlert(\'' + a.id + '\', \'Propietario\')" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25 transition">Resolver (Propietario)</button>' +
+                                    '<button onclick="resolveSOSAlert(\'' + a.id + '\', \'Administrador\')" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-500/15 text-blue-400 hover:bg-blue-500/25 transition">Resolver (Admin)</button>' +
+                                '</div>'
+                            :
+                                '<div class="flex items-center gap-2">' +
+                                    '<svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' +
+                                    '<span class="text-xs text-slate-500">Resuelta por <span class="text-slate-300 font-medium">' + (a.resueltoPor || '—') + '</span> el ' + (a.resueltoFecha || '—') + '</span>' +
+                                '</div>' +
+                                '<div></div>'
+                            ) +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+
 
         // Payment Registration + Real-time Dashboard
         let totalIngresos = 4200000; // Starting value $4.2M
@@ -3242,6 +3464,7 @@
             document.getElementById('temblores-tab').classList.add('hidden');
             document.getElementById('meteorologicas-tab').classList.add('hidden');
             document.getElementById('incendios-tab').classList.add('hidden');
+            document.getElementById('alertas_sos-tab').classList.add('hidden');
 
             document.querySelectorAll('#emergencias-page .tab-button').forEach(btn => {
                 btn.classList.remove('active');
@@ -3253,6 +3476,8 @@
             event.target.classList.add('active');
             event.target.style.borderBottomColor = '#3b82f6';
             event.target.style.color = '#3b82f6';
+
+            if (tabName === 'alertas_sos') renderSOSAlerts();
         }
 
         // === NOTIFICATION SYSTEM ===

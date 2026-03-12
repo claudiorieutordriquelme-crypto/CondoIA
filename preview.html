@@ -2645,7 +2645,7 @@
         // ============================================================
         const SUPABASE_URL = 'https://sbtwfthsknbbkznntdte.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNidHdmdGhza25iYmt6bm50ZHRlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzMzg1ODcsImV4cCI6MjA4ODkxNDU4N30.DBF2ujkzQr3FOUvAqkLeSZs5DRllOVBH1JY_vbXvOBU';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let supabaseReady = false;
         let condominioId = null;
 
@@ -2655,7 +2655,7 @@
 
         async function loadCondominioId() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await _sb
                     .from('condominios')
                     .select('id')
                     .limit(1)
@@ -2671,7 +2671,7 @@
 
         async function loadMovimientosFromDB() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await _sb
                     .from('movimientos_financieros')
                     .select('*')
                     .eq('condominio_id', condominioId)
@@ -2701,7 +2701,7 @@
 
         async function loadAsambleasFromDB() {
             try {
-                const { data: asambleas, error } = await supabase
+                const { data: asambleas, error } = await _sb
                     .from('asambleas')
                     .select('*')
                     .eq('condominio_id', condominioId)
@@ -2712,10 +2712,10 @@
                 const ids = asambleas.map(a => a.id);
 
                 const [agendaRes, compromisosRes, adjuntosRes, rsvpRes] = await Promise.all([
-                    supabase.from('agenda_items').select('*').in('asamblea_id', ids).order('orden'),
-                    supabase.from('compromisos').select('*').in('asamblea_id', ids),
-                    supabase.from('adjuntos_asamblea').select('*').in('asamblea_id', ids),
-                    supabase.from('rsvp_asamblea').select('*').in('asamblea_id', ids)
+                    _sb.from('agenda_items').select('*').in('asamblea_id', ids).order('orden'),
+                    _sb.from('compromisos').select('*').in('asamblea_id', ids),
+                    _sb.from('adjuntos_asamblea').select('*').in('asamblea_id', ids),
+                    _sb.from('rsvp_asamblea').select('*').in('asamblea_id', ids)
                 ]);
 
                 // Agrupar por asamblea_id
@@ -2793,7 +2793,7 @@
 
         async function loadUnidadesFromDB() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await _sb
                     .from('unidades')
                     .select('*, perfiles!unidades_propietario_id_fkey(nombre, apellido, email, telefono)')
                     .eq('condominio_id', condominioId)
@@ -2808,7 +2808,7 @@
 
         async function loadProveedoresFromDB() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await _sb
                     .from('proveedores')
                     .select('*')
                     .eq('condominio_id', condominioId)
@@ -2905,7 +2905,7 @@
                 } else {
                     dbRecord.categoria_egreso = movimiento.categoria;
                 }
-                const { data, error } = await supabase
+                const { data, error } = await _sb
                     .from('movimientos_financieros')
                     .insert(dbRecord)
                     .select()

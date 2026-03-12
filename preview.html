@@ -1121,19 +1121,71 @@
 
                 <!-- DOCUMENTOS PAGE -->
                 <div id="documentos-page" class="page-content p-8 space-y-8 hidden">
-                    <div class="glass-card rounded-lg overflow-hidden">
-                        <div class="flex border-b border-slate-700/50 p-4">
-                            <button onclick="switchDocTab('todos')" class="tab-button active px-4 py-2 text-sm font-medium">Todos</button>
-                            <button onclick="switchDocTab('certificaciones')" class="tab-button px-4 py-2 text-sm font-medium text-slate-400">Certificaciones</button>
-                            <button onclick="switchDocTab('reglamentos')" class="tab-button px-4 py-2 text-sm font-medium text-slate-400">Reglamentos</button>
-                            <button onclick="switchDocTab('actas')" class="tab-button px-4 py-2 text-sm font-medium text-slate-400">Actas</button>
-                            <button onclick="switchDocTab('contratos')" class="tab-button px-4 py-2 text-sm font-medium text-slate-400">Contratos</button>
-                            <button onclick="switchDocTab('financieros')" class="tab-button px-4 py-2 text-sm font-medium text-slate-400">Financieros</button>
-                            <div class="flex-1"></div>
-                            <button onclick="openModal('upload-doc')" class="gradient-button px-4 py-2 rounded-lg text-sm font-medium text-white">Subir Documento</button>
+                    <!-- Stats Summary -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <p id="docs-stat-total" class="text-2xl font-bold text-white">0</p>
+                            <p class="text-xs text-slate-400 mt-1">Total Documentos</p>
                         </div>
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <p id="docs-stat-vigentes" class="text-2xl font-bold text-emerald-400">0</p>
+                            <p class="text-xs text-slate-400 mt-1">Vigentes</p>
+                        </div>
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <p id="docs-stat-por-vencer" class="text-2xl font-bold text-amber-400">0</p>
+                            <p class="text-xs text-slate-400 mt-1">Por Vencer</p>
+                        </div>
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <p id="docs-stat-vencidos" class="text-2xl font-bold text-rose-400">0</p>
+                            <p class="text-xs text-slate-400 mt-1">Vencidos / Históricos</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-lg overflow-hidden">
+                        <!-- Primary tabs: Actuales / Históricos -->
+                        <div class="flex border-b border-slate-700/50 p-4 gap-2">
+                            <div class="flex gap-1 bg-slate-800/50 rounded-lg p-1">
+                                <button onclick="switchDocView('actuales')" id="doc-view-actuales" class="px-4 py-2 text-sm font-medium rounded-md bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg transition-all">
+                                    <span class="flex items-center gap-1.5">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        Documentos Actuales
+                                    </span>
+                                </button>
+                                <button onclick="switchDocView('historicos')" id="doc-view-historicos" class="px-4 py-2 text-sm font-medium rounded-md text-slate-400 hover:text-white hover:bg-slate-700/50 transition-all">
+                                    <span class="flex items-center gap-1.5">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        Históricos
+                                    </span>
+                                </button>
+                            </div>
+                            <div class="flex-1"></div>
+                            <!-- Search -->
+                            <div class="relative">
+                                <svg class="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                                <input id="doc-search" type="text" placeholder="Buscar documento..." oninput="renderDocuments()" class="bg-slate-800/40 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-white text-sm focus:border-blue-500/50 focus:outline-none transition w-48 placeholder-slate-600">
+                            </div>
+                            <button onclick="openModal('upload-doc')" class="gradient-button px-4 py-2 rounded-lg text-sm font-medium text-white flex items-center gap-1.5">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                                Subir Documento
+                            </button>
+                        </div>
+                        <!-- Category filter tabs -->
+                        <div class="flex border-b border-slate-700/30 px-4 py-2 gap-1 overflow-x-auto" id="doc-category-tabs">
+                            <button onclick="switchDocTab('todos')" class="doc-cat-btn active px-3 py-1.5 text-xs font-medium rounded-full bg-blue-500/15 text-blue-400 transition-all">Todos</button>
+                            <button onclick="switchDocTab('certificaciones')" class="doc-cat-btn px-3 py-1.5 text-xs font-medium rounded-full text-slate-400 hover:bg-slate-700/50 transition-all">Certificaciones</button>
+                            <button onclick="switchDocTab('reglamentos')" class="doc-cat-btn px-3 py-1.5 text-xs font-medium rounded-full text-slate-400 hover:bg-slate-700/50 transition-all">Reglamentos</button>
+                            <button onclick="switchDocTab('actas')" class="doc-cat-btn px-3 py-1.5 text-xs font-medium rounded-full text-slate-400 hover:bg-slate-700/50 transition-all">Actas</button>
+                            <button onclick="switchDocTab('contratos')" class="doc-cat-btn px-3 py-1.5 text-xs font-medium rounded-full text-slate-400 hover:bg-slate-700/50 transition-all">Contratos</button>
+                            <button onclick="switchDocTab('financieros')" class="doc-cat-btn px-3 py-1.5 text-xs font-medium rounded-full text-slate-400 hover:bg-slate-700/50 transition-all">Financieros</button>
+                        </div>
+                        <!-- Documents grid -->
                         <div id="docs-container" class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             <!-- Documents will be rendered here -->
+                        </div>
+                        <!-- Empty state -->
+                        <div id="docs-empty" class="hidden p-12 text-center">
+                            <svg class="w-12 h-12 text-slate-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            <p class="text-slate-500 text-sm">No se encontraron documentos</p>
                         </div>
                     </div>
                 </div>
@@ -2126,45 +2178,123 @@
 
         // Documentos Functions
         const documentsData = [
-            { name: 'Certificado Agua Potable', category: 'certificaciones', version: 'v2.1', date: '2024-03-01', author: 'Aguas Andinas' },
-            { name: 'Certificado Eléctrico', category: 'certificaciones', version: 'v1.0', date: '2024-02-15', author: 'Enel' },
-            { name: 'Certificado Gas', category: 'certificaciones', version: 'v1.3', date: '2024-01-30', author: 'Metrogas' },
-            { name: 'Reglamento Interno 2026', category: 'reglamentos', version: 'v3.0', date: '2024-01-15', author: 'Admin' },
-            { name: 'Reglamento Piscina', category: 'reglamentos', version: 'v1.2', date: '2023-12-20', author: 'Admin' },
-            { name: 'Acta Asamblea Feb 2026', category: 'actas', version: 'v1.0', date: '2024-02-10', author: 'Secretario' },
-            { name: 'Contrato Mantención Ascensores', category: 'contratos', version: 'v2.0', date: '2024-01-05', author: 'Legal' },
-            { name: 'Presupuesto Anual 2026', category: 'financieros', version: 'v1.0', date: '2024-01-01', author: 'Finanzas' }
+            // Actuales (vigentes)
+            { name: 'Certificado Agua Potable', category: 'certificaciones', version: 'v2.1', date: '2026-03-01', expiry: '2027-03-01', author: 'Aguas Andinas', status: 'vigente' },
+            { name: 'Certificado Eléctrico', category: 'certificaciones', version: 'v1.0', date: '2026-02-15', expiry: '2027-02-15', author: 'Enel', status: 'vigente' },
+            { name: 'Certificado Gas', category: 'certificaciones', version: 'v1.3', date: '2026-01-30', expiry: '2026-04-30', author: 'Metrogas', status: 'por_vencer' },
+            { name: 'Reglamento Interno 2026', category: 'reglamentos', version: 'v3.0', date: '2026-01-15', expiry: null, author: 'Admin', status: 'vigente' },
+            { name: 'Reglamento Piscina', category: 'reglamentos', version: 'v1.2', date: '2025-12-20', expiry: null, author: 'Admin', status: 'vigente' },
+            { name: 'Acta Asamblea Feb 2026', category: 'actas', version: 'v1.0', date: '2026-02-10', expiry: null, author: 'Secretario', status: 'vigente' },
+            { name: 'Acta Asamblea Ene 2026', category: 'actas', version: 'v1.0', date: '2026-01-15', expiry: null, author: 'Secretario', status: 'vigente' },
+            { name: 'Contrato Mantención Ascensores', category: 'contratos', version: 'v2.0', date: '2026-01-05', expiry: '2027-01-05', author: 'Legal', status: 'vigente' },
+            { name: 'Contrato Seguridad 2026', category: 'contratos', version: 'v1.0', date: '2026-01-01', expiry: '2026-12-31', author: 'Legal', status: 'vigente' },
+            { name: 'Presupuesto Anual 2026', category: 'financieros', version: 'v1.0', date: '2026-01-01', expiry: null, author: 'Finanzas', status: 'vigente' },
+            { name: 'Balance Febrero 2026', category: 'financieros', version: 'v1.0', date: '2026-03-05', expiry: null, author: 'Tesorería', status: 'vigente' },
+            // Históricos (vencidos o reemplazados)
+            { name: 'Certificado Agua Potable (2024)', category: 'certificaciones', version: 'v1.0', date: '2024-03-01', expiry: '2025-03-01', author: 'Aguas Andinas', status: 'vencido' },
+            { name: 'Certificado Eléctrico (2023)', category: 'certificaciones', version: 'v0.9', date: '2023-06-15', expiry: '2024-06-15', author: 'Enel', status: 'vencido' },
+            { name: 'Reglamento Interno 2024', category: 'reglamentos', version: 'v2.0', date: '2024-01-15', expiry: null, author: 'Admin', status: 'reemplazado' },
+            { name: 'Acta Asamblea Dic 2025', category: 'actas', version: 'v1.0', date: '2025-12-20', expiry: null, author: 'Secretario', status: 'historico' },
+            { name: 'Acta Asamblea Oct 2025', category: 'actas', version: 'v1.0', date: '2025-10-15', expiry: null, author: 'Secretario', status: 'historico' },
+            { name: 'Contrato Limpieza 2024', category: 'contratos', version: 'v1.0', date: '2024-01-01', expiry: '2024-12-31', author: 'Legal', status: 'vencido' },
+            { name: 'Presupuesto Anual 2025', category: 'financieros', version: 'v1.0', date: '2025-01-01', expiry: null, author: 'Finanzas', status: 'historico' },
+            { name: 'Balance Anual 2025', category: 'financieros', version: 'v1.0', date: '2025-12-31', expiry: null, author: 'Tesorería', status: 'historico' },
         ];
 
         let currentDocTab = 'todos';
+        let currentDocView = 'actuales';
+
+        function switchDocView(view) {
+            currentDocView = view;
+            // Update view buttons
+            const btnActuales = document.getElementById('doc-view-actuales');
+            const btnHistoricos = document.getElementById('doc-view-historicos');
+            if (view === 'actuales') {
+                btnActuales.className = 'px-4 py-2 text-sm font-medium rounded-md bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg transition-all';
+                btnHistoricos.className = 'px-4 py-2 text-sm font-medium rounded-md text-slate-400 hover:text-white hover:bg-slate-700/50 transition-all';
+            } else {
+                btnHistoricos.className = 'px-4 py-2 text-sm font-medium rounded-md bg-gradient-to-r from-slate-500 to-slate-600 text-white shadow-lg transition-all';
+                btnActuales.className = 'px-4 py-2 text-sm font-medium rounded-md text-slate-400 hover:text-white hover:bg-slate-700/50 transition-all';
+            }
+            currentDocTab = 'todos';
+            document.querySelectorAll('.doc-cat-btn').forEach((btn, i) => {
+                if (i === 0) { btn.classList.add('active'); btn.className = 'doc-cat-btn active px-3 py-1.5 text-xs font-medium rounded-full bg-blue-500/15 text-blue-400 transition-all'; }
+                else { btn.classList.remove('active'); btn.className = 'doc-cat-btn px-3 py-1.5 text-xs font-medium rounded-full text-slate-400 hover:bg-slate-700/50 transition-all'; }
+            });
+            renderDocuments();
+        }
 
         function switchDocTab(tab) {
             currentDocTab = tab;
-            document.querySelectorAll('#documentos-page .tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.doc-cat-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.className = 'doc-cat-btn px-3 py-1.5 text-xs font-medium rounded-full text-slate-400 hover:bg-slate-700/50 transition-all';
+            });
             event.target.classList.add('active');
+            event.target.className = 'doc-cat-btn active px-3 py-1.5 text-xs font-medium rounded-full bg-blue-500/15 text-blue-400 transition-all';
             renderDocuments();
         }
 
         function renderDocuments() {
-            const filtered = currentDocTab === 'todos' ? documentsData : documentsData.filter(d => d.category === currentDocTab);
+            const isActuales = currentDocView === 'actuales';
+            const searchTerm = (document.getElementById('doc-search')?.value || '').toLowerCase();
+
+            // Filter by view (actuales = vigente/por_vencer, historicos = vencido/reemplazado/historico)
+            let filtered = documentsData.filter(d => {
+                if (isActuales) return d.status === 'vigente' || d.status === 'por_vencer';
+                return d.status === 'vencido' || d.status === 'reemplazado' || d.status === 'historico';
+            });
+
+            // Filter by category
+            if (currentDocTab !== 'todos') filtered = filtered.filter(d => d.category === currentDocTab);
+
+            // Filter by search
+            if (searchTerm) filtered = filtered.filter(d => d.name.toLowerCase().includes(searchTerm) || d.author.toLowerCase().includes(searchTerm) || d.category.toLowerCase().includes(searchTerm));
+
+            // Update stats
+            const vigentes = documentsData.filter(d => d.status === 'vigente').length;
+            const porVencer = documentsData.filter(d => d.status === 'por_vencer').length;
+            const historicos = documentsData.filter(d => d.status === 'vencido' || d.status === 'reemplazado' || d.status === 'historico').length;
+            document.getElementById('docs-stat-total').textContent = documentsData.length;
+            document.getElementById('docs-stat-vigentes').textContent = vigentes;
+            document.getElementById('docs-stat-por-vencer').textContent = porVencer;
+            document.getElementById('docs-stat-vencidos').textContent = historicos;
+
             const catColors = {certificaciones:'from-cyan-500 to-blue-600',reglamentos:'from-violet-500 to-purple-600',actas:'from-amber-500 to-orange-600',contratos:'from-emerald-500 to-green-600',financieros:'from-rose-500 to-pink-600'};
             const catBg = {certificaciones:'bg-cyan-500/15 text-cyan-400',reglamentos:'bg-violet-500/15 text-violet-400',actas:'bg-amber-500/15 text-amber-400',contratos:'bg-emerald-500/15 text-emerald-400',financieros:'bg-rose-500/15 text-rose-400'};
+            const statusBadge = {
+                vigente: 'bg-emerald-500/15 text-emerald-400',
+                por_vencer: 'bg-amber-500/15 text-amber-400',
+                vencido: 'bg-rose-500/15 text-rose-400',
+                reemplazado: 'bg-slate-500/15 text-slate-400',
+                historico: 'bg-slate-500/15 text-slate-400'
+            };
+            const statusLabel = { vigente: 'Vigente', por_vencer: 'Por vencer', vencido: 'Vencido', reemplazado: 'Reemplazado', historico: 'Histórico' };
+
+            // Show/hide empty state
+            document.getElementById('docs-empty').classList.toggle('hidden', filtered.length > 0);
+            document.getElementById('docs-container').classList.toggle('hidden', filtered.length === 0);
+
             const html = filtered.map(doc => `
                 <div class="glass-card rounded-xl overflow-hidden hover:border-blue-500/30 transition-all group">
                     <div class="p-5">
-                        <div class="flex items-start gap-3.5 mb-4">
-                            <div class="w-11 h-11 bg-gradient-to-br ${catColors[doc.category]||'from-blue-500 to-blue-600'} rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                        <div class="flex items-start gap-3.5 mb-3">
+                            <div class="w-11 h-11 bg-gradient-to-br ${catColors[doc.category]||'from-blue-500 to-blue-600'} rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg ${!isActuales ? 'opacity-60' : ''}">
                                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             </div>
                             <div class="flex-1 min-w-0">
-                                <p class="font-semibold text-white text-sm leading-tight">${doc.name}</p>
-                                <span class="inline-block mt-1.5 text-xs px-2 py-0.5 rounded-md font-medium ${catBg[doc.category]||'bg-blue-500/15 text-blue-400'}">${doc.category}</span>
+                                <p class="font-semibold text-white text-sm leading-tight ${!isActuales ? 'text-slate-300' : ''}">${doc.name}</p>
+                                <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+                                    <span class="text-xs px-2 py-0.5 rounded-md font-medium ${catBg[doc.category]||'bg-blue-500/15 text-blue-400'}">${doc.category}</span>
+                                    <span class="text-xs px-2 py-0.5 rounded-md font-medium ${statusBadge[doc.status]}">${statusLabel[doc.status]}</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="flex items-center gap-4 text-xs text-slate-400 mb-4 pl-0.5">
-                            <span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>${doc.version}</span>
-                            <span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>${doc.date}</span>
-                            <span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>${doc.author}</span>
+                        <div class="flex items-center gap-3 text-xs text-slate-400 mb-2 pl-0.5 flex-wrap">
+                            <span class="flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>${doc.version}</span>
+                            <span class="flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>${doc.date}</span>
+                            <span class="flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>${doc.author}</span>
+                            ${doc.expiry ? '<span class="flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Vence: ' + doc.expiry + '</span>' : ''}
                         </div>
                     </div>
                     <div class="flex border-t border-slate-700/40">
@@ -2177,6 +2307,7 @@
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             Historial
                         </button>
+                        ${isActuales ? '' : '<div class="w-px bg-slate-700/40"></div><button class="flex-1 py-2.5 text-xs font-medium text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/5 transition flex items-center justify-center gap-1.5"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>Restaurar</button>'}
                     </div>
                 </div>
             `).join('');

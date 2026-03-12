@@ -403,12 +403,82 @@
         .payment-toast.active {
             transform: translateX(0);
         }
+
+        /* Light Mode */
+        body.light-mode {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
+        }
+        body.light-mode .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: rgba(148, 163, 184, 0.3);
+        }
+        body.light-mode .glass-card:hover {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: rgba(148, 163, 184, 0.4);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        }
+        body.light-mode .stat-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(241, 245, 249, 0.9));
+            border-color: rgba(148, 163, 184, 0.3);
+        }
+        body.light-mode .stat-card:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 1), rgba(241, 245, 249, 1));
+        }
+        body.light-mode .sidebar-gradient {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(241, 245, 249, 0.98) 100%);
+            border-right-color: rgba(148, 163, 184, 0.3);
+        }
+        body.light-mode .topbar-blur {
+            background: rgba(255, 255, 255, 0.85);
+            border-bottom-color: rgba(148, 163, 184, 0.3);
+        }
+        body.light-mode .text-white { color: #1e293b !important; }
+        body.light-mode .text-slate-400 { color: #64748b !important; }
+        body.light-mode .text-slate-500 { color: #475569 !important; }
+        body.light-mode .text-slate-600 { color: #334155 !important; }
+        body.light-mode .sidebar-link { color: #475569; }
+        body.light-mode .sidebar-link:hover { background: rgba(59, 130, 246, 0.08); color: #1e293b; }
+        body.light-mode .sidebar-link.active { background: rgba(59, 130, 246, 0.12); color: #3b82f6; }
+        body.light-mode .modal-content { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border-color: rgba(148, 163, 184, 0.3); }
+        body.light-mode input, body.light-mode select, body.light-mode textarea {
+            background: rgba(241, 245, 249, 0.8) !important;
+            border-color: rgba(148, 163, 184, 0.4) !important;
+            color: #1e293b !important;
+        }
+        body.light-mode .topbar-line {
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar-gradient {
+                position: fixed;
+                z-index: 100;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                width: 260px;
+                height: 100vh;
+            }
+            .sidebar-gradient.mobile-open {
+                transform: translateX(0);
+            }
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 99;
+            }
+            .sidebar-overlay.active {
+                display: block;
+            }
+        }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 scrollbar-thin">
     <div class="flex h-screen">
         <!-- SIDEBAR -->
-        <div class="sidebar-gradient w-64 overflow-y-auto scrollbar-thin flex flex-col">
+        <aside id="app-sidebar" class="sidebar-gradient w-64 overflow-y-auto scrollbar-thin flex flex-col">
             <!-- Logo -->
             <div class="p-6 border-b border-slate-700/50">
                 <div class="flex items-center gap-3">
@@ -426,56 +496,56 @@
 
             <!-- Navigation -->
             <nav class="flex-1 px-3 py-6 space-y-2">
-                <button onclick="showPage('dashboard')" class="sidebar-link active w-full text-left">
+                <button onclick="showPage('dashboard')" data-page="dashboard" class="sidebar-link active w-full text-left">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-3m0 0l7-4 7 4M5 9v10a1 1 0 001 1h12a1 1 0 001-1V9m-9 4v4m4-4v4m4-4v4"></path></svg>
                     <span>Dashboard</span>
                 </button>
-                <button onclick="showPage('copropietarios')" class="sidebar-link w-full text-left">
+                <button onclick="showPage('copropietarios')" data-page="copropietarios" class="sidebar-link w-full text-left">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 12H9m4 5H9m6 0h.01M9 12a4 4 0 110-5.292m6 0a4 4 0 100 5.292"></path></svg>
                     <span>Copropietarios</span>
                 </button>
-                <button onclick="showPage('asambleas')" class="sidebar-link w-full text-left">
+                <button onclick="showPage('asambleas')" data-page="asambleas" class="sidebar-link w-full text-left">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 0 0-5.856-1.487M15 10h.01M11 20h5v-2a3 3 0 0 0-5.856-1.487M15 10h.01M7 20v-2a4 4 0 0 0-4-4H3v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2h-1a4 4 0 0 0-4 4v2H7z"></path></svg>
                     <span>Asambleas</span>
                 </button>
-                <button onclick="showPage('compromisos')" class="sidebar-link w-full text-left">
+                <button onclick="showPage('compromisos')" data-page="compromisos" class="sidebar-link w-full text-left">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
                     <span>Compromisos</span>
                 </button>
-                <button onclick="showPage('documentos')" class="sidebar-link w-full text-left">
+                <button onclick="showPage('documentos')" data-page="documentos" class="sidebar-link w-full text-left">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                     <span>Documentos</span>
                 </button>
-                <button onclick="showPage('mantenimiento')" class="sidebar-link w-full text-left">
+                <button onclick="showPage('mantenimiento')" data-page="mantenimiento" class="sidebar-link w-full text-left">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
                     <span>Mantenimiento</span>
                 </button>
-                <button onclick="showPage('proveedores')" class="sidebar-link w-full text-left">
+                <button onclick="showPage('proveedores')" data-page="proveedores" class="sidebar-link w-full text-left">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     <span>Proveedores</span>
                 </button>
-                <button onclick="showPage('emergencias')" class="sidebar-link w-full text-left">
+                <button onclick="showPage('emergencias')" data-page="emergencias" class="sidebar-link w-full text-left">
                     <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                     <span>Emergencias</span>
                     <span style="background:#ef4444;color:white;font-size:9px;padding:1px 6px;border-radius:99px;font-weight:700;margin-left:auto;animation:pulse 2s infinite;">LIVE</span>
                 </button>
-                <button onclick="showPage('agentes')" class="sidebar-link w-full text-left">
+                <button onclick="showPage('agentes')" data-page="agentes" class="sidebar-link w-full text-left">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6H3m15.364-6.364l-.707-.707M9 17h.01"></path></svg>
                     <span>Agentes IA</span>
                 </button>
-                <button onclick="showPage('reglamento')" class="sidebar-link w-full text-left">
+                <button onclick="showPage('reglamento')" data-page="reglamento" class="sidebar-link w-full text-left">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C6.5 6.253 2 10.998 2 17.25S6.5 28 12 28s10-4.745 10-10.75S17.5 6.253 12 6.253z"></path></svg>
                     <span>Reglamento</span>
                 </button>
-                <button onclick="showPage('perfil')" class="sidebar-link w-full text-left">
+                <button onclick="showPage('perfil')" data-page="perfil" class="sidebar-link w-full text-left">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                     <span>Perfil</span>
                 </button>
-                <button onclick="showPage('configuracion')" class="sidebar-link w-full text-left">
+                <button onclick="showPage('configuracion')" data-page="configuracion" class="sidebar-link w-full text-left">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
                     <span>Configuración</span>
                 </button>
-                <button onclick="showPage('admin')" class="sidebar-link w-full text-left">
+                <button onclick="showPage('admin')" data-page="admin" class="sidebar-link w-full text-left">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
                     <span>Admin</span>
                 </button>
@@ -493,14 +563,18 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </aside>
+        <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleMobileSidebar()"></div>
 
         <!-- MAIN CONTENT -->
         <div class="flex-1 flex flex-col overflow-hidden">
             <!-- TOP BAR -->
-            <div class="topbar-blur h-16 border-b border-slate-700/50 flex items-center px-8 gap-6">
+            <div class="topbar-blur h-16 border-b border-slate-700/50 flex items-center px-4 md:px-8 gap-4 md:gap-6">
+                <button onclick="toggleMobileSidebar()" class="md:hidden p-2 hover:bg-slate-800 rounded-lg transition">
+                    <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
                 <div class="flex-1">
-                    <h2 id="page-title" class="text-2xl font-bold text-white">Dashboard</h2>
+                    <h2 id="page-title" class="text-xl md:text-2xl font-bold text-white">Dashboard</h2>
                 </div>
                 <div class="flex items-center gap-4">
                     <!-- Notification Bell -->
@@ -535,8 +609,9 @@
                             </div>
                         </div>
                     </div>
-                    <button class="p-2 hover:bg-slate-800 rounded-lg transition">
-                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
+                    <button onclick="toggleTheme()" class="p-2 hover:bg-slate-800 rounded-lg transition" title="Cambiar tema">
+                        <svg id="theme-icon-dark" class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                        <svg id="theme-icon-light" class="w-5 h-5 text-amber-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     </button>
                 </div>
             </div>
@@ -1597,7 +1672,14 @@
                             </div>
                             <div class="glass-card p-4 rounded-lg">
                                 <p class="text-slate-400 text-sm">Rol</p>
-                                <p class="text-lg font-semibold text-white mt-1">Admin</p>
+                                <select id="role-selector" onchange="changeUserRole(this.value)" class="mt-1 bg-slate-800/40 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:border-blue-500/50 focus:outline-none transition w-full">
+                                    <option value="superadmin">Super Admin</option>
+                                    <option value="administrador" selected>Administrador</option>
+                                    <option value="tesorero">Tesorero</option>
+                                    <option value="secretario">Secretario</option>
+                                    <option value="copropietario">Copropietario</option>
+                                    <option value="arrendatario">Arrendatario</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -2780,8 +2862,90 @@
         }
 
         // Kanban Functions
-        const currentUserRole = 'administrador'; // Simulated role: administrador | usuario_maestro | copropietario
-        const canManageKanban = ['administrador', 'usuario_maestro'].includes(currentUserRole);
+        let currentUserRole = 'superadmin'; // Active role
+
+        // RBAC Role Permissions
+        const rolePermissions = {
+            superadmin: {
+                label: 'Super Admin',
+                pages: ['dashboard','copropietarios','asambleas','compromisos','documentos','mantenimiento','proveedores','emergencias','agentes','reglamento','perfil','configuracion','admin'],
+                canEdit: true, canCreate: true, canDelete: true
+            },
+            administrador: {
+                label: 'Administrador',
+                pages: ['dashboard','copropietarios','asambleas','compromisos','documentos','mantenimiento','proveedores','emergencias','agentes','reglamento','perfil','configuracion'],
+                canEdit: true, canCreate: true, canDelete: false
+            },
+            tesorero: {
+                label: 'Tesorero',
+                pages: ['dashboard','copropietarios','documentos','perfil'],
+                canEdit: true, canCreate: true, canDelete: false
+            },
+            secretario: {
+                label: 'Secretario',
+                pages: ['dashboard','asambleas','compromisos','documentos','perfil'],
+                canEdit: true, canCreate: true, canDelete: false
+            },
+            copropietario: {
+                label: 'Copropietario',
+                pages: ['dashboard','asambleas','compromisos','documentos','emergencias','perfil'],
+                canEdit: false, canCreate: false, canDelete: false
+            },
+            arrendatario: {
+                label: 'Arrendatario',
+                pages: ['dashboard','asambleas','documentos','emergencias','perfil'],
+                canEdit: false, canCreate: false, canDelete: false
+            }
+        };
+
+        function changeUserRole(role) {
+            currentUserRole = role;
+            applyRoleRestrictions();
+            showPage('dashboard');
+            // Toast
+            const toast = document.getElementById('payment-toast');
+            document.getElementById('payment-toast-name').textContent = 'Rol actualizado';
+            document.getElementById('payment-toast-detail').textContent = rolePermissions[role].label;
+            toast.classList.add('active');
+            setTimeout(() => toast.classList.remove('active'), 3000);
+        }
+
+        function applyRoleRestrictions() {
+            const perms = rolePermissions[currentUserRole];
+            if (!perms) return;
+            // Show/hide sidebar links based on role
+            document.querySelectorAll('.sidebar-link[data-page]').forEach(link => {
+                const page = link.getAttribute('data-page');
+                link.style.display = perms.pages.includes(page) ? '' : 'none';
+            });
+            // Hide/show create buttons based on canCreate
+            document.querySelectorAll('.role-create').forEach(el => {
+                el.style.display = perms.canCreate ? '' : 'none';
+            });
+            // Hide/show edit buttons based on canEdit
+            document.querySelectorAll('.role-edit').forEach(el => {
+                el.style.display = perms.canEdit ? '' : 'none';
+            });
+        }
+
+        const canManageKanban = () => ['superadmin','administrador'].includes(currentUserRole);
+
+        // Theme Toggle
+        let isDarkMode = true;
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('light-mode', !isDarkMode);
+            document.getElementById('theme-icon-dark').classList.toggle('hidden', !isDarkMode);
+            document.getElementById('theme-icon-light').classList.toggle('hidden', isDarkMode);
+        }
+
+        // Mobile Sidebar
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById('app-sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            sidebar.classList.toggle('mobile-open');
+            overlay.classList.toggle('active');
+        }
 
         const maintenanceData = {
             solicitado: [
@@ -2814,8 +2978,8 @@
 
         function renderKanban() {
             const badges = { Alta: 'badge-critical', Media: 'badge-medium', Baja: 'badge-low' };
-            const dragAttr = canManageKanban ? 'draggable="true"' : '';
-            const cursorClass = canManageKanban ? 'cursor-grab active:cursor-grabbing' : '';
+            const dragAttr = canManageKanban() ? 'draggable="true"' : '';
+            const cursorClass = canManageKanban() ? 'cursor-grab active:cursor-grabbing' : '';
 
             const render = (col) => maintenanceData[col].map(card => `
                 <div class="kanban-card ${cursorClass}" ${dragAttr}
@@ -2823,7 +2987,7 @@
                      ondragend="onDragEnd(event)" data-id="${card.id}">
                     <div class="flex items-start justify-between gap-2">
                         <p class="font-semibold text-white text-sm leading-tight">${card.title}</p>
-                        ${canManageKanban ? `<button onclick="openMoveMenu('${card.id}','${col}')" class="text-slate-500 hover:text-slate-300 p-0.5 flex-shrink-0" title="Mover">
+                        ${canManageKanban() ? `<button onclick="openMoveMenu('${card.id}','${col}')" class="text-slate-500 hover:text-slate-300 p-0.5 flex-shrink-0" title="Mover">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/></svg>
                         </button>` : ''}
                     </div>
@@ -2844,7 +3008,7 @@
             ['solicitado','desarrollo','terminado'].forEach(col => {
                 const container = document.getElementById('kanban-' + col);
                 container.innerHTML = render(col);
-                if (canManageKanban) {
+                if (canManageKanban()) {
                     container.ondragover = (e) => { e.preventDefault(); container.classList.add('bg-blue-500/5','border-blue-500/30'); };
                     container.ondragleave = () => { container.classList.remove('bg-blue-500/5','border-blue-500/30'); };
                     container.ondrop = (e) => { e.preventDefault(); container.classList.remove('bg-blue-500/5','border-blue-500/30'); moveCard(draggedCardId, draggedFromCol, col); };
@@ -2866,7 +3030,7 @@
         function onDragEnd(e) { e.target.style.opacity = '1'; }
 
         function moveCard(cardId, fromCol, toCol) {
-            if (fromCol === toCol || !canManageKanban) return;
+            if (fromCol === toCol || !canManageKanban()) return;
             const idx = maintenanceData[fromCol].findIndex(c => c.id === cardId);
             if (idx === -1) return;
             const [card] = maintenanceData[fromCol].splice(idx, 1);
@@ -4831,6 +4995,7 @@
         lucide.createIcons();
 
         // Initialize
+        applyRoleRestrictions();
         showPage('dashboard');
     </script>
 </body>

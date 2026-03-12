@@ -35,6 +35,7 @@
             backdrop-filter: blur(12px);
             border: 1px solid rgba(148, 163, 184, 0.15);
             transition: all 0.3s ease;
+            cursor: pointer;
         }
 
         .stat-card:hover {
@@ -42,6 +43,11 @@
             background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
             border-color: rgba(148, 163, 184, 0.25);
             box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15);
+        }
+
+        .stat-card.active {
+            border: 2px solid #3b82f6;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
         }
 
         .sidebar-gradient {
@@ -162,26 +168,6 @@
         .badge-low {
             background: rgba(34, 197, 94, 0.15);
             color: #86efac;
-            border: 1px solid rgba(34, 197, 94, 0.3);
-        }
-
-        .earthquake-red {
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-        }
-
-        .earthquake-orange {
-            background: rgba(249, 115, 22, 0.15);
-            border: 1px solid rgba(249, 115, 22, 0.3);
-        }
-
-        .earthquake-yellow {
-            background: rgba(234, 179, 8, 0.15);
-            border: 1px solid rgba(234, 179, 8, 0.3);
-        }
-
-        .earthquake-green {
-            background: rgba(34, 197, 94, 0.15);
             border: 1px solid rgba(34, 197, 94, 0.3);
         }
 
@@ -314,6 +300,39 @@
             background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.5), transparent);
             height: 1px;
         }
+
+        .kanban-column {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            min-height: 500px;
+        }
+
+        .kanban-card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .kanban-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }
+
+        .detail-panel {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .detail-panel.active {
+            max-height: 1000px;
+        }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 scrollbar-thin">
@@ -340,10 +359,6 @@
                 <button onclick="showPage('dashboard')" class="sidebar-link active w-full text-left">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-3m0 0l7-4 7 4M5 9v10a1 1 0 001 1h12a1 1 0 001-1V9m-9 4v4m4-4v4m4-4v4"></path></svg>
                     <span>Dashboard</span>
-                </button>
-                <button onclick="showPage('gastos')" class="sidebar-link w-full text-left">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <span>Gastos</span>
                 </button>
                 <button onclick="showPage('copropietarios')" class="sidebar-link w-full text-left">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 12H9m4 5H9m6 0h.01M9 12a4 4 0 110-5.292m6 0a4 4 0 100 5.292"></path></svg>
@@ -442,33 +457,33 @@
 
                     <!-- Stats Grid -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div class="stat-card p-6 rounded-lg fade-in stagger-1">
+                        <div class="stat-card p-6 rounded-lg fade-in stagger-1" onclick="toggleStatDetail(0, event)">
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <p class="text-slate-400 text-sm font-medium">Unidades</p>
-                                    <p class="text-3xl font-bold text-white mt-2">45</p>
+                                    <p class="text-slate-400 text-sm font-medium">Ingresos del Mes</p>
+                                    <p class="text-3xl font-bold text-white mt-2">$4.2M</p>
                                 </div>
-                                <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
+                                <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center">
                                     <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
                                 </div>
                             </div>
-                            <p class="text-xs text-emerald-400 mt-4">+2 esta semana</p>
+                            <p class="text-xs text-green-400 mt-4">+8% esta semana</p>
                         </div>
 
-                        <div class="stat-card p-6 rounded-lg fade-in stagger-2">
+                        <div class="stat-card p-6 rounded-lg fade-in stagger-2" onclick="toggleStatDetail(1, event)">
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-slate-400 text-sm font-medium">Gastos Mes</p>
-                                    <p class="text-3xl font-bold text-white mt-2">$4.2M</p>
+                                    <p class="text-3xl font-bold text-white mt-2">$3.8M</p>
                                 </div>
-                                <div class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center">
-                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                <div class="w-12 h-12 bg-gradient-to-br from-red-400 to-red-600 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
                                 </div>
                             </div>
                             <p class="text-xs text-slate-400 mt-4">Dentro del presupuesto</p>
                         </div>
 
-                        <div class="stat-card p-6 rounded-lg fade-in stagger-3">
+                        <div class="stat-card p-6 rounded-lg fade-in stagger-3" onclick="toggleStatDetail(2, event)">
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-slate-400 text-sm font-medium">Morosidad</p>
@@ -481,7 +496,7 @@
                             <p class="text-xs text-orange-400 mt-4">Requiere atención</p>
                         </div>
 
-                        <div class="stat-card p-6 rounded-lg fade-in stagger-4">
+                        <div class="stat-card p-6 rounded-lg fade-in stagger-4" onclick="toggleStatDetail(3, event)">
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-slate-400 text-sm font-medium">Mantenciones</p>
@@ -495,12 +510,143 @@
                         </div>
                     </div>
 
+                    <!-- Detail Panels -->
+                    <div id="detail-panel-0" class="detail-panel glass-card p-6 rounded-lg">
+                        <h3 class="text-lg font-semibold text-white mb-4">Ingresos del Mes - Desglose</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <p class="text-slate-400 text-sm mb-4">Ingresos por Fuente</p>
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
+                                        <span class="text-sm">Gastos Comunes</span>
+                                        <span class="font-semibold text-green-400">$2.1M</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
+                                        <span class="text-sm">Fondo Reserva</span>
+                                        <span class="font-semibold text-green-400">$1.2M</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
+                                        <span class="text-sm">Multas</span>
+                                        <span class="font-semibold text-green-400">$580K</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
+                                        <span class="text-sm">Arriendos</span>
+                                        <span class="font-semibold text-green-400">$320K</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 text-sm mb-4">Pagos Recientes</p>
+                                <div class="space-y-3">
+                                    <div class="p-3 bg-slate-800/40 rounded-lg text-sm">
+                                        <p class="text-white font-medium">Juan Martínez - Depto 401</p>
+                                        <p class="text-slate-400 text-xs mt-1">$97,930 • Hace 2 horas</p>
+                                    </div>
+                                    <div class="p-3 bg-slate-800/40 rounded-lg text-sm">
+                                        <p class="text-white font-medium">María García - Depto 302</p>
+                                        <p class="text-slate-400 text-xs mt-1">$97,930 • Hace 1 día</p>
+                                    </div>
+                                    <div class="p-3 bg-slate-800/40 rounded-lg text-sm">
+                                        <p class="text-white font-medium">Roberto López - Depto 105</p>
+                                        <p class="text-slate-400 text-xs mt-1">$97,930 • Hace 2 días</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="detail-panel-1" class="detail-panel glass-card p-6 rounded-lg">
+                        <h3 class="text-lg font-semibold text-white mb-4">Gastos del Mes - Desglose</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <p class="text-slate-400 text-sm mb-4">Gastos por Categoría</p>
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
+                                        <span class="text-sm">Servicios</span>
+                                        <span class="font-semibold text-red-400">$1.8M</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
+                                        <span class="text-sm">Mantenimiento</span>
+                                        <span class="font-semibold text-red-400">$1.2M</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
+                                        <span class="text-sm">Seguros</span>
+                                        <span class="font-semibold text-red-400">$580K</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
+                                        <span class="text-sm">Otros</span>
+                                        <span class="font-semibold text-red-400">$220K</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 text-sm mb-4">Tendencia 6 Meses</p>
+                                <canvas id="chart-expenses"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="detail-panel-2" class="detail-panel glass-card p-6 rounded-lg">
+                        <h3 class="text-lg font-semibold text-white mb-4">Unidades en Mora</h3>
+                        <div class="space-y-3">
+                            <div class="p-4 bg-slate-800/40 rounded-lg border-l-4 border-orange-500">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <p class="font-medium text-white">Laura Silva - Depto 302</p>
+                                        <p class="text-sm text-slate-400 mt-1">Monto: $195,860 • 2 meses de atraso</p>
+                                    </div>
+                                    <button class="secondary-button px-3 py-1 rounded text-xs font-medium">Contactar</button>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-slate-800/40 rounded-lg border-l-4 border-orange-500">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <p class="font-medium text-white">Roberto García - Depto 105</p>
+                                        <p class="text-sm text-slate-400 mt-1">Monto: $97,930 • 1 mes de atraso</p>
+                                    </div>
+                                    <button class="secondary-button px-3 py-1 rounded text-xs font-medium">Contactar</button>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-slate-800/40 rounded-lg border-l-4 border-orange-500">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <p class="font-medium text-white">Carlos Muñoz - Depto 501</p>
+                                        <p class="text-sm text-slate-400 mt-1">Monto: $97,930 • 15 días de atraso</p>
+                                    </div>
+                                    <button class="secondary-button px-3 py-1 rounded text-xs font-medium">Contactar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="detail-panel-3" class="detail-panel glass-card p-6 rounded-lg">
+                        <h3 class="text-lg font-semibold text-white mb-4">Estado de Mantenciones</h3>
+                        <div class="grid grid-cols-3 gap-4 mb-6">
+                            <div class="p-4 bg-slate-800/40 rounded-lg text-center">
+                                <p class="text-2xl font-bold text-blue-400">3</p>
+                                <p class="text-sm text-slate-400 mt-2">Solicitadas</p>
+                            </div>
+                            <div class="p-4 bg-slate-800/40 rounded-lg text-center">
+                                <p class="text-2xl font-bold text-yellow-400">3</p>
+                                <p class="text-sm text-slate-400 mt-2">En Desarrollo</p>
+                            </div>
+                            <div class="p-4 bg-slate-800/40 rounded-lg text-center">
+                                <p class="text-2xl font-bold text-green-400">2</p>
+                                <p class="text-sm text-slate-400 mt-2">Completadas</p>
+                            </div>
+                        </div>
+                        <div class="space-y-2 text-sm">
+                            <p class="text-slate-400">Próxima revisión: Cambio de luminarias LED (En Desarrollo)</p>
+                            <p class="text-slate-400">Última completada: Reparación cañería piso 2 (Hace 3 días)</p>
+                        </div>
+                    </div>
+
                     <!-- Charts and Info -->
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <!-- Chart -->
                         <div class="lg:col-span-2 glass-card p-6 rounded-lg fade-in stagger-5">
                             <div class="flex items-center justify-between mb-6">
-                                <h3 class="text-lg font-semibold text-white">Gastos por Categoría</h3>
+                                <h3 class="text-lg font-semibold text-white">Resumen Financiero</h3>
                                 <div class="flex gap-2">
                                     <button onclick="switchChart('barras')" class="tab-button active px-4 py-2 text-sm">Barras</button>
                                     <button onclick="switchChart('tendencia')" class="tab-button px-4 py-2 text-sm">Tendencia</button>
@@ -527,61 +673,6 @@
                                 Pagar Cuota
                             </button>
                             <p class="text-xs text-slate-400 mt-4">Cuota próxima: $97,930</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- GASTOS PAGE -->
-                <div id="gastos-page" class="page-content p-8 space-y-8 hidden">
-                    <div class="glass-card p-6 rounded-lg">
-                        <h3 class="text-lg font-semibold text-white mb-4">Resumen de Gastos</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div class="glass-card p-4 rounded-lg">
-                                <p class="text-slate-400 text-sm">Mes Actual</p>
-                                <p class="text-2xl font-bold text-white mt-2">$4.2M</p>
-                            </div>
-                            <div class="glass-card p-4 rounded-lg">
-                                <p class="text-slate-400 text-sm">Mes Anterior</p>
-                                <p class="text-2xl font-bold text-white mt-2">$3.8M</p>
-                            </div>
-                            <div class="glass-card p-4 rounded-lg">
-                                <p class="text-slate-400 text-sm">Variación</p>
-                                <p class="text-2xl font-bold text-orange-400 mt-2">+10.5%</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="glass-card p-6 rounded-lg">
-                        <h3 class="text-lg font-semibold text-white mb-4">Desglose por Categoría</h3>
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-                                    <span class="text-sm">Servicios Comunes</span>
-                                </div>
-                                <span class="font-semibold">$1.8M</span>
-                            </div>
-                            <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-3 h-3 bg-emerald-500 rounded-full"></div>
-                                    <span class="text-sm">Mantenimiento</span>
-                                </div>
-                                <span class="font-semibold">$1.2M</span>
-                            </div>
-                            <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-3 h-3 bg-orange-500 rounded-full"></div>
-                                    <span class="text-sm">Seguros</span>
-                                </div>
-                                <span class="font-semibold">$0.8M</span>
-                            </div>
-                            <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
-                                    <span class="text-sm">Otros</span>
-                                </div>
-                                <span class="font-semibold">$0.4M</span>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -659,59 +750,60 @@
 
                 <!-- DOCUMENTOS PAGE -->
                 <div id="documentos-page" class="page-content p-8 space-y-8 hidden">
-                    <div class="glass-card p-6 rounded-lg">
-                        <h3 class="text-lg font-semibold text-white mb-4">Documentos</h3>
-                        <div class="space-y-3">
-                            <div class="glass-card p-4 rounded-lg flex items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                    <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
-                                    <div>
-                                        <p class="font-medium text-white">Reglamento_Interno_2024.pdf</p>
-                                        <p class="text-xs text-slate-400">2.4 MB • Actualizado hace 3 días</p>
-                                    </div>
-                                </div>
-                                <button class="text-slate-400 hover:text-slate-200">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                                </button>
-                            </div>
-                            <div class="glass-card p-4 rounded-lg flex items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                    <svg class="w-6 h-6 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
-                                    <div>
-                                        <p class="font-medium text-white">Presupuesto_2024.xlsx</p>
-                                        <p class="text-xs text-slate-400">1.1 MB • Actualizado hace 1 semana</p>
-                                    </div>
-                                </div>
-                                <button class="text-slate-400 hover:text-slate-200">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                                </button>
-                            </div>
+                    <div class="glass-card rounded-lg overflow-hidden">
+                        <div class="flex border-b border-slate-700/50 p-4">
+                            <button onclick="switchDocTab('todos')" class="tab-button active px-4 py-2 text-sm font-medium">Todos</button>
+                            <button onclick="switchDocTab('certificaciones')" class="tab-button px-4 py-2 text-sm font-medium text-slate-400">Certificaciones</button>
+                            <button onclick="switchDocTab('reglamentos')" class="tab-button px-4 py-2 text-sm font-medium text-slate-400">Reglamentos</button>
+                            <button onclick="switchDocTab('actas')" class="tab-button px-4 py-2 text-sm font-medium text-slate-400">Actas</button>
+                            <button onclick="switchDocTab('contratos')" class="tab-button px-4 py-2 text-sm font-medium text-slate-400">Contratos</button>
+                            <button onclick="switchDocTab('financieros')" class="tab-button px-4 py-2 text-sm font-medium text-slate-400">Financieros</button>
+                            <div class="flex-1"></div>
+                            <button onclick="openModal('upload-doc')" class="gradient-button px-4 py-2 rounded-lg text-sm font-medium text-white">Subir Documento</button>
+                        </div>
+                        <div id="docs-container" class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <!-- Documents will be rendered here -->
                         </div>
                     </div>
                 </div>
 
                 <!-- MANTENIMIENTO PAGE -->
                 <div id="mantenimiento-page" class="page-content p-8 space-y-8 hidden">
-                    <div class="glass-card p-6 rounded-lg">
-                        <h3 class="text-lg font-semibold text-white mb-4">Órdenes de Mantenimiento</h3>
-                        <div class="space-y-3">
-                            <div class="glass-card p-4 rounded-lg border-l-4 border-emerald-500">
-                                <div class="flex items-start justify-between">
-                                    <div>
-                                        <p class="font-semibold text-white">Reparación piscina</p>
-                                        <p class="text-sm text-slate-400 mt-2">En progreso</p>
-                                    </div>
-                                    <span class="badge-low px-3 py-1 rounded-full text-xs font-medium">Activo</span>
-                                </div>
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-white">Tablero de Mantenimiento</h3>
+                        <button onclick="openModal('add-maintenance')" class="gradient-button px-4 py-2 rounded-lg text-sm font-medium text-white">+ Agregar Actividad</button>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Solicitado Column -->
+                        <div class="kanban-column">
+                            <h4 class="font-semibold text-white mb-4 flex items-center justify-between">
+                                <span>Solicitado</span>
+                                <span class="text-sm bg-blue-500/30 px-2 py-1 rounded">3</span>
+                            </h4>
+                            <div id="kanban-solicitado" class="space-y-3">
+                                <!-- Cards rendered by JS -->
                             </div>
-                            <div class="glass-card p-4 rounded-lg border-l-4 border-orange-500">
-                                <div class="flex items-start justify-between">
-                                    <div>
-                                        <p class="font-semibold text-white">Limpieza áreas comunes</p>
-                                        <p class="text-sm text-slate-400 mt-2">Programado para próxima semana</p>
-                                    </div>
-                                    <span class="badge-medium px-3 py-1 rounded-full text-xs font-medium">Pendiente</span>
-                                </div>
+                        </div>
+
+                        <!-- En Desarrollo Column -->
+                        <div class="kanban-column">
+                            <h4 class="font-semibold text-white mb-4 flex items-center justify-between">
+                                <span>En Desarrollo</span>
+                                <span class="text-sm bg-yellow-500/30 px-2 py-1 rounded">3</span>
+                            </h4>
+                            <div id="kanban-desarrollo" class="space-y-3">
+                                <!-- Cards rendered by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Terminado Column -->
+                        <div class="kanban-column">
+                            <h4 class="font-semibold text-white mb-4 flex items-center justify-between">
+                                <span>Terminado</span>
+                                <span class="text-sm bg-green-500/30 px-2 py-1 rounded">2</span>
+                            </h4>
+                            <div id="kanban-terminado" class="space-y-3">
+                                <!-- Cards rendered by JS -->
                             </div>
                         </div>
                     </div>
@@ -719,27 +811,19 @@
 
                 <!-- PROVEEDORES PAGE -->
                 <div id="proveedores-page" class="page-content p-8 space-y-8 hidden">
-                    <div class="glass-card p-6 rounded-lg">
-                        <h3 class="text-lg font-semibold text-white mb-4">Proveedores Contratados</h3>
-                        <div class="space-y-3">
-                            <div class="glass-card p-4 rounded-lg flex items-center justify-between">
-                                <div>
-                                    <p class="font-semibold text-white">Limpieza Profesional Chile</p>
-                                    <p class="text-sm text-slate-400">limpieza@empresa.cl</p>
-                                </div>
-                                <button class="text-slate-400 hover:text-slate-200">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                </button>
-                            </div>
-                            <div class="glass-card p-4 rounded-lg flex items-center justify-between">
-                                <div>
-                                    <p class="font-semibold text-white">Electricista Certificado</p>
-                                    <p class="text-sm text-slate-400">electro@servicios.cl</p>
-                                </div>
-                                <button class="text-slate-400 hover:text-slate-200">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                </button>
-                            </div>
+                    <div class="glass-card rounded-lg overflow-hidden">
+                        <div class="flex border-b border-slate-700/50 p-4">
+                            <button onclick="switchProvTab('todos')" class="tab-button active px-4 py-2 text-sm font-medium">Todos</button>
+                            <button onclick="switchProvTab('plomeria')" class="tab-button px-4 py-2 text-sm font-medium text-slate-400">Plomería</button>
+                            <button onclick="switchProvTab('electricidad')" class="tab-button px-4 py-2 text-sm font-medium text-slate-400">Electricidad</button>
+                            <button onclick="switchProvTab('pintura')" class="tab-button px-4 py-2 text-sm font-medium text-slate-400">Pintura</button>
+                            <button onclick="switchProvTab('jardineria')" class="tab-button px-4 py-2 text-sm font-medium text-slate-400">Jardinería</button>
+                            <button onclick="switchProvTab('seguridad')" class="tab-button px-4 py-2 text-sm font-medium text-slate-400">Seguridad</button>
+                            <div class="flex-1"></div>
+                            <button onclick="openModal('add-provider')" class="gradient-button px-4 py-2 rounded-lg text-sm font-medium text-white">+ Agregar Proveedor</button>
+                        </div>
+                        <div id="providers-container" class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <!-- Providers will be rendered here -->
                         </div>
                     </div>
                 </div>
@@ -751,50 +835,42 @@
                         <svg class="w-6 h-6 text-red-500 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
                         <div class="flex-1">
                             <h3 class="font-semibold text-red-400">SISTEMA DE EMERGENCIAS EN VIVO</h3>
-                            <p class="text-sm text-slate-400 mt-1">Información en tiempo real de sismos, alertas y protocolos de emergencia para la Región Metropolitana.</p>
+                            <p class="text-sm text-slate-400 mt-1">Información en tiempo real de temblores, alertas meteorológicas e incendios para la Región Metropolitana.</p>
                         </div>
                     </div>
 
                     <!-- Tabs -->
                     <div class="glass-card rounded-lg overflow-hidden">
                         <div class="flex border-b border-slate-700/50">
-                            <button onclick="switchEmergenciaTab('sismos')" class="tab-button active flex-1 px-6 py-4 text-sm font-medium border-b-2 border-blue-500">
-                                📍 Sismos Chile
+                            <button onclick="switchEmergenciaTab('temblores')" class="tab-button active flex-1 px-6 py-4 text-sm font-medium border-b-2 border-blue-500">
+                                📍 Temblores
                             </button>
-                            <button onclick="switchEmergenciaTab('alertas')" class="tab-button flex-1 px-6 py-4 text-sm font-medium text-slate-400">
-                                ⚠️ Alertas
+                            <button onclick="switchEmergenciaTab('meteorologicas')" class="tab-button flex-1 px-6 py-4 text-sm font-medium text-slate-400">
+                                🌤️ Alertas Meteorológicas
                             </button>
-                            <button onclick="switchEmergenciaTab('protocolos')" class="tab-button flex-1 px-6 py-4 text-sm font-medium text-slate-400">
-                                📋 Protocolos
+                            <button onclick="switchEmergenciaTab('incendios')" class="tab-button flex-1 px-6 py-4 text-sm font-medium text-slate-400">
+                                🔥 Incendios
                             </button>
                         </div>
 
-                        <!-- SISMOS TAB -->
-                        <div id="sismos-tab" class="p-6 space-y-3">
-                            <!-- Sismo 1 -->
-                            <div class="glass-card p-4 rounded-lg border-l-4 border-red-500 earthquake-red">
+                        <!-- TEMBLORES TAB -->
+                        <div id="temblores-tab" class="p-6 space-y-3">
+                            <div class="glass-card p-4 rounded-lg border-l-4 border-red-500">
                                 <div class="flex items-start justify-between mb-3">
                                     <div>
-                                        <p class="font-semibold text-white">Sismo Region Metropolitana</p>
+                                        <p class="font-semibold text-white">Sismo Región Metropolitana</p>
                                         <p class="text-xs text-slate-400 mt-1">Magnitud: 6.2 | Profundidad: 28 km</p>
                                     </div>
-                                    <div class="flex items-center gap-2">
-                                        <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">6.2</span>
-                                    </div>
+                                    <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">6.2</span>
                                 </div>
                                 <p class="text-sm text-slate-300">📍 La Punta, Melipilla</p>
                                 <p class="text-xs text-slate-400 mt-2">Hace 2 horas • 14:32 hrs</p>
-                                <div class="mt-3 pt-3 border-t border-slate-700/50 flex items-center gap-2">
-                                    <svg class="w-4 h-4 text-red-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-                                    <span class="text-xs text-red-400 font-semibold">Alerta de Tsunami Emitida</span>
-                                </div>
                             </div>
 
-                            <!-- Sismo 2 -->
-                            <div class="glass-card p-4 rounded-lg border-l-4 border-orange-500 earthquake-orange">
+                            <div class="glass-card p-4 rounded-lg border-l-4 border-orange-500">
                                 <div class="flex items-start justify-between mb-3">
                                     <div>
-                                        <p class="font-semibold text-white">Sismo Region Valparaíso</p>
+                                        <p class="font-semibold text-white">Sismo Región Valparaíso</p>
                                         <p class="text-xs text-slate-400 mt-1">Magnitud: 5.8 | Profundidad: 42 km</p>
                                     </div>
                                     <span class="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-bold">5.8</span>
@@ -802,229 +878,66 @@
                                 <p class="text-sm text-slate-300">📍 Punta Negra, Valparaíso</p>
                                 <p class="text-xs text-slate-400 mt-2">Hace 6 horas • 10:15 hrs</p>
                             </div>
-
-                            <!-- Sismo 3 -->
-                            <div class="glass-card p-4 rounded-lg border-l-4 border-yellow-500 earthquake-yellow">
-                                <div class="flex items-start justify-between mb-3">
-                                    <div>
-                                        <p class="font-semibold text-white">Sismo Region del Biobío</p>
-                                        <p class="text-xs text-slate-400 mt-1">Magnitud: 4.7 | Profundidad: 35 km</p>
-                                    </div>
-                                    <span class="bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-bold">4.7</span>
-                                </div>
-                                <p class="text-sm text-slate-300">📍 Los Angeles, Biobío</p>
-                                <p class="text-xs text-slate-400 mt-2">Hace 12 horas • 04:45 hrs</p>
-                            </div>
-
-                            <!-- Sismo 4 -->
-                            <div class="glass-card p-4 rounded-lg border-l-4 border-green-500 earthquake-green">
-                                <div class="flex items-start justify-between mb-3">
-                                    <div>
-                                        <p class="font-semibold text-white">Sismo Region de La Araucanía</p>
-                                        <p class="text-xs text-slate-400 mt-1">Magnitud: 3.9 | Profundidad: 20 km</p>
-                                    </div>
-                                    <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold">3.9</span>
-                                </div>
-                                <p class="text-sm text-slate-300">📍 Villarrica, La Araucanía</p>
-                                <p class="text-xs text-slate-400 mt-2">Hace 1 día • 20:30 hrs</p>
-                            </div>
-
-                            <!-- Sismo 5 -->
-                            <div class="glass-card p-4 rounded-lg border-l-4 border-green-500 earthquake-green">
-                                <div class="flex items-start justify-between mb-3">
-                                    <div>
-                                        <p class="font-semibold text-white">Sismo Region de Los Lagos</p>
-                                        <p class="text-xs text-slate-400 mt-1">Magnitud: 3.5 | Profundidad: 18 km</p>
-                                    </div>
-                                    <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold">3.5</span>
-                                </div>
-                                <p class="text-sm text-slate-300">📍 Puerto Varas, Los Lagos</p>
-                                <p class="text-xs text-slate-400 mt-2">Hace 1 día • 18:22 hrs</p>
-                            </div>
                         </div>
 
-                        <!-- ALERTAS TAB -->
-                        <div id="alertas-tab" class="p-6 space-y-3 hidden">
-                            <!-- Alert 1 -->
-                            <div class="glass-card p-4 rounded-lg border-l-4 border-red-500">
+                        <!-- ALERTAS METEOROLOGICAS TAB -->
+                        <div id="meteorologicas-tab" class="p-6 space-y-3 hidden">
+                            <div class="glass-card p-4 rounded-lg border-l-4 border-blue-500">
                                 <div class="flex items-start justify-between mb-2">
                                     <div>
-                                        <p class="font-semibold text-white">Alerta Sísmica - Región Metropolitana</p>
-                                        <p class="text-xs text-slate-400 mt-1">Fuente: ONEMI/SENAPRED</p>
-                                    </div>
-                                    <span class="badge-critical px-3 py-1 rounded-full text-xs font-medium">CRÍTICA</span>
-                                </div>
-                                <p class="text-sm text-slate-300 mt-2">Se recomienda evacuar áreas cercanas a la costa. Siga instrucciones de autoridades locales.</p>
-                            </div>
-
-                            <!-- Alert 2 -->
-                            <div class="glass-card p-4 rounded-lg border-l-4 border-orange-500">
-                                <div class="flex items-start justify-between mb-2">
-                                    <div>
-                                        <p class="font-semibold text-white">Corte de Energía Eléctrica</p>
-                                        <p class="text-xs text-slate-400 mt-1">Fuente: Enel</p>
+                                        <p class="font-semibold text-white">Aviso de Lluvia Intensa</p>
+                                        <p class="text-xs text-slate-400 mt-1">Fuente: DMC (Dirección Meteorológica de Chile)</p>
                                     </div>
                                     <span class="badge-high px-3 py-1 rounded-full text-xs font-medium">ALTA</span>
                                 </div>
-                                <p class="text-sm text-slate-300 mt-2">Se espera corte programado en zonas cercanas desde 10:00 a 15:00 hrs.</p>
+                                <p class="text-sm text-slate-300 mt-2">Se esperan lluvias entre 80-120 mm en las próximas 24 horas. Recomendación: Verificar sistemas de drenaje.</p>
                             </div>
 
-                            <!-- Alert 3 -->
                             <div class="glass-card p-4 rounded-lg border-l-4 border-yellow-500">
                                 <div class="flex items-start justify-between mb-2">
                                     <div>
-                                        <p class="font-semibold text-white">Corte de Agua Potable</p>
-                                        <p class="text-xs text-slate-400 mt-1">Fuente: Aguas Andinas</p>
+                                        <p class="font-semibold text-white">Alerta de Granizo</p>
+                                        <p class="text-xs text-slate-400 mt-1">Fuente: DMC</p>
                                     </div>
                                     <span class="badge-medium px-3 py-1 rounded-full text-xs font-medium">MEDIA</span>
                                 </div>
-                                <p class="text-sm text-slate-300 mt-2">Mantenimiento programado: Se espera normalización en 48 horas.</p>
+                                <p class="text-sm text-slate-300 mt-2">Posibilidad de granizo en zonas altas. Verificar techumbre y protecciones.</p>
                             </div>
 
-                            <!-- Alert 4 -->
+                            <div class="glass-card p-4 rounded-lg border-l-4 border-cyan-500">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div>
+                                        <p class="font-semibold text-white">Vientos Fuertes</p>
+                                        <p class="text-xs text-slate-400 mt-1">Fuente: DMC</p>
+                                    </div>
+                                    <span class="badge-high px-3 py-1 rounded-full text-xs font-medium">ALTA</span>
+                                </div>
+                                <p class="text-sm text-slate-300 mt-2">Ráfagas de hasta 60 km/h en sectores elevados. Asegurar elementos sueltos.</p>
+                            </div>
+                        </div>
+
+                        <!-- INCENDIOS TAB -->
+                        <div id="incendios-tab" class="p-6 space-y-3 hidden">
+                            <div class="glass-card p-4 rounded-lg border-l-4 border-red-500">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div>
+                                        <p class="font-semibold text-white">Alerta de Incendio Forestal - Precordillera</p>
+                                        <p class="text-xs text-slate-400 mt-1">Fuente: CONAF (Corporación Nacional Forestal)</p>
+                                    </div>
+                                    <span class="badge-critical px-3 py-1 rounded-full text-xs font-medium">CRÍTICA</span>
+                                </div>
+                                <p class="text-sm text-slate-300 mt-2">Incendio activo en zona forestal a 35 km de la ciudad. Nivel de peligro: Extremo. Se monitorean cambios de dirección de viento.</p>
+                            </div>
+
                             <div class="glass-card p-4 rounded-lg border-l-4 border-orange-500">
                                 <div class="flex items-start justify-between mb-2">
                                     <div>
-                                        <p class="font-semibold text-white">Alerta de Seguridad - Sector</p>
+                                        <p class="font-semibold text-white">Recomendación de Preparación</p>
                                         <p class="text-xs text-slate-400 mt-1">Fuente: Administración</p>
                                     </div>
                                     <span class="badge-high px-3 py-1 rounded-full text-xs font-medium">ALTA</span>
                                 </div>
-                                <p class="text-sm text-slate-300 mt-2">Mayor vigilancia en accesos. Reportar actividades sospechosas a Carabineros.</p>
-                            </div>
-
-                            <!-- Alert 5 -->
-                            <div class="glass-card p-4 rounded-lg border-l-4 border-red-500">
-                                <div class="flex items-start justify-between mb-2">
-                                    <div>
-                                        <p class="font-semibold text-white">Alerta de Incendio Forestal</p>
-                                        <p class="text-xs text-slate-400 mt-1">Fuente: CONAF</p>
-                                    </div>
-                                    <span class="badge-critical px-3 py-1 rounded-full text-xs font-medium">CRÍTICA</span>
-                                </div>
-                                <p class="text-sm text-slate-300 mt-2">Alerta amarilla en cercanías. Manténgase atento a cambios en condiciones atmosféricas.</p>
-                            </div>
-                        </div>
-
-                        <!-- PROTOCOLOS TAB -->
-                        <div id="protocolos-tab" class="p-6 hidden">
-                            <div class="space-y-3">
-                                <!-- Protocol 1: Sismo -->
-                                <div class="glass-card rounded-lg overflow-hidden">
-                                    <button onclick="toggleAccordion(this)" class="accordion-button w-full p-4 flex items-center justify-between bg-slate-800/40 hover:bg-slate-800/60">
-                                        <span class="font-semibold text-white">🏚️ Protocolo en Caso de Sismo</span>
-                                        <svg class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
-                                    </button>
-                                    <div class="accordion-content p-4 bg-slate-900/20 border-t border-slate-700/50">
-                                        <ol class="space-y-2 text-sm text-slate-300 list-decimal list-inside">
-                                            <li>Busque un lugar seguro inmediatamente: bajo una mesa o mueble resistente</li>
-                                            <li>Aléjese de ventanas, espejos y objetos que puedan caer</li>
-                                            <li>Permanezca en el lugar seguro hasta que cese el movimiento</li>
-                                            <li>Después del sismo, revise si hay daños en su unidad</li>
-                                            <li>Use escaleras, NO ascensores para desalojar</li>
-                                            <li>Diríjase a zonas de seguridad establecidas</li>
-                                            <li>Manténgase atento a la información oficial de ONEMI</li>
-                                        </ol>
-                                    </div>
-                                </div>
-
-                                <!-- Protocol 2: Incendio -->
-                                <div class="glass-card rounded-lg overflow-hidden">
-                                    <button onclick="toggleAccordion(this)" class="accordion-button w-full p-4 flex items-center justify-between bg-slate-800/40 hover:bg-slate-800/60">
-                                        <span class="font-semibold text-white">🔥 Protocolo en Caso de Incendio</span>
-                                        <svg class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
-                                    </button>
-                                    <div class="accordion-content p-4 bg-slate-900/20 border-t border-slate-700/50">
-                                        <ol class="space-y-2 text-sm text-slate-300 list-decimal list-inside">
-                                            <li>Active la alarma de incendio inmediatamente</li>
-                                            <li>Llame a Bomberos al 132</li>
-                                            <li>Intente apagar el fuego solo si es pequeño y seguro</li>
-                                            <li>Use escaleras de emergencia para evacuación</li>
-                                            <li>Aléjese del humo: póngase en cuatro puntos si no hay visibilidad</li>
-                                            <li>Diríjase a la zona de seguridad designada</li>
-                                            <li>No regrese al edificio sin autorización de autoridades</li>
-                                        </ol>
-                                    </div>
-                                </div>
-
-                                <!-- Protocol 3: Tsunami -->
-                                <div class="glass-card rounded-lg overflow-hidden">
-                                    <button onclick="toggleAccordion(this)" class="accordion-button w-full p-4 flex items-center justify-between bg-slate-800/40 hover:bg-slate-800/60">
-                                        <span class="font-semibold text-white">🌊 Protocolo en Caso de Tsunami</span>
-                                        <svg class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
-                                    </button>
-                                    <div class="accordion-content p-4 bg-slate-900/20 border-t border-slate-700/50">
-                                        <ol class="space-y-2 text-sm text-slate-300 list-decimal list-inside">
-                                            <li>Si siente un sismo fuerte, EVAQUE INMEDIATAMENTE hacia zonas altas</li>
-                                            <li>No espere confirmación oficial si sintió fuerte sismo</li>
-                                            <li>Diríjase a zonas elevadas o tierra firme mayor a 30 metros</li>
-                                            <li>Manténgase en zona segura por al menos 2-3 horas</li>
-                                            <li>Siga instrucciones de Carabineros y ONEMI</li>
-                                            <li>Use teléfono solo para emergencias</li>
-                                        </ol>
-                                    </div>
-                                </div>
-
-                                <!-- Protocol 4: Números de Emergencia -->
-                                <div class="glass-card rounded-lg overflow-hidden">
-                                    <button onclick="toggleAccordion(this)" class="accordion-button w-full p-4 flex items-center justify-between bg-slate-800/40 hover:bg-slate-800/60">
-                                        <span class="font-semibold text-white">📱 Números de Emergencia Importantes</span>
-                                        <svg class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
-                                    </button>
-                                    <div class="accordion-content p-4 bg-slate-900/20 border-t border-slate-700/50">
-                                        <div class="space-y-3">
-                                            <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
-                                                <div>
-                                                    <p class="font-semibold text-red-400">Bomberos</p>
-                                                    <p class="text-xs text-slate-400">Emergencias por fuego</p>
-                                                </div>
-                                                <a href="tel:132" class="gradient-button px-4 py-2 rounded-lg text-sm font-medium text-white">132</a>
-                                            </div>
-                                            <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
-                                                <div>
-                                                    <p class="font-semibold text-blue-400">Carabineros</p>
-                                                    <p class="text-xs text-slate-400">Situación de seguridad</p>
-                                                </div>
-                                                <a href="tel:133" class="gradient-button px-4 py-2 rounded-lg text-sm font-medium text-white">133</a>
-                                            </div>
-                                            <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
-                                                <div>
-                                                    <p class="font-semibold text-emerald-400">SAMU</p>
-                                                    <p class="text-xs text-slate-400">Emergencias médicas</p>
-                                                </div>
-                                                <a href="tel:131" class="gradient-button px-4 py-2 rounded-lg text-sm font-medium text-white">131</a>
-                                            </div>
-                                            <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
-                                                <div>
-                                                    <p class="font-semibold text-purple-400">PDI</p>
-                                                    <p class="text-xs text-slate-400">Investigaciones policiales</p>
-                                                </div>
-                                                <a href="tel:134" class="gradient-button px-4 py-2 rounded-lg text-sm font-medium text-white">134</a>
-                                            </div>
-                                            <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
-                                                <div>
-                                                    <p class="font-semibold text-orange-400">SENAPRED</p>
-                                                    <p class="text-xs text-slate-400">Protección civil y emergencias</p>
-                                                </div>
-                                                <a href="tel:137" class="gradient-button px-4 py-2 rounded-lg text-sm font-medium text-white">137</a>
-                                            </div>
-                                            <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
-                                                <div>
-                                                    <p class="font-semibold text-cyan-400">Hospital de Peñaflor</p>
-                                                    <p class="text-xs text-slate-400">Urgencias 24/7 — Carrera 214, Peñaflor</p>
-                                                </div>
-                                                <a href="tel:+56225742500" class="gradient-button px-4 py-2 rounded-lg text-sm font-medium text-white">(2) 2574 2500</a>
-                                            </div>
-                                            <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
-                                                <div>
-                                                    <p class="font-semibold text-white">Conserje CondoIA</p>
-                                                    <p class="text-xs text-slate-400">Soporte dentro del complejo</p>
-                                                </div>
-                                                <a href="tel:+56988156948" class="gradient-button px-4 py-2 rounded-lg text-sm font-medium text-white">+56 9 8815 6948</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <p class="text-sm text-slate-300 mt-2">Verificar suministros de emergencia. Mantener puertas y ventanas cerradas si hay humo. Monitorear aire environment.</p>
                             </div>
                         </div>
                     </div>
@@ -1212,6 +1125,115 @@
         </div>
     </div>
 
+    <!-- Upload Document Modal -->
+    <div id="upload-doc-modal" class="modal-overlay justify-center items-center" onclick="if(event.target===this) closeModal('upload-doc')">
+        <div class="modal-content glass-card p-8 rounded-lg max-w-md w-full mx-4">
+            <h3 class="text-xl font-bold text-white mb-4">Subir Documento</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-sm text-slate-400 mb-2 block">Nombre del archivo</label>
+                    <input type="text" placeholder="Ej: Certificado_Agua" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                </div>
+                <div>
+                    <label class="text-sm text-slate-400 mb-2 block">Categoría</label>
+                    <select class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                        <option>Certificaciones</option>
+                        <option>Reglamentos</option>
+                        <option>Actas</option>
+                        <option>Contratos</option>
+                        <option>Financieros</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-sm text-slate-400 mb-2 block">Descripción</label>
+                    <textarea placeholder="Detalles adicionales..." class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button onclick="closeModal('upload-doc')" class="secondary-button flex-1 px-4 py-3 rounded-lg font-medium">Cancelar</button>
+                <button class="gradient-button flex-1 px-4 py-3 rounded-lg text-white font-medium">Subir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Maintenance Modal -->
+    <div id="add-maintenance-modal" class="modal-overlay justify-center items-center" onclick="if(event.target===this) closeModal('add-maintenance')">
+        <div class="modal-content glass-card p-8 rounded-lg max-w-md w-full mx-4">
+            <h3 class="text-xl font-bold text-white mb-4">Agregar Actividad</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-sm text-slate-400 mb-2 block">Tipo de Actividad</label>
+                    <input type="text" placeholder="Ej: Reparación ascensor" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                </div>
+                <div>
+                    <label class="text-sm text-slate-400 mb-2 block">Descripción</label>
+                    <textarea placeholder="Detalles..." class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white" rows="2"></textarea>
+                </div>
+                <div>
+                    <label class="text-sm text-slate-400 mb-2 block">Responsable</label>
+                    <input type="text" placeholder="Nombre" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                </div>
+                <div>
+                    <label class="text-sm text-slate-400 mb-2 block">Monto ($)</label>
+                    <input type="number" placeholder="0" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                </div>
+                <div>
+                    <label class="text-sm text-slate-400 mb-2 block">Prioridad</label>
+                    <select class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                        <option>Alta</option>
+                        <option>Media</option>
+                        <option>Baja</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button onclick="closeModal('add-maintenance')" class="secondary-button flex-1 px-4 py-3 rounded-lg font-medium">Cancelar</button>
+                <button class="gradient-button flex-1 px-4 py-3 rounded-lg text-white font-medium">Agregar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Provider Modal -->
+    <div id="add-provider-modal" class="modal-overlay justify-center items-center" onclick="if(event.target===this) closeModal('add-provider')">
+        <div class="modal-content glass-card p-8 rounded-lg max-w-md w-full mx-4">
+            <h3 class="text-xl font-bold text-white mb-4">Agregar Proveedor</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-sm text-slate-400 mb-2 block">Nombre</label>
+                    <input type="text" placeholder="Nombre empresa" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                </div>
+                <div>
+                    <label class="text-sm text-slate-400 mb-2 block">Especialidad</label>
+                    <select class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                        <option>Plomería</option>
+                        <option>Electricidad</option>
+                        <option>Pintura</option>
+                        <option>Jardinería</option>
+                        <option>Seguridad</option>
+                        <option>Ascensores</option>
+                        <option>Limpieza</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-sm text-slate-400 mb-2 block">Correo</label>
+                    <input type="email" placeholder="correo@empresa.cl" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                </div>
+                <div>
+                    <label class="text-sm text-slate-400 mb-2 block">Teléfono</label>
+                    <input type="tel" placeholder="+56 9 ..." class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                </div>
+                <div>
+                    <label class="text-sm text-slate-400 mb-2 block">RUT</label>
+                    <input type="text" placeholder="XX.XXX.XXX-X" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                </div>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button onclick="closeModal('add-provider')" class="secondary-button flex-1 px-4 py-3 rounded-lg font-medium">Cancelar</button>
+                <button class="gradient-button flex-1 px-4 py-3 rounded-lg text-white font-medium">Agregar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Initialize Chart.js via CDN if needed
         const chartScript = document.createElement('script');
@@ -1221,19 +1243,16 @@
 
         // Page Navigation
         function showPage(pageName) {
-            // Hide all pages
             document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
-
-            // Remove active class from all sidebar links
             document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.stat-card').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.detail-panel').forEach(el => el.classList.remove('active'));
 
-            // Show selected page
             const pageEl = document.getElementById(pageName + '-page');
             if (pageEl) {
                 pageEl.classList.remove('hidden');
             }
 
-            // Set active sidebar link
             const activeLink = Array.from(document.querySelectorAll('.sidebar-link')).find(el =>
                 el.textContent.includes(getPageTitle(pageName))
             );
@@ -1241,14 +1260,16 @@
                 activeLink.classList.add('active');
             }
 
-            // Update page title
             document.getElementById('page-title').textContent = getPageTitle(pageName);
+
+            if (pageName === 'documentos') renderDocuments();
+            if (pageName === 'mantenimiento') renderKanban();
+            if (pageName === 'proveedores') renderProviders();
         }
 
         function getPageTitle(pageName) {
             const titles = {
                 'dashboard': 'Dashboard',
-                'gastos': 'Gastos',
                 'copropietarios': 'Copropietarios',
                 'asambleas': 'Asambleas',
                 'documentos': 'Documentos',
@@ -1273,6 +1294,23 @@
             document.getElementById(modalName + '-modal').classList.remove('active');
         }
 
+        // Stat Card Details
+        function toggleStatDetail(index, event) {
+            event.stopPropagation();
+            const cards = document.querySelectorAll('.stat-card');
+            const panels = document.querySelectorAll('.detail-panel');
+
+            panels.forEach((p, i) => {
+                if (i === index) {
+                    p.classList.toggle('active');
+                    cards[i].classList.toggle('active');
+                } else {
+                    p.classList.remove('active');
+                    cards[i].classList.remove('active');
+                }
+            });
+        }
+
         // Chart Functions
         let chartInstance = null;
 
@@ -1283,32 +1321,33 @@
                     chartInstance = new Chart(ctx, {
                         type: 'bar',
                         data: {
-                            labels: ['Servicios', 'Mantenimiento', 'Seguros', 'Otros'],
-                            datasets: [{
-                                label: 'Gastos ($)',
-                                data: [1800000, 1200000, 800000, 400000],
-                                backgroundColor: [
-                                    'rgba(59, 130, 246, 0.5)',
-                                    'rgba(34, 197, 94, 0.5)',
-                                    'rgba(249, 115, 22, 0.5)',
-                                    'rgba(168, 85, 247, 0.5)'
-                                ],
-                                borderColor: [
-                                    'rgba(59, 130, 246, 1)',
-                                    'rgba(34, 197, 94, 1)',
-                                    'rgba(249, 115, 22, 1)',
-                                    'rgba(168, 85, 247, 1)'
-                                ],
-                                borderWidth: 2,
-                                borderRadius: 8
-                            }]
+                            labels: ['Oct', 'Nov', 'Dic', 'Ene', 'Feb', 'Mar'],
+                            datasets: [
+                                {
+                                    label: 'Ingresos',
+                                    data: [3850000, 4100000, 4350000, 3920000, 4200000, 4180000],
+                                    backgroundColor: 'rgba(34, 197, 94, 0.6)',
+                                    borderColor: 'rgba(34, 197, 94, 1)',
+                                    borderWidth: 2,
+                                    borderRadius: 8
+                                },
+                                {
+                                    label: 'Egresos',
+                                    data: [3420000, 3680000, 4950000, 3510000, 3750000, 3890000],
+                                    backgroundColor: 'rgba(239, 68, 68, 0.6)',
+                                    borderColor: 'rgba(239, 68, 68, 1)',
+                                    borderWidth: 2,
+                                    borderRadius: 8
+                                }
+                            ]
                         },
                         options: {
                             responsive: true,
                             maintainAspectRatio: false,
                             plugins: {
                                 legend: {
-                                    display: false
+                                    display: true,
+                                    labels: { color: 'rgba(203, 213, 225, 0.7)' }
                                 }
                             },
                             scales: {
@@ -1341,59 +1380,160 @@
 
         function switchChart(type) {
             if (!chartInstance) return;
-
             document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
-
-            if (type === 'barras') {
-                chartInstance.config.type = 'bar';
-            } else if (type === 'tendencia') {
-                chartInstance.config.type = 'line';
-            }
+            chartInstance.config.type = type === 'barras' ? 'bar' : 'line';
             chartInstance.update();
+        }
+
+        // Documentos Functions
+        const documentsData = [
+            { name: 'Certificado Agua Potable', category: 'certificaciones', version: 'v2.1', date: '2024-03-01', author: 'Aguas Andinas' },
+            { name: 'Certificado Eléctrico', category: 'certificaciones', version: 'v1.0', date: '2024-02-15', author: 'Enel' },
+            { name: 'Certificado Gas', category: 'certificaciones', version: 'v1.3', date: '2024-01-30', author: 'Metrogas' },
+            { name: 'Reglamento Interno 2026', category: 'reglamentos', version: 'v3.0', date: '2024-01-15', author: 'Admin' },
+            { name: 'Reglamento Piscina', category: 'reglamentos', version: 'v1.2', date: '2023-12-20', author: 'Admin' },
+            { name: 'Acta Asamblea Feb 2026', category: 'actas', version: 'v1.0', date: '2024-02-10', author: 'Secretario' },
+            { name: 'Contrato Mantención Ascensores', category: 'contratos', version: 'v2.0', date: '2024-01-05', author: 'Legal' },
+            { name: 'Presupuesto Anual 2026', category: 'financieros', version: 'v1.0', date: '2024-01-01', author: 'Finanzas' }
+        ];
+
+        let currentDocTab = 'todos';
+
+        function switchDocTab(tab) {
+            currentDocTab = tab;
+            document.querySelectorAll('#documentos-page .tab-button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderDocuments();
+        }
+
+        function renderDocuments() {
+            const filtered = currentDocTab === 'todos' ? documentsData : documentsData.filter(d => d.category === currentDocTab);
+            const html = filtered.map(doc => `
+                <div class="glass-card p-4 rounded-lg">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-blue-400" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-medium text-white truncate">${doc.name}</p>
+                            <div class="flex items-center gap-2 mt-2 text-xs text-slate-400">
+                                <span class="bg-blue-500/20 px-2 py-1 rounded">${doc.category}</span>
+                                <span>${doc.version}</span>
+                                <span>•</span>
+                                <span>${doc.date}</span>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-1">Por: ${doc.author}</p>
+                        </div>
+                        <div class="flex gap-2 flex-shrink-0">
+                            <button class="text-slate-400 hover:text-slate-200 p-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            </button>
+                            <button class="text-slate-400 hover:text-slate-200 p-2 text-xs">
+                                Ver historial
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('docs-container').innerHTML = html;
+        }
+
+        // Kanban Functions
+        const maintenanceData = {
+            solicitado: [
+                { title: 'Reparación ascensor', responsable: 'Carlos Muñoz', monto: 850000, priority: 'Alta', date: '2024-02-28' },
+                { title: 'Pintura fachada norte', responsable: 'Juan Pérez', monto: 1200000, priority: 'Media', date: '2024-02-27' },
+                { title: 'Cambio bomba agua', responsable: 'Luis Soto', monto: 420000, priority: 'Alta', date: '2024-02-26' }
+            ],
+            desarrollo: [
+                { title: 'Impermeabilización terraza', responsable: 'María López', monto: 2100000, priority: 'Alta', date: '2024-02-25' },
+                { title: 'Mantención jardines', responsable: 'Pedro Díaz', monto: 180000, priority: 'Baja', date: '2024-02-24' },
+                { title: 'Reparación portón', responsable: 'Ana Torres', monto: 350000, priority: 'Media', date: '2024-02-23' }
+            ],
+            terminado: [
+                { title: 'Cambio luminarias LED', responsable: 'Rosa Vega', monto: 680000, priority: 'Media', date: '2024-02-20' },
+                { title: 'Reparación cañería piso 2', responsable: 'Carlos Muñoz', monto: 290000, priority: 'Alta', date: '2024-02-18' }
+            ]
+        };
+
+        function renderKanban() {
+            const badges = { Alta: 'badge-critical', Media: 'badge-medium', Baja: 'badge-low' };
+            const render = (col) => maintenanceData[col].map(card => `
+                <div class="kanban-card">
+                    <p class="font-semibold text-white text-sm">${card.title}</p>
+                    <p class="text-xs text-slate-400 mt-2">${card.responsable}</p>
+                    <p class="text-sm font-semibold text-emerald-400 mt-2">$${(card.monto / 1000).toFixed(0)}K</p>
+                    <div class="flex gap-2 mt-2">
+                        <span class="${badges[card.priority]} px-2 py-1 rounded text-xs font-medium">${card.priority}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('kanban-solicitado').innerHTML = render('solicitado');
+            document.getElementById('kanban-desarrollo').innerHTML = render('desarrollo');
+            document.getElementById('kanban-terminado').innerHTML = render('terminado');
+        }
+
+        // Proveedores Functions
+        const providersData = [
+            { name: 'Servicios Eléctricos SPA', specialty: 'electricidad', email: 'contacto@electricos.cl', phone: '+56 9 1234 5678', rating: 5, verified: true },
+            { name: 'PlomClean Ltda', specialty: 'plomeria', email: 'info@plomclean.cl', phone: '+56 9 8765 4321', rating: 4, verified: true },
+            { name: 'PintaPro', specialty: 'pintura', email: 'ventas@pintapro.cl', phone: '+56 9 5555 1234', rating: 4, verified: true },
+            { name: 'JardinMax', specialty: 'jardineria', email: 'contacto@jardinmax.cl', phone: '+56 9 4444 5678', rating: 3, verified: false },
+            { name: 'SecurTech', specialty: 'seguridad', email: 'info@securtech.cl', phone: '+56 9 3333 2222', rating: 5, verified: true },
+            { name: 'Ascensores Chile', specialty: 'ascensores', email: 'soporte@ascensoreschile.cl', phone: '+56 2 2222 3333', rating: 4, verified: true },
+            { name: 'LimpiaHogar', specialty: 'limpieza', email: 'contacto@limpiahogar.cl', phone: '+56 9 7777 8888', rating: 4, verified: true },
+            { name: 'GasFit Ltda', specialty: 'gas', email: 'servicios@gasfit.cl', phone: '+56 9 6666 9999', rating: 5, verified: true }
+        ];
+
+        let currentProvTab = 'todos';
+
+        function switchProvTab(tab) {
+            currentProvTab = tab;
+            document.querySelectorAll('#proveedores-page .tab-button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderProviders();
+        }
+
+        function renderProviders() {
+            const filtered = currentProvTab === 'todos' ? providersData : providersData.filter(p => p.specialty === currentProvTab);
+            const html = filtered.map(prov => `
+                <div class="glass-card p-4 rounded-lg">
+                    <div class="flex items-start justify-between mb-3">
+                        <div>
+                            <p class="font-semibold text-white">${prov.name}</p>
+                            <span class="inline-block bg-blue-500/20 text-blue-300 px-2 py-1 rounded text-xs mt-2">${prov.specialty}</span>
+                        </div>
+                        ${prov.verified ? '<span class="badge-low px-2 py-1 rounded text-xs">Verificado</span>' : '<span class="badge-medium px-2 py-1 rounded text-xs">Pendiente</span>'}
+                    </div>
+                    <div class="space-y-2 text-xs">
+                        <p class="text-slate-400">${prov.email}</p>
+                        <p class="text-slate-400">${prov.phone}</p>
+                        <p class="text-slate-400">⭐ ${prov.rating}/5</p>
+                    </div>
+                    <button class="secondary-button w-full px-3 py-2 rounded text-sm mt-3">Contactar</button>
+                </div>
+            `).join('');
+            document.getElementById('providers-container').innerHTML = html;
         }
 
         // Emergencias Tab Switching
         function switchEmergenciaTab(tabName) {
-            // Hide all tabs
-            document.getElementById('sismos-tab').classList.add('hidden');
-            document.getElementById('alertas-tab').classList.add('hidden');
-            document.getElementById('protocolos-tab').classList.add('hidden');
+            document.getElementById('temblores-tab').classList.add('hidden');
+            document.getElementById('meteorologicas-tab').classList.add('hidden');
+            document.getElementById('incendios-tab').classList.add('hidden');
 
-            // Remove active class from all tab buttons
             document.querySelectorAll('#emergencias-page .tab-button').forEach(btn => {
                 btn.classList.remove('active');
                 btn.style.borderBottomColor = 'transparent';
                 btn.style.color = 'rgba(203, 213, 225, 0.7)';
             });
 
-            // Show selected tab
             document.getElementById(tabName + '-tab').classList.remove('hidden');
-
-            // Set active tab button
             event.target.classList.add('active');
             event.target.style.borderBottomColor = '#3b82f6';
             event.target.style.color = '#3b82f6';
-        }
-
-        // Accordion Functions
-        function toggleAccordion(button) {
-            const content = button.nextElementSibling;
-            const isActive = content.classList.contains('active');
-
-            // Close all other accordions
-            document.querySelectorAll('.accordion-content').forEach(el => {
-                el.classList.remove('active');
-            });
-            document.querySelectorAll('.accordion-button').forEach(el => {
-                el.classList.remove('active');
-            });
-
-            // Toggle current
-            if (!isActive) {
-                content.classList.add('active');
-                button.classList.add('active');
-            }
         }
 
         // Lucide Icons

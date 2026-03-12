@@ -438,6 +438,10 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 0 0-5.856-1.487M15 10h.01M11 20h5v-2a3 3 0 0 0-5.856-1.487M15 10h.01M7 20v-2a4 4 0 0 0-4-4H3v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2h-1a4 4 0 0 0-4 4v2H7z"></path></svg>
                     <span>Asambleas</span>
                 </button>
+                <button onclick="showPage('compromisos')" class="sidebar-link w-full text-left">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                    <span>Compromisos</span>
+                </button>
                 <button onclick="showPage('documentos')" class="sidebar-link w-full text-left">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                     <span>Documentos</span>
@@ -1474,6 +1478,66 @@
                     </div>
                 </div>
 
+                <!-- COMPROMISOS PAGE -->
+                <div id="compromisos-page" class="page-content p-8 space-y-6 hidden">
+                    <!-- Stats -->
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <p id="comp-stat-total" class="text-2xl font-bold text-white">0</p>
+                            <p class="text-xs text-slate-400 mt-1">Total</p>
+                        </div>
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <p id="comp-stat-pendientes" class="text-2xl font-bold text-amber-400">0</p>
+                            <p class="text-xs text-slate-400 mt-1">Pendientes</p>
+                        </div>
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <p id="comp-stat-cumplidos" class="text-2xl font-bold text-emerald-400">0</p>
+                            <p class="text-xs text-slate-400 mt-1">Cumplidos</p>
+                        </div>
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <p id="comp-stat-vencidos" class="text-2xl font-bold text-red-400">0</p>
+                            <p class="text-xs text-slate-400 mt-1">Vencidos</p>
+                        </div>
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <p id="comp-stat-pct" class="text-2xl font-bold text-blue-400">0%</p>
+                            <p class="text-xs text-slate-400 mt-1">Cumplimiento</p>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="glass-card rounded-xl overflow-hidden">
+                        <div class="p-4 border-b border-slate-700/50 flex items-center gap-3 flex-wrap">
+                            <div class="flex gap-1 bg-slate-800/50 rounded-lg p-1">
+                                <button onclick="filterCompromisos('todos')" class="comp-filter-btn active px-3 py-1.5 text-xs font-medium rounded-md bg-blue-500/15 text-blue-400">Todos</button>
+                                <button onclick="filterCompromisos('pendiente')" class="comp-filter-btn px-3 py-1.5 text-xs font-medium rounded-md text-slate-400 hover:bg-slate-700/50">Pendientes</button>
+                                <button onclick="filterCompromisos('cumplido')" class="comp-filter-btn px-3 py-1.5 text-xs font-medium rounded-md text-slate-400 hover:bg-slate-700/50">Cumplidos</button>
+                                <button onclick="filterCompromisos('vencido')" class="comp-filter-btn px-3 py-1.5 text-xs font-medium rounded-md text-slate-400 hover:bg-slate-700/50">Vencidos</button>
+                            </div>
+                            <select id="comp-filter-resp" onchange="renderCompromisos()" class="bg-slate-800/40 border border-slate-700 rounded-lg px-3 py-1.5 text-white text-xs focus:border-blue-500/50 focus:outline-none transition">
+                                <option value="todos">Todos los responsables</option>
+                                <option value="Administrador">Administrador</option>
+                                <option value="Tesorero">Tesorero</option>
+                                <option value="Comité">Comité</option>
+                                <option value="Secretario">Secretario</option>
+                            </select>
+                            <select id="comp-filter-asamblea" onchange="renderCompromisos()" class="bg-slate-800/40 border border-slate-700 rounded-lg px-3 py-1.5 text-white text-xs focus:border-blue-500/50 focus:outline-none transition">
+                                <option value="todos">Todas las asambleas</option>
+                            </select>
+                            <div class="flex-1"></div>
+                            <span id="comp-count" class="text-xs text-slate-500">0 compromisos</span>
+                        </div>
+                        <!-- Compromisos list -->
+                        <div id="compromisos-container" class="divide-y divide-slate-700/30">
+                            <!-- Rendered by JS -->
+                        </div>
+                        <div id="compromisos-empty" class="hidden p-12 text-center">
+                            <svg class="w-10 h-10 text-slate-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                            <p class="text-sm text-slate-500">No hay compromisos registrados</p>
+                            <p class="text-xs text-slate-600 mt-1">Los compromisos se generan desde las actas de asambleas</p>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- REGLAMENTO PAGE -->
                 <div id="reglamento-page" class="page-content p-8 space-y-8 hidden">
                     <div class="glass-card p-6 rounded-lg">
@@ -2387,6 +2451,7 @@
             if (pageName === 'mantenimiento') renderKanban();
             if (pageName === 'proveedores') renderProviders();
             if (pageName === 'asambleas') renderAsambleas();
+            if (pageName === 'compromisos') renderCompromisos();
         }
 
         function getPageTitle(pageName) {
@@ -2394,6 +2459,7 @@
                 'dashboard': 'Dashboard',
                 'copropietarios': 'Copropietarios',
                 'asambleas': 'Asambleas',
+                'compromisos': 'Compromisos',
                 'documentos': 'Documentos',
                 'mantenimiento': 'Mantenimiento',
                 'proveedores': 'Proveedores',
@@ -3247,6 +3313,134 @@
             // Regenerate docs if on that page
             if (typeof renderDocuments === 'function') renderDocuments();
             generateNotifications();
+        }
+
+        // === COMPROMISOS PAGE ===
+        let compFilterEstado = 'todos';
+
+        function filterCompromisos(estado) {
+            compFilterEstado = estado;
+            document.querySelectorAll('.comp-filter-btn').forEach(btn => {
+                btn.className = 'comp-filter-btn px-3 py-1.5 text-xs font-medium rounded-md text-slate-400 hover:bg-slate-700/50';
+            });
+            event.target.className = 'comp-filter-btn active px-3 py-1.5 text-xs font-medium rounded-md bg-blue-500/15 text-blue-400';
+            renderCompromisos();
+        }
+
+        function getAllCompromisos() {
+            const all = [];
+            const hoy = new Date();
+            asambleasData.forEach(a => {
+                if (a.compromisos && a.compromisos.length > 0) {
+                    a.compromisos.forEach((c, i) => {
+                        let estado = c.estado;
+                        // Auto-detect vencido
+                        if (estado === 'pendiente' && c.fecha && c.fecha !== 'Sin fecha') {
+                            const fechaLimite = new Date(c.fecha + 'T23:59:59');
+                            if (hoy > fechaLimite) estado = 'vencido';
+                        }
+                        all.push({
+                            ...c,
+                            estado: estado,
+                            asambleaId: a.id,
+                            asambleaTitulo: a.titulo,
+                            asambleaFecha: a.fecha,
+                            index: i
+                        });
+                    });
+                }
+            });
+            return all;
+        }
+
+        function toggleCompromisoEstado(asambleaId, index) {
+            const a = asambleasData.find(x => x.id === asambleaId);
+            if (!a || !a.compromisos || !a.compromisos[index]) return;
+            const c = a.compromisos[index];
+            c.estado = c.estado === 'cumplido' ? 'pendiente' : 'cumplido';
+            renderCompromisos();
+        }
+
+        function renderCompromisos() {
+            const container = document.getElementById('compromisos-container');
+            const emptyEl = document.getElementById('compromisos-empty');
+            if (!container) return;
+
+            let all = getAllCompromisos();
+
+            // Populate asamblea filter dropdown
+            const asmSelect = document.getElementById('comp-filter-asamblea');
+            if (asmSelect) {
+                const currentVal = asmSelect.value;
+                const asambleasConComp = [...new Set(all.map(c => c.asambleaId))];
+                asmSelect.innerHTML = '<option value="todos">Todas las asambleas</option>' +
+                    asambleasConComp.map(id => {
+                        const a = asambleasData.find(x => x.id === id);
+                        return a ? '<option value="' + id + '">' + a.titulo + '</option>' : '';
+                    }).join('');
+                asmSelect.value = currentVal;
+            }
+
+            // Filter
+            const filterResp = document.getElementById('comp-filter-resp')?.value || 'todos';
+            const filterAsm = document.getElementById('comp-filter-asamblea')?.value || 'todos';
+
+            if (compFilterEstado !== 'todos') all = all.filter(c => c.estado === compFilterEstado);
+            if (filterResp !== 'todos') all = all.filter(c => c.responsable === filterResp);
+            if (filterAsm !== 'todos') all = all.filter(c => c.asambleaId === filterAsm);
+
+            // Sort: vencidos first, then pendientes, then cumplidos
+            const estadoOrder = { vencido: 0, pendiente: 1, cumplido: 2 };
+            all.sort((a, b) => (estadoOrder[a.estado] || 1) - (estadoOrder[b.estado] || 1));
+
+            // Stats (from unfiltered)
+            const allUnfiltered = getAllCompromisos();
+            const totalComp = allUnfiltered.length;
+            const pendientes = allUnfiltered.filter(c => c.estado === 'pendiente').length;
+            const cumplidos = allUnfiltered.filter(c => c.estado === 'cumplido').length;
+            const vencidos = allUnfiltered.filter(c => c.estado === 'vencido').length;
+            const pct = totalComp > 0 ? Math.round(cumplidos / totalComp * 100) : 0;
+
+            document.getElementById('comp-stat-total').textContent = totalComp;
+            document.getElementById('comp-stat-pendientes').textContent = pendientes;
+            document.getElementById('comp-stat-cumplidos').textContent = cumplidos;
+            document.getElementById('comp-stat-vencidos').textContent = vencidos;
+            document.getElementById('comp-stat-pct').textContent = pct + '%';
+            document.getElementById('comp-count').textContent = all.length + ' compromiso' + (all.length !== 1 ? 's' : '');
+
+            if (emptyEl) {
+                emptyEl.classList.toggle('hidden', all.length > 0);
+                container.classList.toggle('hidden', all.length === 0);
+            }
+
+            const estadoConfig = {
+                pendiente: { color: 'amber', icon: '⏳', label: 'Pendiente', badge: 'bg-amber-500/15 text-amber-400' },
+                cumplido: { color: 'emerald', icon: '✓', label: 'Cumplido', badge: 'bg-emerald-500/15 text-emerald-400' },
+                vencido: { color: 'red', icon: '⚠', label: 'Vencido', badge: 'bg-red-500/15 text-red-400' }
+            };
+
+            container.innerHTML = all.map(c => {
+                const cfg = estadoConfig[c.estado] || estadoConfig.pendiente;
+                const borderClass = c.estado === 'vencido' ? 'border-l-2 border-l-red-500' : c.estado === 'cumplido' ? 'border-l-2 border-l-emerald-500' : 'border-l-2 border-l-amber-500';
+
+                return '<div class="p-4 hover:bg-slate-800/30 transition ' + borderClass + '">' +
+                    '<div class="flex items-start gap-3">' +
+                        '<button onclick="toggleCompromisoEstado(\'' + c.asambleaId + '\',' + c.index + ')" class="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 mt-0.5 transition cursor-pointer ' +
+                            (c.estado === 'cumplido' ? 'bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30' : 'bg-slate-700/50 text-slate-500 hover:bg-slate-700') + '">' +
+                            (c.estado === 'cumplido' ? '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>' : '') +
+                        '</button>' +
+                        '<div class="flex-1 min-w-0">' +
+                            '<p class="text-sm font-medium ' + (c.estado === 'cumplido' ? 'text-slate-400 line-through' : 'text-white') + '">' + c.texto + '</p>' +
+                            '<div class="flex items-center gap-3 mt-1.5 flex-wrap">' +
+                                '<span class="text-xs text-slate-500 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>' + c.responsable + '</span>' +
+                                '<span class="text-xs text-slate-500 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>' + c.fecha + '</span>' +
+                                '<span class="text-xs px-2 py-0.5 rounded-md font-medium ' + cfg.badge + '">' + cfg.label + '</span>' +
+                            '</div>' +
+                            '<p class="text-xs text-slate-600 mt-1 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Origen: ' + c.asambleaTitulo + ' (' + c.asambleaFecha + ')</p>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
         }
 
         function addAsamblea() {

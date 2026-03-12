@@ -1,730 +1,1408 @@
 <!DOCTYPE html>
-<html lang="es" class="dark">
+<html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CondoIA — Preview</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            primary: { 50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',400:'#60a5fa',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8',800:'#1e40af',900:'#1e3a8a' },
-          }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CondoIA - Gestión Inteligente de Condominios</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
         }
-      }
-    }
-  </script>
-  <style>
-    @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-    .animate-fade-in { animation: fadeIn .3s ease-out }
-    .card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px; }
-    .btn-primary { display:inline-flex; align-items:center; gap:6px; background:#2563eb; color:#fff; padding:10px 18px; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; border:none; min-height:44px; }
-    .btn-primary:hover { background:#1d4ed8 }
-    .badge-pendiente { font-size:12px; padding:2px 10px; border-radius:99px; background:#fef3c7; color:#92400e; display:inline-flex; align-items:center; gap:4px; }
-    .badge-pagado { font-size:12px; padding:2px 10px; border-radius:99px; background:#d1fae5; color:#065f46; display:inline-flex; align-items:center; gap:4px; }
-    .badge-vencido { font-size:12px; padding:2px 10px; border-radius:99px; background:#fee2e2; color:#991b1b; display:inline-flex; align-items:center; gap:4px; }
-    .badge-cobranza { font-size:12px; padding:2px 10px; border-radius:99px; background:#fce7f3; color:#9d174d; display:inline-flex; align-items:center; gap:4px; }
-    .sidebar-link { display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:10px; color:#94a3b8; font-size:14px; cursor:pointer; min-height:44px; transition: all .15s; }
-    .sidebar-link:hover, .sidebar-link.active { background:#1e3a5f; color:#60a5fa; }
-    .stat-card { background:linear-gradient(135deg,#1e293b,#0f172a); border:1px solid #334155; border-radius:14px; padding:20px; }
-    body { background:#0f172a; color:#e2e8f0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin:0; }
-    ::-webkit-scrollbar { width:6px; } ::-webkit-scrollbar-track { background:#0f172a; } ::-webkit-scrollbar-thumb { background:#334155; border-radius:3px; }
-    .input { background:#1e293b; border:1px solid #334155; border-radius:8px; padding:10px 14px; color:#e2e8f0; width:100%; font-size:14px; min-height:44px; }
-    .tab { padding:8px 16px; border-radius:8px; font-size:13px; cursor:pointer; color:#94a3b8; min-height:44px; display:inline-flex; align-items:center; }
-    .tab.active { background:#1e3a5f; color:#60a5fa; font-weight:600; }
-  </style>
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            background-attachment: fixed;
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            background: rgba(30, 41, 59, 0.8);
+            border-color: rgba(148, 163, 184, 0.25);
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.1);
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.8));
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: scale(1.02);
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
+            border-color: rgba(148, 163, 184, 0.25);
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15);
+        }
+
+        .sidebar-gradient {
+            background: linear-gradient(180deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .topbar-blur {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .sidebar-link {
+            position: relative;
+            transition: all 0.2s ease;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: rgba(203, 213, 225, 0.7);
+        }
+
+        .sidebar-link:hover {
+            background: rgba(148, 163, 184, 0.1);
+            color: rgba(203, 213, 225, 0.9);
+        }
+
+        .sidebar-link.active {
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+            border-left: 3px solid #3b82f6;
+            padding-left: calc(1rem - 3px);
+            font-weight: 500;
+        }
+
+        .sidebar-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, #3b82f6, rgba(59, 130, 246, 0.5));
+            border-radius: 0 3px 3px 0;
+        }
+
+        .fade-in {
+            animation: fadeInStagger 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInStagger {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .stagger-1 { animation-delay: 0.05s; }
+        .stagger-2 { animation-delay: 0.1s; }
+        .stagger-3 { animation-delay: 0.15s; }
+        .stagger-4 { animation-delay: 0.2s; }
+        .stagger-5 { animation-delay: 0.25s; }
+
+        .gradient-button {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+        }
+
+        .gradient-button:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .danger-button {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            transition: all 0.2s ease;
+        }
+
+        .danger-button:hover {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            transform: translateY(-1px);
+        }
+
+        .secondary-button {
+            background: rgba(148, 163, 184, 0.1);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .secondary-button:hover {
+            background: rgba(148, 163, 184, 0.15);
+            border-color: rgba(148, 163, 184, 0.3);
+        }
+
+        .badge-critical {
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .badge-high {
+            background: rgba(249, 115, 22, 0.15);
+            color: #fed7aa;
+            border: 1px solid rgba(249, 115, 22, 0.3);
+        }
+
+        .badge-medium {
+            background: rgba(234, 179, 8, 0.15);
+            color: #fde047;
+            border: 1px solid rgba(234, 179, 8, 0.3);
+        }
+
+        .badge-low {
+            background: rgba(34, 197, 94, 0.15);
+            color: #86efac;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .earthquake-red {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .earthquake-orange {
+            background: rgba(249, 115, 22, 0.15);
+            border: 1px solid rgba(249, 115, 22, 0.3);
+        }
+
+        .earthquake-yellow {
+            background: rgba(234, 179, 8, 0.15);
+            border: 1px solid rgba(234, 179, 8, 0.3);
+        }
+
+        .earthquake-green {
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .pulse-critical {
+            animation: pulseCritical 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulseCritical {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .scrollbar-thin {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(59, 130, 246, 0.4) transparent;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.4);
+            border-radius: 3px;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+            background: rgba(59, 130, 246, 0.6);
+        }
+
+        .accordion-button {
+            transition: all 0.2s ease;
+        }
+
+        .accordion-button.active {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .accordion-content.active {
+            max-height: 500px;
+        }
+
+        .tab-button {
+            position: relative;
+            transition: color 0.2s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab-button.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            padding: 0.375rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        .live-badge::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: #fca5a5;
+            border-radius: 50%;
+            animation: pulseCritical 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 50;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .topbar-line {
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.5), transparent);
+            height: 1px;
+        }
+    </style>
 </head>
-<body>
-  <div id="app" style="display:flex; height:100vh;">
-    <!-- Sidebar -->
-    <aside id="sidebar" style="width:260px; background:#0f172a; border-right:1px solid #1e293b; padding:16px; overflow-y:auto; flex-shrink:0;">
-      <div style="display:flex; align-items:center; gap:10px; padding:8px 10px; margin-bottom:20px;">
-        <div style="width:36px;height:36px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);border-radius:10px;display:flex;align-items:center;justify-content:center;">
-          <i data-lucide="building-2" style="width:20px;height:20px;color:white"></i>
-        </div>
-        <div>
-          <div style="font-weight:700;font-size:16px;color:white;">CondoIA</div>
-          <div style="font-size:11px;color:#64748b;">Administración inteligente</div>
-        </div>
-      </div>
-      <div style="font-size:11px;color:#475569;padding:0 10px 6px;text-transform:uppercase;letter-spacing:1px;">Principal</div>
-      <nav id="nav">
-        <div class="sidebar-link active" onclick="showPage('dashboard')"><i data-lucide="layout-dashboard" style="width:18px;height:18px"></i> Dashboard</div>
-        <div class="sidebar-link" onclick="showPage('gastos')"><i data-lucide="dollar-sign" style="width:18px;height:18px"></i> Gastos Comunes</div>
-        <div class="sidebar-link" onclick="showPage('copropietarios')"><i data-lucide="users" style="width:18px;height:18px"></i> Copropietarios</div>
-        <div class="sidebar-link" onclick="showPage('asambleas')"><i data-lucide="calendar-days" style="width:18px;height:18px"></i> Asambleas</div>
-        <div class="sidebar-link" onclick="showPage('documentos')"><i data-lucide="file-text" style="width:18px;height:18px"></i> Documentos</div>
-        <div class="sidebar-link" onclick="showPage('mantenimiento')"><i data-lucide="wrench" style="width:18px;height:18px"></i> Mantenimiento</div>
-        <div class="sidebar-link" onclick="showPage('proveedores')"><i data-lucide="store" style="width:18px;height:18px"></i> Proveedores</div>
-      </nav>
-      <div style="font-size:11px;color:#475569;padding:12px 10px 6px;text-transform:uppercase;letter-spacing:1px;">IA & Legal</div>
-      <nav>
-        <div class="sidebar-link" onclick="showPage('agentes')"><i data-lucide="sparkles" style="width:18px;height:18px"></i> Agentes IA</div>
-        <div class="sidebar-link" onclick="showPage('reglamento')"><i data-lucide="scale" style="width:18px;height:18px"></i> Reglamento</div>
-      </nav>
-      <div style="font-size:11px;color:#475569;padding:12px 10px 6px;text-transform:uppercase;letter-spacing:1px;">Configuración</div>
-      <nav>
-        <div class="sidebar-link" onclick="showPage('perfil')"><i data-lucide="user" style="width:18px;height:18px"></i> Mi Perfil</div>
-        <div class="sidebar-link" onclick="showPage('configuracion')"><i data-lucide="settings" style="width:18px;height:18px"></i> Configuración</div>
-        <div class="sidebar-link" onclick="showPage('admin')"><i data-lucide="shield" style="width:18px;height:18px"></i> Admin</div>
-      </nav>
-    </aside>
-
-    <!-- Main content -->
-    <main style="flex:1; overflow-y:auto;">
-      <!-- Topbar -->
-      <header style="background:#0f172a; border-bottom:1px solid #1e293b; padding:12px 24px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:10;">
-        <div>
-          <span id="page-title" style="font-weight:600; color:white; font-size:16px;">Dashboard</span>
-        </div>
-        <div style="display:flex; align-items:center; gap:16px;">
-          <div style="position:relative; cursor:pointer;">
-            <i data-lucide="bell" style="width:20px;height:20px;color:#94a3b8"></i>
-            <span style="position:absolute;top:-4px;right:-4px;width:8px;height:8px;background:#ef4444;border-radius:50%;"></span>
-          </div>
-          <div style="display:flex; align-items:center; gap:8px; cursor:pointer;">
-            <div style="width:32px;height:32px;background:#334155;border-radius:50%;display:flex;align-items:center;justify-content:center;">
-              <i data-lucide="user" style="width:16px;height:16px;color:#94a3b8"></i>
-            </div>
-            <span style="font-size:13px; color:#cbd5e1;">Claudio R.</span>
-          </div>
-        </div>
-      </header>
-
-      <div id="content" style="padding:24px; max-width:1200px;" class="animate-fade-in">
-        <!-- Pages loaded dynamically -->
-      </div>
-    </main>
-  </div>
-
-  <script>
-    const pages = {};
-
-    // ======= DASHBOARD =======
-    pages.dashboard = `
-      <div style="margin-bottom:20px;">
-        <h1 style="font-size:24px;font-weight:700;color:white;">Buenos días, Claudio</h1>
-        <p style="font-size:14px;color:#94a3b8;margin-top:2px;">Condominio Los Andes — Resumen del mes</p>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;">
-        <div class="stat-card">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-            <span style="font-size:13px;color:#94a3b8;">Unidades</span>
-            <i data-lucide="building-2" style="width:18px;height:18px;color:#3b82f6"></i>
-          </div>
-          <div style="font-size:28px;font-weight:700;color:white;">48</div>
-          <div style="font-size:12px;color:#22c55e;margin-top:4px;">↑ 2 nuevas este mes</div>
-        </div>
-        <div class="stat-card">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-            <span style="font-size:13px;color:#94a3b8;">Recaudación</span>
-            <i data-lucide="dollar-sign" style="width:18px;height:18px;color:#22c55e"></i>
-          </div>
-          <div style="font-size:28px;font-weight:700;color:white;">$4.2M</div>
-          <div style="font-size:12px;color:#22c55e;margin-top:4px;">↑ 87% del total</div>
-        </div>
-        <div class="stat-card">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-            <span style="font-size:13px;color:#94a3b8;">Morosidad</span>
-            <i data-lucide="alert-triangle" style="width:18px;height:18px;color:#f59e0b"></i>
-          </div>
-          <div style="font-size:28px;font-weight:700;color:white;">6</div>
-          <div style="font-size:12px;color:#ef4444;margin-top:4px;">↑ 2 unidades</div>
-        </div>
-        <div class="stat-card">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-            <span style="font-size:13px;color:#94a3b8;">Solicitudes</span>
-            <i data-lucide="wrench" style="width:18px;height:18px;color:#a78bfa"></i>
-          </div>
-          <div style="font-size:28px;font-weight:700;color:white;">12</div>
-          <div style="font-size:12px;color:#f59e0b;margin-top:4px;">3 pendientes</div>
-        </div>
-      </div>
-      <div style="background:#172554;border:1px solid #1e3a8a;border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;margin-bottom:24px;">
-        <i data-lucide="calendar-days" style="width:20px;height:20px;color:#60a5fa;flex-shrink:0"></i>
-        <div><span style="font-size:14px;font-weight:500;color:#bfdbfe;">Próxima asamblea:</span> <span style="font-size:14px;color:#93c5fd;">Asamblea Ordinaria — sábado 22 de marzo 2026</span></div>
-      </div>
-      <!-- Acceso Rápido: Portón, Cámaras, Pago -->
-      <div class="card" style="margin-bottom:24px;">
-        <h3 style="font-weight:600;color:white;margin-bottom:14px;display:flex;align-items:center;gap:8px;"><i data-lucide="zap" style="width:18px;height:18px;color:#f59e0b"></i> Acceso Rápido</h3>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
-          <button onclick="openPortonModal()" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px;border-radius:12px;background:#d97706;color:white;border:none;cursor:pointer;min-height:88px;font-weight:600;font-size:14px;transition:all .15s;" onmouseover="this.style.background='#b45309'" onmouseout="this.style.background='#d97706'">
-            <i data-lucide="door-open" style="width:24px;height:24px"></i>
-            Abrir Portón
-          </button>
-          <button onclick="openCamarasModal()" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px;border-radius:12px;background:#475569;color:white;border:none;cursor:pointer;min-height:88px;font-weight:600;font-size:14px;transition:all .15s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'">
-            <i data-lucide="video" style="width:24px;height:24px"></i>
-            Cámaras
-          </button>
-          <button onclick="openPagoModal()" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px;border-radius:12px;background:#16a34a;color:white;border:none;cursor:pointer;min-height:88px;font-weight:600;font-size:14px;transition:all .15s;" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'">
-            <i data-lucide="wallet" style="width:24px;height:24px"></i>
-            Pagar Gasto
-          </button>
-        </div>
-      </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-        <div class="card">
-          <h3 style="font-weight:600;color:white;margin-bottom:14px;display:flex;align-items:center;gap:8px;"><i data-lucide="sparkles" style="width:18px;height:18px;color:#a78bfa"></i> Acciones rápidas</h3>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-            <button class="btn-primary" style="justify-content:center;" onclick="showPage('gastos')"><i data-lucide="dollar-sign" style="width:16px;height:16px"></i> Generar gastos</button>
-            <button class="btn-primary" style="justify-content:center;background:#7c3aed;" onclick="showPage('agentes')"><i data-lucide="sparkles" style="width:16px;height:16px"></i> Consultar IA</button>
-            <button class="btn-primary" style="justify-content:center;background:#059669;" onclick="showPage('asambleas')"><i data-lucide="calendar-days" style="width:16px;height:16px"></i> Nueva asamblea</button>
-            <button class="btn-primary" style="justify-content:center;background:#d97706;" onclick="showPage('mantenimiento')"><i data-lucide="wrench" style="width:16px;height:16px"></i> Solicitudes</button>
-          </div>
-        </div>
-        <div class="card">
-          <h3 style="font-weight:600;color:white;margin-bottom:14px;display:flex;align-items:center;gap:8px;"><i data-lucide="clock" style="width:18px;height:18px;color:#f59e0b"></i> Actividad reciente</h3>
-          <div style="space-y:8px;">
-            <div style="padding:8px 0;border-bottom:1px solid #1e293b;font-size:13px;color:#cbd5e1;">Pago recibido — Unidad 12B — <span style="color:#22c55e">$85.000</span></div>
-            <div style="padding:8px 0;border-bottom:1px solid #1e293b;font-size:13px;color:#cbd5e1;">Solicitud mantención — Unidad 5A — Plomería</div>
-            <div style="padding:8px 0;border-bottom:1px solid #1e293b;font-size:13px;color:#cbd5e1;">Gasto vencido — Unidad 3C — <span style="color:#ef4444">$120.000</span></div>
-            <div style="padding:8px 0;font-size:13px;color:#cbd5e1;">Asamblea programada — 22 marzo 2026</div>
-          </div>
-        </div>
-      </div>
-    `;
-
-    // ======= GASTOS COMUNES =======
-    pages.gastos = `
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-        <div>
-          <h1 style="font-size:24px;font-weight:700;color:white;">Gastos Comunes</h1>
-          <p style="font-size:14px;color:#94a3b8;margin-top:2px;">Gestión según Art. 22-27 Ley 21.442</p>
-        </div>
-        <button class="btn-primary"><i data-lucide="plus" style="width:16px;height:16px"></i> Generar gastos del período</button>
-      </div>
-      <div style="background:#172554;border:1px solid #1e3a8a;border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;margin-bottom:20px;">
-        <i data-lucide="scale" style="width:20px;height:20px;color:#60a5fa;flex-shrink:0"></i>
-        <div style="font-size:13px;color:#93c5fd;">
-          <span style="font-weight:600;color:#bfdbfe;">Ley 21.442:</span> Los gastos comunes se calculan según coeficiente de dominio (Art. 22). Interés máximo por mora: tasa corriente +50% (Art. 27).
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
-        <button style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:8px 14px;color:#94a3b8;cursor:pointer;min-height:44px;">← Anterior</button>
-        <span style="font-size:16px;font-weight:600;color:white;min-width:120px;text-align:center;">Marzo 2026</span>
-        <button style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:8px 14px;color:#94a3b8;cursor:pointer;min-height:44px;">Siguiente →</button>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;">
-        <div class="stat-card"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px;">Total emitido</div><div style="font-size:22px;font-weight:700;color:white;">$4.800.000</div></div>
-        <div class="stat-card"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px;">Recaudado</div><div style="font-size:22px;font-weight:700;color:#22c55e;">$4.176.000</div></div>
-        <div class="stat-card"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px;">Pendiente</div><div style="font-size:22px;font-weight:700;color:#f59e0b;">$624.000</div></div>
-        <div class="stat-card"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px;">Tasa de pago</div><div style="font-size:22px;font-weight:700;color:#60a5fa;">87%</div></div>
-      </div>
-      <!-- Gráfico Evolutivo Ingresos vs Egresos -->
-      <div class="card" style="margin-bottom:20px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
-          <div style="display:flex;align-items:center;gap:8px;">
-            <i data-lucide="bar-chart-3" style="width:20px;height:20px;color:#3b82f6"></i>
-            <h3 style="font-weight:600;color:white;font-size:16px;">Evolución Financiera</h3>
-            <span style="font-size:12px;color:#94a3b8;">Últimos 6 meses</span>
-          </div>
-          <div style="display:flex;border-radius:8px;overflow:hidden;border:1px solid #334155;">
-            <button id="btn-barras" onclick="setChartView('barras')" style="padding:6px 14px;font-size:12px;font-weight:500;background:#2563eb;color:white;border:none;cursor:pointer;min-height:36px;">Barras</button>
-            <button id="btn-area" onclick="setChartView('area')" style="padding:6px 14px;font-size:12px;font-weight:500;background:#1e293b;color:#94a3b8;border:none;cursor:pointer;min-height:36px;">Tendencia</button>
-          </div>
-        </div>
-        <!-- KPIs -->
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px;">
-          <div style="background:#052e16;border:1px solid #14532d;border-radius:12px;padding:12px 16px;">
-            <div style="font-size:12px;color:#4ade80;font-weight:500;">Total Ingresos</div>
-            <div style="font-size:20px;font-weight:700;color:#86efac;margin-top:2px;">$24.6M</div>
-          </div>
-          <div style="background:#450a0a;border:1px solid #7f1d1d;border-radius:12px;padding:12px 16px;">
-            <div style="font-size:12px;color:#fca5a5;font-weight:500;">Total Egresos</div>
-            <div style="font-size:20px;font-weight:700;color:#fecaca;margin-top:2px;">$23.2M</div>
-          </div>
-          <div style="background:#172554;border:1px solid #1e3a8a;border-radius:12px;padding:12px 16px;">
-            <div style="font-size:12px;color:#93c5fd;font-weight:500;">Balance</div>
-            <div style="font-size:20px;font-weight:700;color:#bfdbfe;margin-top:2px;display:flex;align-items:center;gap:4px;"><i data-lucide="trending-up" style="width:16px;height:16px;color:#22c55e"></i> $1.4M</div>
-          </div>
-        </div>
-        <!-- Chart container -->
-        <div id="chart-container" style="position:relative;"></div>
-        <!-- Leyenda -->
-        <div style="display:flex;justify-content:center;gap:24px;margin-top:12px;">
-          <div style="display:flex;align-items:center;gap:6px;"><span style="width:12px;height:12px;border-radius:50%;background:#10b981;display:inline-block;"></span><span style="font-size:13px;color:#94a3b8;">Ingresos (recaudación)</span></div>
-          <div style="display:flex;align-items:center;gap:6px;"><span style="width:12px;height:12px;border-radius:50%;background:#f43f5e;display:inline-block;"></span><span style="font-size:13px;color:#94a3b8;">Egresos (gastos operacionales)</span></div>
-        </div>
-        <!-- Insight IA -->
-        <div style="background:#052e16;border:1px solid #14532d;border-radius:12px;padding:12px 16px;margin-top:12px;display:flex;gap:10px;align-items:flex-start;">
-          <i data-lucide="trending-up" style="width:18px;height:18px;color:#22c55e;flex-shrink:0;margin-top:2px;"></i>
-          <div style="font-size:13px;color:#86efac;"><strong>Balance positivo este mes.</strong> Los ingresos superan a los egresos por $286.000. La recaudación se mantiene estable.</div>
-        </div>
-      </div>
-
-      <div style="display:flex;gap:6px;margin-bottom:16px;">
-        <span class="tab active">Todos (48)</span><span class="tab">Pendiente (4)</span><span class="tab">Pagado (38)</span><span class="tab">Vencido (4)</span><span class="tab">En cobranza (2)</span>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:8px;">
-        ${[
-          {u:'1A',m:'$100.000',e:'pagado',f:'2026-03-05'},
-          {u:'2B',m:'$85.000',e:'pagado',f:'2026-03-03'},
-          {u:'3C',m:'$120.000',e:'vencido',f:'2026-02-28'},
-          {u:'4D',m:'$95.000',e:'pendiente',f:'2026-03-15'},
-          {u:'5A',m:'$110.000',e:'pagado',f:'2026-03-01'},
-          {u:'6B',m:'$130.000',e:'en_cobranza',f:'2026-01-15'},
-          {u:'7C',m:'$100.000',e:'pagado',f:'2026-03-07'},
-          {u:'8D',m:'$85.000',e:'pendiente',f:'2026-03-15'},
-        ].map(g => {
-          const badge = g.e === 'pagado' ? 'badge-pagado' : g.e === 'vencido' ? 'badge-vencido' : g.e === 'en_cobranza' ? 'badge-cobranza' : 'badge-pendiente';
-          const label = g.e === 'en_cobranza' ? 'En cobranza' : g.e.charAt(0).toUpperCase() + g.e.slice(1);
-          return '<div class="card" style="display:flex;align-items:center;gap:16px;padding:14px 18px;cursor:pointer;"><div style="min-width:50px;text-align:center;"><span style="font-size:18px;font-weight:700;color:#60a5fa;">'+g.u+'</span></div><div style="flex:1;"><div style="font-size:14px;font-weight:500;color:white;">Unidad '+g.u+'</div><div style="font-size:12px;color:#64748b;">Vencimiento: '+g.f+'</div></div><div style="font-size:16px;font-weight:600;color:white;min-width:100px;text-align:right;">'+g.m+'</div><span class="'+badge+'">'+label+'</span></div>';
-        }).join('')}
-      </div>
-    `;
-
-    // ======= COPROPIETARIOS =======
-    pages.copropietarios = `
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-        <div><h1 style="font-size:24px;font-weight:700;color:white;">Copropietarios</h1><p style="font-size:14px;color:#94a3b8;margin-top:2px;">Directorio de unidades y propietarios</p></div>
-        <button class="btn-primary"><i data-lucide="plus" style="width:16px;height:16px"></i> Agregar unidad</button>
-      </div>
-      <input class="input" placeholder="Buscar por nombre, unidad o RUT..." style="margin-bottom:16px;" />
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
-        ${['María González|1A|Propietaria|$0|al_dia','Carlos Pérez|2B|Propietario|$0|al_dia','Ana Muñoz|3C|Propietaria|$120.000|morosa','Luis Soto|4D|Arrendatario|$95.000|pendiente','Rosa Díaz|5A|Propietaria|$0|al_dia','Pedro López|6B|Propietario|$260.000|morosa'].map(p => {
-          const [n,u,t,d,s] = p.split('|');
-          const badge = s==='al_dia' ? 'badge-pagado' : s==='morosa' ? 'badge-vencido' : 'badge-pendiente';
-          const label = s==='al_dia' ? 'Al día' : s==='morosa' ? 'Moroso/a' : 'Pendiente';
-          return '<div class="card" style="cursor:pointer;"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;"><div style="width:40px;height:40px;background:#334155;border-radius:50%;display:flex;align-items:center;justify-content:center;"><span style="color:#94a3b8;font-weight:600;">'+n[0]+'</span></div><div><div style="font-weight:600;color:white;font-size:14px;">'+n+'</div><div style="font-size:12px;color:#64748b;">Unidad '+u+' · '+t+'</div></div></div><div style="display:flex;justify-content:space-between;align-items:center;"><span class="'+badge+'">'+label+'</span>'+(d!=='$0'?'<span style="font-size:13px;color:#ef4444;font-weight:500;">Debe: '+d+'</span>':'<span style="font-size:13px;color:#22c55e;">✓ Sin deuda</span>')+'</div></div>';
-        }).join('')}
-      </div>
-    `;
-
-    // ======= ASAMBLEAS =======
-    pages.asambleas = `
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-        <div><h1 style="font-size:24px;font-weight:700;color:white;">Asambleas</h1><p style="font-size:14px;color:#94a3b8;margin-top:2px;">Gestión según Art. 17-21 Ley 21.442</p></div>
-        <button class="btn-primary"><i data-lucide="plus" style="width:16px;height:16px"></i> Nueva asamblea</button>
-      </div>
-      <div style="background:#172554;border:1px solid #1e3a8a;border-radius:12px;padding:14px 18px;margin-bottom:20px;">
-        <div style="display:flex;gap:10px;align-items:flex-start;">
-          <i data-lucide="calendar-days" style="width:18px;height:18px;color:#60a5fa;flex-shrink:0;margin-top:2px"></i>
-          <div style="font-size:13px;color:#93c5fd;">
-            <p style="font-weight:600;color:#bfdbfe;margin-bottom:4px;">Requisitos legales Ley 21.442:</p>
-            <p>• Convocatoria mínimo <b>5 días hábiles</b> de anticipación (Art. 17)</p>
-            <p>• Segunda citación <b>30 minutos</b> después de la primera (Art. 18)</p>
-            <p>• Quórum ordinaria: <b>+50%</b> de los copropietarios con derecho a voto</p>
-            <p>• Acta debe registrarse en <b>15 días hábiles</b> (Art. 19)</p>
-          </div>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:10px;">
-        ${[
-          {d:'22',m:'Mar',t:'Asamblea Ordinaria Anual',e:'convocada',tipo:'ordinaria',q:''},
-          {d:'15',m:'Feb',t:'Asamblea Extraordinaria — Presupuesto 2026',e:'finalizada',tipo:'extraordinaria',q:'72'},
-          {d:'10',m:'Ene',t:'Asamblea de Emergencia — Daño estructural',e:'finalizada',tipo:'de_emergencia',q:'85'},
-        ].map(a => {
-          const eConf = a.e==='convocada'?{l:'Convocada',c:'badge-pendiente'}:a.e==='finalizada'?{l:'Finalizada',c:'badge-pagado'}:{l:'En curso',c:'badge-cobranza'};
-          return '<div class="card" style="display:flex;align-items:center;gap:16px;padding:14px 18px;cursor:pointer;"><div style="text-align:center;min-width:50px;"><p style="font-size:24px;font-weight:700;color:#60a5fa;">'+a.d+'</p><p style="font-size:12px;color:#64748b;text-transform:uppercase;">'+a.m+'</p></div><div style="flex:1;"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span style="font-weight:600;color:white;font-size:14px;">'+a.t+'</span><span class="'+eConf.c+'">'+eConf.l+'</span><span style="font-size:12px;padding:2px 8px;background:#1e293b;border-radius:99px;color:#94a3b8;">'+a.tipo+'</span></div>'+(a.q?'<p style="font-size:12px;color:#64748b;margin-top:4px;">Quórum: '+a.q+'%</p>':'')+'</div><span style="color:#334155;">→</span></div>';
-        }).join('')}
-      </div>
-    `;
-
-    // ======= DOCUMENTOS =======
-    pages.documentos = `
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-        <div><h1 style="font-size:24px;font-weight:700;color:white;">Documentos</h1><p style="font-size:14px;color:#94a3b8;margin-top:2px;">Repositorio documental — Firma electrónica Ley 19.799</p></div>
-        <button class="btn-primary"><i data-lucide="upload" style="width:16px;height:16px"></i> Subir documento</button>
-      </div>
-      <div style="display:flex;gap:6px;margin-bottom:16px;">
-        <span class="tab active">Todos</span><span class="tab">Actas</span><span class="tab">Reglamentos</span><span class="tab">Contratos</span><span class="tab">Certificados</span>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
-        ${['Acta Asamblea Feb 2026|acta|2026-02-20|✓ Firmado','Reglamento Interno 2025|reglamento|2025-12-01|✓ Firmado','Contrato Mantención|contrato|2025-11-15|Pendiente','Certificado Deuda Unidad 3C|certificado|2026-03-01|✓ Firmado','Presupuesto Anual 2026|financiero|2026-01-10|✓ Firmado','Póliza de Seguro|otro|2025-06-01|Vigente'].map(d => {
-          const [t,tipo,f,estado] = d.split('|');
-          const firmado = estado.includes('Firmado');
-          return '<div class="card" style="cursor:pointer;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><span style="font-size:11px;padding:2px 8px;background:#1e3a5f;border-radius:6px;color:#60a5fa;text-transform:capitalize;">'+tipo+'</span>'+(firmado?'<span style="color:#22c55e;font-size:12px;">✓ Firmado</span>':'<span style="color:#f59e0b;font-size:12px;">'+estado+'</span>')+'</div><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><i data-lucide="file-text" style="width:20px;height:20px;color:#60a5fa"></i><span style="font-weight:600;color:white;font-size:14px;">'+t+'</span></div><div style="font-size:12px;color:#64748b;">'+f+'</div></div>';
-        }).join('')}
-      </div>
-    `;
-
-    // ======= MANTENIMIENTO =======
-    pages.mantenimiento = `
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-        <div><h1 style="font-size:24px;font-weight:700;color:white;">Solicitudes de Mantenimiento</h1><p style="font-size:14px;color:#94a3b8;margin-top:2px;">Gestión de solicitudes y seguimiento</p></div>
-        <button class="btn-primary"><i data-lucide="plus" style="width:16px;height:16px"></i> Nueva solicitud</button>
-      </div>
-      <div style="display:flex;gap:6px;margin-bottom:16px;">
-        <span class="tab active">Todas (12)</span><span class="tab">Pendientes (3)</span><span class="tab">En progreso (4)</span><span class="tab">Completadas (5)</span>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:8px;">
-        ${[
-          {t:'Filtración baño depto 5A',c:'Plomería',p:'Alta',e:'en_progreso',u:'5A'},
-          {t:'Ascensor ruido anormal',c:'Electricidad',p:'Crítica',e:'pendiente',u:'Común'},
-          {t:'Pintura pasillo piso 3',c:'General',p:'Baja',e:'completada',u:'Común'},
-          {t:'Cerradura portón estacionamiento',c:'Cerrajería',p:'Media',e:'en_progreso',u:'Común'},
-          {t:'Gotera techo bodega 2',c:'Plomería',p:'Alta',e:'pendiente',u:'2B'},
-        ].map(s => {
-          const eClass = s.e==='completada'?'badge-pagado':s.e==='pendiente'?'badge-pendiente':'badge-cobranza';
-          const eLabel = s.e==='en_progreso'?'En progreso':s.e==='completada'?'Completada':'Pendiente';
-          const pColor = s.p==='Crítica'?'#ef4444':s.p==='Alta'?'#f59e0b':s.p==='Media'?'#3b82f6':'#22c55e';
-          return '<div class="card" style="display:flex;align-items:center;gap:14px;padding:14px 18px;cursor:pointer;"><div style="width:8px;height:40px;background:'+pColor+';border-radius:4px;flex-shrink:0;"></div><div style="flex:1;"><div style="font-weight:600;color:white;font-size:14px;">'+s.t+'</div><div style="font-size:12px;color:#64748b;margin-top:2px;">Unidad '+s.u+' · '+s.c+' · Prioridad: <span style="color:'+pColor+'">'+s.p+'</span></div></div><span class="'+eClass+'">'+eLabel+'</span></div>';
-        }).join('')}
-      </div>
-    `;
-
-    // ======= PROVEEDORES =======
-    pages.proveedores = `
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-        <div><h1 style="font-size:24px;font-weight:700;color:white;">Proveedores</h1><p style="font-size:14px;color:#94a3b8;margin-top:2px;">Marketplace de servicios verificados</p></div>
-        <button class="btn-primary"><i data-lucide="plus" style="width:16px;height:16px"></i> Agregar proveedor</button>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
-        ${['Servicios Eléctricos SPA|Electricidad|★★★★★|+56 9 1234 5678|Verificado','PlomClean Ltda|Plomería|★★★★☆|+56 9 8765 4321|Verificado','PintaPro|Pintura|★★★★☆|+56 9 5555 1234|Verificado','JardinMax|Jardinería|★★★☆☆|+56 9 4444 5678|Pendiente','SecurTech|Seguridad|★★★★★|+56 9 3333 2222|Verificado','Ascensores Chile|Ascensores|★★★★☆|+56 2 2222 3333|Verificado'].map(p => {
-          const [n,c,r,t,v] = p.split('|');
-          return '<div class="card" style="cursor:pointer;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><span style="font-size:11px;padding:2px 8px;background:#1e3a5f;border-radius:6px;color:#60a5fa;">'+c+'</span><span style="font-size:12px;color:'+(v==='Verificado'?'#22c55e':'#f59e0b')+';">'+v+'</span></div><div style="font-weight:600;color:white;font-size:15px;margin-bottom:6px;">'+n+'</div><div style="color:#f59e0b;font-size:14px;margin-bottom:8px;">'+r+'</div><div style="font-size:12px;color:#64748b;display:flex;align-items:center;gap:6px;"><i data-lucide="phone" style="width:12px;height:12px"></i> '+t+'</div></div>';
-        }).join('')}
-      </div>
-    `;
-
-    // ======= AGENTES IA =======
-    pages.agentes = `
-      <div style="margin-bottom:20px;">
-        <h1 style="font-size:24px;font-weight:700;color:white;">Agentes IA</h1>
-        <p style="font-size:14px;color:#94a3b8;margin-top:2px;">Asistentes especializados con Claude AI</p>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">
-        <div class="card" style="cursor:pointer;border-color:#3b82f6;"><div style="width:48px;height:48px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;"><i data-lucide="shield" style="width:24px;height:24px;color:white"></i></div><h3 style="font-weight:700;color:white;font-size:16px;margin-bottom:4px;">Administrador</h3><p style="font-size:13px;color:#94a3b8;margin-bottom:12px;">Gestión legal, certificados, convocatorias y cobranza según Ley 21.442</p><span style="font-size:12px;color:#60a5fa;">Claude Opus 4.6 →</span></div>
-        <div class="card" style="cursor:pointer;border-color:#22c55e;"><div style="width:48px;height:48px;background:linear-gradient(135deg,#22c55e,#15803d);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;"><i data-lucide="dollar-sign" style="width:24px;height:24px;color:white"></i></div><h3 style="font-weight:700;color:white;font-size:16px;margin-bottom:4px;">Tesorero</h3><p style="font-size:13px;color:#94a3b8;margin-bottom:12px;">Análisis financiero, reportes mensuales, clasificación de gastos y presupuestos</p><span style="font-size:12px;color:#22c55e;">Claude Opus 4.6 →</span></div>
-        <div class="card" style="cursor:pointer;border-color:#a78bfa;"><div style="width:48px;height:48px;background:linear-gradient(135deg,#a78bfa,#7c3aed);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;"><i data-lucide="file-text" style="width:24px;height:24px;color:white"></i></div><h3 style="font-weight:700;color:white;font-size:16px;margin-bottom:4px;">Secretario</h3><p style="font-size:13px;color:#94a3b8;margin-bottom:12px;">Transcripción de actas, generación de documentos y comunicaciones</p><span style="font-size:12px;color:#a78bfa;">Claude Opus 4.6 →</span></div>
-      </div>
-      <div class="card">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #334155;">
-          <div style="width:36px;height:36px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i data-lucide="shield" style="width:18px;height:18px;color:white"></i></div>
-          <div><span style="font-weight:600;color:white;font-size:14px;">Administrador IA</span><span style="font-size:11px;color:#64748b;margin-left:8px;">Claude Opus 4.6</span></div>
-        </div>
-        <div style="min-height:200px;padding:12px 0;">
-          <div style="display:flex;gap:10px;margin-bottom:16px;">
-            <div style="width:32px;height:32px;background:#1e3a5f;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="sparkles" style="width:16px;height:16px;color:#60a5fa"></i></div>
-            <div style="background:#1e293b;border-radius:12px;padding:12px 16px;font-size:14px;color:#cbd5e1;max-width:80%;">Hola Claudio, soy el Administrador IA de CondoIA. Puedo ayudarte con certificados de deuda, convocatorias a asamblea, gestión de cobranza y consultas legales sobre la Ley 21.442. ¿En qué te puedo ayudar?</div>
-          </div>
-        </div>
-        <div style="display:flex;gap:8px;border-top:1px solid #334155;padding-top:12px;">
-          <input class="input" placeholder="Escribe tu consulta al agente..." style="flex:1;" />
-          <button class="btn-primary"><i data-lucide="send" style="width:16px;height:16px"></i></button>
-        </div>
-      </div>
-    `;
-
-    // ======= REGLAMENTO =======
-    pages.reglamento = `
-      <div style="margin-bottom:20px;">
-        <h1 style="font-size:24px;font-weight:700;color:white;">Ley 21.442 — Copropiedad Inmobiliaria</h1>
-        <p style="font-size:14px;color:#94a3b8;margin-top:2px;">Guía interactiva de la ley vigente</p>
-      </div>
-      ${['Título I — Disposiciones Generales (Art. 1-7)|Definiciones, ámbito de aplicación, clasificación de condominios, bienes comunes y unidades.','Título II — De la Comunidad (Art. 8-16)|Derechos y obligaciones de copropietarios, reglamento de copropiedad, administración.','Título III — De las Asambleas (Art. 17-21)|Convocatoria, quórum, votaciones, actas y publicidad de acuerdos.','Título IV — Gastos Comunes (Art. 22-27)|Obligación de pago, cálculo por coeficiente, mora e intereses, fondo de reserva.','Título V — Del Administrador (Art. 36-47)|Funciones, deberes, rendición de cuentas, responsabilidades legales.','Título VI — Solución de Conflictos (Art. 48-55)|Mediación, arbitraje, sanciones y procedimiento judicial.'].map((item,i) => {
-        const [title,desc] = item.split('|');
-        return '<div class="card" style="margin-bottom:8px;cursor:pointer;"><div style="display:flex;justify-content:space-between;align-items:center;"><div><h3 style="font-weight:600;color:white;font-size:14px;">'+title+'</h3><p style="font-size:13px;color:#94a3b8;margin-top:4px;">'+desc+'</p></div><i data-lucide="chevron-down" style="width:18px;height:18px;color:#64748b;flex-shrink:0"></i></div></div>';
-      }).join('')}
-    `;
-
-    // ======= PERFIL =======
-    pages.perfil = `
-      <div style="margin-bottom:20px;"><h1 style="font-size:24px;font-weight:700;color:white;">Mi Perfil</h1><p style="font-size:14px;color:#94a3b8;margin-top:2px;">Información personal y preferencias</p></div>
-      <div class="card" style="max-width:600px;">
-        <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;">
-          <div style="width:72px;height:72px;background:#334155;border-radius:50%;display:flex;align-items:center;justify-content:center;"><span style="font-size:28px;font-weight:700;color:#94a3b8;">CR</span></div>
-          <div><div style="font-size:18px;font-weight:700;color:white;">Claudio Rieutord</div><div style="font-size:13px;color:#64748b;">Administrador · Condominio Los Andes</div></div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:14px;">
-          <div><label style="font-size:13px;color:#94a3b8;display:block;margin-bottom:4px;">Nombre completo</label><input class="input" value="Claudio Rieutord" /></div>
-          <div><label style="font-size:13px;color:#94a3b8;display:block;margin-bottom:4px;">Email</label><input class="input" value="crieutord@entel.cl" /></div>
-          <div><label style="font-size:13px;color:#94a3b8;display:block;margin-bottom:4px;">Teléfono</label><input class="input" value="+56 9 1234 5678" /></div>
-          <div><label style="font-size:13px;color:#94a3b8;display:block;margin-bottom:4px;">RUT</label><input class="input" value="12.345.678-9" /></div>
-          <div style="display:flex;gap:8px;margin-top:8px;"><button class="btn-primary"><i data-lucide="save" style="width:16px;height:16px"></i> Guardar cambios</button></div>
-        </div>
-      </div>
-    `;
-
-    // ======= CONFIGURACION =======
-    pages.configuracion = `
-      <div style="margin-bottom:20px;"><h1 style="font-size:24px;font-weight:700;color:white;">Configuración</h1><p style="font-size:14px;color:#94a3b8;margin-top:2px;">Ajustes del condominio y la plataforma</p></div>
-      <div style="display:flex;flex-direction:column;gap:12px;max-width:700px;">
-        <div class="card"><h3 style="font-weight:600;color:white;margin-bottom:12px;">Datos del Condominio</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;"><div><label style="font-size:13px;color:#94a3b8;display:block;margin-bottom:4px;">Nombre</label><input class="input" value="Condominio Los Andes" /></div><div><label style="font-size:13px;color:#94a3b8;display:block;margin-bottom:4px;">Dirección</label><input class="input" value="Av. Las Condes 12345" /></div><div><label style="font-size:13px;color:#94a3b8;display:block;margin-bottom:4px;">RUT</label><input class="input" value="76.123.456-7" /></div><div><label style="font-size:13px;color:#94a3b8;display:block;margin-bottom:4px;">Total unidades</label><input class="input" value="48" /></div></div></div>
-        <div class="card"><h3 style="font-weight:600;color:white;margin-bottom:12px;">Gastos Comunes</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;"><div><label style="font-size:13px;color:#94a3b8;display:block;margin-bottom:4px;">Monto base</label><input class="input" value="$100.000" /></div><div><label style="font-size:13px;color:#94a3b8;display:block;margin-bottom:4px;">Día vencimiento</label><input class="input" value="15" /></div></div></div>
-        <div class="card"><h3 style="font-weight:600;color:white;margin-bottom:12px;">Agentes IA</h3><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:14px;color:#cbd5e1;">Modelo Claude</span><span style="font-size:14px;color:#60a5fa;font-weight:500;">Opus 4.6</span></div></div>
-        <button class="btn-primary" style="align-self:flex-start;"><i data-lucide="save" style="width:16px;height:16px"></i> Guardar configuración</button>
-      </div>
-    `;
-
-    // ======= ADMIN =======
-    pages.admin = `
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-        <div><h1 style="font-size:24px;font-weight:700;color:white;">Panel de Administración</h1><p style="font-size:14px;color:#94a3b8;margin-top:2px;">Gestión de usuarios y roles</p></div>
-        <button class="btn-primary"><i data-lucide="plus" style="width:16px;height:16px"></i> Invitar usuario</button>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;">
-        <div class="stat-card"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px;">Total usuarios</div><div style="font-size:22px;font-weight:700;color:white;">52</div></div>
-        <div class="stat-card"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px;">Activos hoy</div><div style="font-size:22px;font-weight:700;color:#22c55e;">18</div></div>
-        <div class="stat-card"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px;">Invitaciones pendientes</div><div style="font-size:22px;font-weight:700;color:#f59e0b;">3</div></div>
-      </div>
-      <div class="card">
-        <table style="width:100%;border-collapse:collapse;">
-          <thead><tr style="border-bottom:1px solid #334155;"><th style="text-align:left;padding:10px;font-size:12px;color:#64748b;">Usuario</th><th style="text-align:left;padding:10px;font-size:12px;color:#64748b;">Email</th><th style="text-align:left;padding:10px;font-size:12px;color:#64748b;">Rol</th><th style="text-align:left;padding:10px;font-size:12px;color:#64748b;">Estado</th></tr></thead>
-          <tbody>
-            ${['Claudio Rieutord|crieutord@entel.cl|Administrador|Activo','María González|mgonzalez@mail.com|Copropietaria|Activo','Carlos Pérez|cperez@mail.com|Copropietario|Activo','Ana Muñoz|amunoz@mail.com|Tesorera|Activo','Luis Soto|lsoto@mail.com|Arrendatario|Inactivo'].map(u => {
-              const [n,e,r,s] = u.split('|');
-              return '<tr style="border-bottom:1px solid #1e293b;"><td style="padding:10px;font-size:14px;color:white;">'+n+'</td><td style="padding:10px;font-size:13px;color:#94a3b8;">'+e+'</td><td style="padding:10px;"><span style="font-size:12px;padding:2px 8px;background:#1e3a5f;border-radius:6px;color:#60a5fa;">'+r+'</span></td><td style="padding:10px;font-size:13px;color:'+(s==='Activo'?'#22c55e':'#64748b')+';">'+s+'</td></tr>';
-            }).join('')}
-          </tbody>
-        </table>
-      </div>
-    `;
-
-    const pageTitles = {
-      dashboard:'Dashboard', gastos:'Gastos Comunes', copropietarios:'Copropietarios',
-      asambleas:'Asambleas', documentos:'Documentos', mantenimiento:'Mantenimiento',
-      proveedores:'Proveedores', agentes:'Agentes IA', reglamento:'Reglamento',
-      perfil:'Mi Perfil', configuracion:'Configuración', admin:'Administración'
-    };
-
-    function showPage(page) {
-      document.getElementById('content').innerHTML = pages[page] || '<p>Página en desarrollo</p>';
-      document.getElementById('content').className = 'animate-fade-in';
-      document.getElementById('page-title').textContent = pageTitles[page] || page;
-      document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.sidebar-link').forEach(el => {
-        if (el.getAttribute('onclick')?.includes(page)) el.classList.add('active');
-      });
-      lucide.createIcons();
-    }
-
-    showPage('dashboard');
-    lucide.createIcons();
-
-    // ======= MODALES DE ACCESO RÁPIDO =======
-    function createModal(id, content) {
-      const overlay = document.createElement('div');
-      overlay.id = id;
-      overlay.style.cssText = 'position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);padding:16px;';
-      overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
-      overlay.innerHTML = content;
-      document.body.appendChild(overlay);
-      lucide.createIcons();
-      return overlay;
-    }
-
-    function openPortonModal() {
-      createModal('modal-porton', `
-        <div style="background:#1e293b;border:1px solid #334155;border-radius:16px;padding:24px;width:100%;max-width:380px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-            <h3 style="font-size:18px;font-weight:700;color:white;">Apertura de Portón</h3>
-            <button onclick="document.getElementById('modal-porton').remove()" style="background:none;border:none;cursor:pointer;padding:4px;color:#94a3b8;"><i data-lucide="x" style="width:20px;height:20px"></i></button>
-          </div>
-          <div style="text-align:center;">
-            <div style="width:64px;height:64px;border-radius:50%;background:#451a03;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
-              <i data-lucide="door-open" style="width:32px;height:32px;color:#f59e0b"></i>
-            </div>
-            <p style="font-size:14px;color:#94a3b8;margin-bottom:20px;">Se realizará una llamada al sistema de apertura remota del portón del condominio.</p>
-            <a href="tel:+56988156948" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:#d97706;color:white;border-radius:12px;font-weight:600;font-size:15px;text-decoration:none;min-height:48px;">
-              <i data-lucide="phone-call" style="width:20px;height:20px"></i>
-              Llamar para abrir
-            </a>
-            <p style="font-size:12px;color:#64748b;margin-top:12px;">Número: +56 9 8815 6948</p>
-          </div>
-        </div>
-      `);
-    }
-
-    function openCamarasModal() {
-      createModal('modal-camaras', `
-        <div style="background:#1e293b;border:1px solid #334155;border-radius:16px;padding:24px;width:100%;max-width:420px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-            <h3 style="font-size:18px;font-weight:700;color:white;">Cámaras de Seguridad</h3>
-            <button onclick="document.getElementById('modal-camaras').remove()" style="background:none;border:none;cursor:pointer;padding:4px;color:#94a3b8;"><i data-lucide="x" style="width:20px;height:20px"></i></button>
-          </div>
-          <div style="text-align:center;">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
-              ${['Entrada Principal','Estacionamiento','Piscina','Hall Acceso'].map(cam => `
-                <div style="aspect-ratio:16/9;background:linear-gradient(135deg,#334155,#1e293b);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;border:1px solid #475569;">
-                  <i data-lucide="video" style="width:24px;height:24px;color:#64748b"></i>
-                  <span style="font-size:10px;color:#94a3b8;margin-top:4px;font-weight:500;">${cam}</span>
-                  <div style="position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:#ef4444;"></div>
+<body class="bg-slate-950 text-slate-100 scrollbar-thin">
+    <div class="flex h-screen">
+        <!-- SIDEBAR -->
+        <div class="sidebar-gradient w-64 overflow-y-auto scrollbar-thin flex flex-col">
+            <!-- Logo -->
+            <div class="p-6 border-b border-slate-700/50">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-white">CondoIA</h1>
+                        <p class="text-xs text-slate-400">Gestión Inteligente</p>
+                    </div>
                 </div>
-              `).join('')}
             </div>
-            <p style="font-size:12px;color:#64748b;">Próximamente — Integración con sistema CCTV del condominio</p>
-          </div>
+
+            <!-- Navigation -->
+            <nav class="flex-1 px-3 py-6 space-y-2">
+                <button onclick="showPage('dashboard')" class="sidebar-link active w-full text-left">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-3m0 0l7-4 7 4M5 9v10a1 1 0 001 1h12a1 1 0 001-1V9m-9 4v4m4-4v4m4-4v4"></path></svg>
+                    <span>Dashboard</span>
+                </button>
+                <button onclick="showPage('gastos')" class="sidebar-link w-full text-left">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span>Gastos</span>
+                </button>
+                <button onclick="showPage('copropietarios')" class="sidebar-link w-full text-left">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 12H9m4 5H9m6 0h.01M9 12a4 4 0 110-5.292m6 0a4 4 0 100 5.292"></path></svg>
+                    <span>Copropietarios</span>
+                </button>
+                <button onclick="showPage('asambleas')" class="sidebar-link w-full text-left">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 0 0-5.856-1.487M15 10h.01M11 20h5v-2a3 3 0 0 0-5.856-1.487M15 10h.01M7 20v-2a4 4 0 0 0-4-4H3v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2h-1a4 4 0 0 0-4 4v2H7z"></path></svg>
+                    <span>Asambleas</span>
+                </button>
+                <button onclick="showPage('documentos')" class="sidebar-link w-full text-left">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <span>Documentos</span>
+                </button>
+                <button onclick="showPage('mantenimiento')" class="sidebar-link w-full text-left">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
+                    <span>Mantenimiento</span>
+                </button>
+                <button onclick="showPage('proveedores')" class="sidebar-link w-full text-left">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span>Proveedores</span>
+                </button>
+                <button onclick="showPage('emergencias')" class="sidebar-link w-full text-left">
+                    <div class="flex items-center gap-3 flex-1">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4v2m0 4v2m0-10.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm0-4a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm8-8a1 1 0 11-2 0 1 1 0 012 0z"></path></svg>
+                        <span>Emergencias</span>
+                        <span class="live-badge ml-auto"></span>
+                    </div>
+                </button>
+                <button onclick="showPage('agentes')" class="sidebar-link w-full text-left">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6H3m15.364-6.364l-.707-.707M9 17h.01"></path></svg>
+                    <span>Agentes IA</span>
+                </button>
+                <button onclick="showPage('reglamento')" class="sidebar-link w-full text-left">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C6.5 6.253 2 10.998 2 17.25S6.5 28 12 28s10-4.745 10-10.75S17.5 6.253 12 6.253z"></path></svg>
+                    <span>Reglamento</span>
+                </button>
+                <button onclick="showPage('perfil')" class="sidebar-link w-full text-left">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    <span>Perfil</span>
+                </button>
+                <button onclick="showPage('configuracion')" class="sidebar-link w-full text-left">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
+                    <span>Configuración</span>
+                </button>
+                <button onclick="showPage('admin')" class="sidebar-link w-full text-left">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
+                    <span>Admin</span>
+                </button>
+            </nav>
+
+            <!-- User Profile -->
+            <div class="p-4 border-t border-slate-700/50">
+                <div class="glass-card p-3 rounded-lg">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center text-sm font-bold">CD</div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-white truncate">Claudio Díaz</p>
+                            <p class="text-xs text-slate-400 truncate">Admin</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      `);
-    }
 
-    function openPagoModal() {
-      createModal('modal-pago', `
-        <div style="background:#1e293b;border:1px solid #334155;border-radius:16px;padding:24px;width:100%;max-width:380px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-            <h3 style="font-size:18px;font-weight:700;color:white;">Pago de Gastos Comunes</h3>
-            <button onclick="document.getElementById('modal-pago').remove()" style="background:none;border:none;cursor:pointer;padding:4px;color:#94a3b8;"><i data-lucide="x" style="width:20px;height:20px"></i></button>
-          </div>
-          <div id="pago-content">
-            <div style="background:#0f172a;border-radius:12px;padding:16px;margin-bottom:16px;">
-              <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:8px;"><span style="color:#94a3b8;">Período</span><span style="color:white;font-weight:500;">Marzo 2026</span></div>
-              <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:8px;"><span style="color:#94a3b8;">Gasto común</span><span style="color:white;font-weight:500;">$85.430</span></div>
-              <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:8px;"><span style="color:#94a3b8;">Fondo de reserva</span><span style="color:white;font-weight:500;">$12.500</span></div>
-              <hr style="border-color:#334155;margin:8px 0;" />
-              <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:700;"><span style="color:#cbd5e1;">Total</span><span style="color:white;">$97.930</span></div>
+        <!-- MAIN CONTENT -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- TOP BAR -->
+            <div class="topbar-blur h-16 border-b border-slate-700/50 flex items-center px-8 gap-6">
+                <div class="flex-1">
+                    <h2 id="page-title" class="text-2xl font-bold text-white">Dashboard</h2>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button class="p-2 hover:bg-slate-800 rounded-lg transition">
+                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                    </button>
+                    <button class="p-2 hover:bg-slate-800 rounded-lg transition">
+                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
+                    </button>
+                </div>
             </div>
-            <div style="margin-bottom:16px;">
-              <label style="font-size:13px;font-weight:500;color:#94a3b8;display:block;margin-bottom:8px;">Método de pago</label>
-              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
-                <button style="padding:10px;border-radius:8px;border:1px solid #334155;background:none;color:#e2e8f0;font-size:13px;font-weight:500;cursor:pointer;min-height:44px;" onmouseover="this.style.borderColor='#16a34a';this.style.background='#052e16'" onmouseout="this.style.borderColor='#334155';this.style.background='none'">WebPay</button>
-                <button style="padding:10px;border-radius:8px;border:1px solid #334155;background:none;color:#e2e8f0;font-size:13px;font-weight:500;cursor:pointer;min-height:44px;" onmouseover="this.style.borderColor='#16a34a';this.style.background='#052e16'" onmouseout="this.style.borderColor='#334155';this.style.background='none'">Khipu</button>
-                <button style="padding:10px;border-radius:8px;border:1px solid #334155;background:none;color:#e2e8f0;font-size:13px;font-weight:500;cursor:pointer;min-height:44px;" onmouseover="this.style.borderColor='#16a34a';this.style.background='#052e16'" onmouseout="this.style.borderColor='#334155';this.style.background='none'">Transfer.</button>
-              </div>
+            <div class="topbar-line"></div>
+
+            <!-- PAGE CONTENT -->
+            <div class="flex-1 overflow-y-auto scrollbar-thin">
+                <!-- DASHBOARD PAGE -->
+                <div id="dashboard-page" class="page-content p-8 space-y-8">
+                    <!-- Critical Alert -->
+                    <div class="glass-card border-l-4 border-red-500 p-4 flex items-start gap-4 pulse-critical">
+                        <svg class="w-6 h-6 text-red-500 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-red-400">Sistema Alerta: Sin eventos críticos activos</h3>
+                            <p class="text-sm text-slate-400 mt-1">Todos los sistemas funcionan normalmente. Próxima revisión en 24 horas.</p>
+                        </div>
+                        <button class="text-slate-400 hover:text-slate-200 transition">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+
+                    <!-- Stats Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="stat-card p-6 rounded-lg fade-in stagger-1">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-slate-400 text-sm font-medium">Unidades</p>
+                                    <p class="text-3xl font-bold text-white mt-2">45</p>
+                                </div>
+                                <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                </div>
+                            </div>
+                            <p class="text-xs text-emerald-400 mt-4">+2 esta semana</p>
+                        </div>
+
+                        <div class="stat-card p-6 rounded-lg fade-in stagger-2">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-slate-400 text-sm font-medium">Gastos Mes</p>
+                                    <p class="text-3xl font-bold text-white mt-2">$4.2M</p>
+                                </div>
+                                <div class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-4">Dentro del presupuesto</p>
+                        </div>
+
+                        <div class="stat-card p-6 rounded-lg fade-in stagger-3">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-slate-400 text-sm font-medium">Morosidad</p>
+                                    <p class="text-3xl font-bold text-white mt-2">3</p>
+                                </div>
+                                <div class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                                </div>
+                            </div>
+                            <p class="text-xs text-orange-400 mt-4">Requiere atención</p>
+                        </div>
+
+                        <div class="stat-card p-6 rounded-lg fade-in stagger-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-slate-400 text-sm font-medium">Mantenciones</p>
+                                    <p class="text-3xl font-bold text-white mt-2">8</p>
+                                </div>
+                                <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-4">En progreso</p>
+                        </div>
+                    </div>
+
+                    <!-- Charts and Info -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Chart -->
+                        <div class="lg:col-span-2 glass-card p-6 rounded-lg fade-in stagger-5">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-lg font-semibold text-white">Gastos por Categoría</h3>
+                                <div class="flex gap-2">
+                                    <button onclick="switchChart('barras')" class="tab-button active px-4 py-2 text-sm">Barras</button>
+                                    <button onclick="switchChart('tendencia')" class="tab-button px-4 py-2 text-sm">Tendencia</button>
+                                </div>
+                            </div>
+                            <div class="chart-container relative">
+                                <canvas id="chart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="glass-card p-6 rounded-lg fade-in stagger-5 flex flex-col">
+                            <h3 class="text-lg font-semibold text-white mb-4">Acciones Rápidas</h3>
+                            <button onclick="openModal('porton')" class="secondary-button w-full px-4 py-3 rounded-lg text-sm font-medium mb-3 flex items-center justify-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                Abrir Portón
+                            </button>
+                            <button onclick="openModal('camaras')" class="secondary-button w-full px-4 py-3 rounded-lg text-sm font-medium mb-3 flex items-center justify-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                Ver Cámaras
+                            </button>
+                            <button onclick="openModal('pago')" class="gradient-button w-full px-4 py-3 rounded-lg text-sm font-medium text-white flex items-center justify-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                Pagar Cuota
+                            </button>
+                            <p class="text-xs text-slate-400 mt-4">Cuota próxima: $97,930</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GASTOS PAGE -->
+                <div id="gastos-page" class="page-content p-8 space-y-8 hidden">
+                    <div class="glass-card p-6 rounded-lg">
+                        <h3 class="text-lg font-semibold text-white mb-4">Resumen de Gastos</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="glass-card p-4 rounded-lg">
+                                <p class="text-slate-400 text-sm">Mes Actual</p>
+                                <p class="text-2xl font-bold text-white mt-2">$4.2M</p>
+                            </div>
+                            <div class="glass-card p-4 rounded-lg">
+                                <p class="text-slate-400 text-sm">Mes Anterior</p>
+                                <p class="text-2xl font-bold text-white mt-2">$3.8M</p>
+                            </div>
+                            <div class="glass-card p-4 rounded-lg">
+                                <p class="text-slate-400 text-sm">Variación</p>
+                                <p class="text-2xl font-bold text-orange-400 mt-2">+10.5%</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-lg">
+                        <h3 class="text-lg font-semibold text-white mb-4">Desglose por Categoría</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                    <span class="text-sm">Servicios Comunes</span>
+                                </div>
+                                <span class="font-semibold">$1.8M</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-3 h-3 bg-emerald-500 rounded-full"></div>
+                                    <span class="text-sm">Mantenimiento</span>
+                                </div>
+                                <span class="font-semibold">$1.2M</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-3 h-3 bg-orange-500 rounded-full"></div>
+                                    <span class="text-sm">Seguros</span>
+                                </div>
+                                <span class="font-semibold">$0.8M</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
+                                    <span class="text-sm">Otros</span>
+                                </div>
+                                <span class="font-semibold">$0.4M</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COPROPIETARIOS PAGE -->
+                <div id="copropietarios-page" class="page-content p-8 space-y-8 hidden">
+                    <div class="glass-card p-6 rounded-lg">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-white">Directorio</h3>
+                            <button class="gradient-button px-4 py-2 rounded-lg text-sm font-medium text-white">Añadir</button>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="glass-card p-4 rounded-lg flex items-center gap-4">
+                                <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center font-bold">JM</div>
+                                <div class="flex-1">
+                                    <p class="font-medium text-white">Juan Martínez</p>
+                                    <p class="text-sm text-slate-400">Depto 401</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm text-emerald-400">Al día</p>
+                                </div>
+                            </div>
+                            <div class="glass-card p-4 rounded-lg flex items-center gap-4">
+                                <div class="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center font-bold">LS</div>
+                                <div class="flex-1">
+                                    <p class="font-medium text-white">Laura Silva</p>
+                                    <p class="text-sm text-slate-400">Depto 302</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm text-slate-400">-2 meses</p>
+                                </div>
+                            </div>
+                            <div class="glass-card p-4 rounded-lg flex items-center gap-4">
+                                <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center font-bold">RG</div>
+                                <div class="flex-1">
+                                    <p class="font-medium text-white">Roberto García</p>
+                                    <p class="text-sm text-slate-400">Depto 105</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm text-orange-400">-1 mes</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ASAMBLEAS PAGE -->
+                <div id="asambleas-page" class="page-content p-8 space-y-8 hidden">
+                    <div class="glass-card p-6 rounded-lg">
+                        <h3 class="text-lg font-semibold text-white mb-4">Próximas Asambleas</h3>
+                        <div class="space-y-3">
+                            <div class="glass-card p-4 rounded-lg border-l-4 border-blue-500">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <p class="font-semibold text-white">Asamblea Ordinaria 2024</p>
+                                        <p class="text-sm text-slate-400 mt-2">📅 15 Noviembre, 19:00</p>
+                                        <p class="text-sm text-slate-400">📍 Sala de Reuniones</p>
+                                    </div>
+                                    <span class="badge-medium px-3 py-1 rounded-full text-xs font-medium">Pendiente</span>
+                                </div>
+                            </div>
+                            <div class="glass-card p-4 rounded-lg border-l-4 border-emerald-500">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <p class="font-semibold text-white">Revisión Presupuesto 2025</p>
+                                        <p class="text-sm text-slate-400 mt-2">📅 22 Noviembre, 18:30</p>
+                                        <p class="text-sm text-slate-400">📍 Virtual</p>
+                                    </div>
+                                    <span class="badge-low px-3 py-1 rounded-full text-xs font-medium">Confirmada</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DOCUMENTOS PAGE -->
+                <div id="documentos-page" class="page-content p-8 space-y-8 hidden">
+                    <div class="glass-card p-6 rounded-lg">
+                        <h3 class="text-lg font-semibold text-white mb-4">Documentos</h3>
+                        <div class="space-y-3">
+                            <div class="glass-card p-4 rounded-lg flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+                                    <div>
+                                        <p class="font-medium text-white">Reglamento_Interno_2024.pdf</p>
+                                        <p class="text-xs text-slate-400">2.4 MB • Actualizado hace 3 días</p>
+                                    </div>
+                                </div>
+                                <button class="text-slate-400 hover:text-slate-200">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                </button>
+                            </div>
+                            <div class="glass-card p-4 rounded-lg flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <svg class="w-6 h-6 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+                                    <div>
+                                        <p class="font-medium text-white">Presupuesto_2024.xlsx</p>
+                                        <p class="text-xs text-slate-400">1.1 MB • Actualizado hace 1 semana</p>
+                                    </div>
+                                </div>
+                                <button class="text-slate-400 hover:text-slate-200">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MANTENIMIENTO PAGE -->
+                <div id="mantenimiento-page" class="page-content p-8 space-y-8 hidden">
+                    <div class="glass-card p-6 rounded-lg">
+                        <h3 class="text-lg font-semibold text-white mb-4">Órdenes de Mantenimiento</h3>
+                        <div class="space-y-3">
+                            <div class="glass-card p-4 rounded-lg border-l-4 border-emerald-500">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <p class="font-semibold text-white">Reparación piscina</p>
+                                        <p class="text-sm text-slate-400 mt-2">En progreso</p>
+                                    </div>
+                                    <span class="badge-low px-3 py-1 rounded-full text-xs font-medium">Activo</span>
+                                </div>
+                            </div>
+                            <div class="glass-card p-4 rounded-lg border-l-4 border-orange-500">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <p class="font-semibold text-white">Limpieza áreas comunes</p>
+                                        <p class="text-sm text-slate-400 mt-2">Programado para próxima semana</p>
+                                    </div>
+                                    <span class="badge-medium px-3 py-1 rounded-full text-xs font-medium">Pendiente</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROVEEDORES PAGE -->
+                <div id="proveedores-page" class="page-content p-8 space-y-8 hidden">
+                    <div class="glass-card p-6 rounded-lg">
+                        <h3 class="text-lg font-semibold text-white mb-4">Proveedores Contratados</h3>
+                        <div class="space-y-3">
+                            <div class="glass-card p-4 rounded-lg flex items-center justify-between">
+                                <div>
+                                    <p class="font-semibold text-white">Limpieza Profesional Chile</p>
+                                    <p class="text-sm text-slate-400">limpieza@empresa.cl</p>
+                                </div>
+                                <button class="text-slate-400 hover:text-slate-200">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                </button>
+                            </div>
+                            <div class="glass-card p-4 rounded-lg flex items-center justify-between">
+                                <div>
+                                    <p class="font-semibold text-white">Electricista Certificado</p>
+                                    <p class="text-sm text-slate-400">electro@servicios.cl</p>
+                                </div>
+                                <button class="text-slate-400 hover:text-slate-200">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EMERGENCIAS PAGE -->
+                <div id="emergencias-page" class="page-content p-8 space-y-8 hidden">
+                    <!-- Critical Alert Banner -->
+                    <div class="glass-card border-l-4 border-red-500 p-4 flex items-start gap-4 pulse-critical bg-gradient-to-r from-red-950/40 to-transparent">
+                        <svg class="w-6 h-6 text-red-500 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-red-400">SISTEMA DE EMERGENCIAS EN VIVO</h3>
+                            <p class="text-sm text-slate-400 mt-1">Información en tiempo real de sismos, alertas y protocolos de emergencia para la Región Metropolitana.</p>
+                        </div>
+                    </div>
+
+                    <!-- Tabs -->
+                    <div class="glass-card rounded-lg overflow-hidden">
+                        <div class="flex border-b border-slate-700/50">
+                            <button onclick="switchEmergenciaTab('sismos')" class="tab-button active flex-1 px-6 py-4 text-sm font-medium border-b-2 border-blue-500">
+                                📍 Sismos Chile
+                            </button>
+                            <button onclick="switchEmergenciaTab('alertas')" class="tab-button flex-1 px-6 py-4 text-sm font-medium text-slate-400">
+                                ⚠️ Alertas
+                            </button>
+                            <button onclick="switchEmergenciaTab('protocolos')" class="tab-button flex-1 px-6 py-4 text-sm font-medium text-slate-400">
+                                📋 Protocolos
+                            </button>
+                        </div>
+
+                        <!-- SISMOS TAB -->
+                        <div id="sismos-tab" class="p-6 space-y-3">
+                            <!-- Sismo 1 -->
+                            <div class="glass-card p-4 rounded-lg border-l-4 border-red-500 earthquake-red">
+                                <div class="flex items-start justify-between mb-3">
+                                    <div>
+                                        <p class="font-semibold text-white">Sismo Region Metropolitana</p>
+                                        <p class="text-xs text-slate-400 mt-1">Magnitud: 6.2 | Profundidad: 28 km</p>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">6.2</span>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-slate-300">📍 La Punta, Melipilla</p>
+                                <p class="text-xs text-slate-400 mt-2">Hace 2 horas • 14:32 hrs</p>
+                                <div class="mt-3 pt-3 border-t border-slate-700/50 flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-red-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                                    <span class="text-xs text-red-400 font-semibold">Alerta de Tsunami Emitida</span>
+                                </div>
+                            </div>
+
+                            <!-- Sismo 2 -->
+                            <div class="glass-card p-4 rounded-lg border-l-4 border-orange-500 earthquake-orange">
+                                <div class="flex items-start justify-between mb-3">
+                                    <div>
+                                        <p class="font-semibold text-white">Sismo Region Valparaíso</p>
+                                        <p class="text-xs text-slate-400 mt-1">Magnitud: 5.8 | Profundidad: 42 km</p>
+                                    </div>
+                                    <span class="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-bold">5.8</span>
+                                </div>
+                                <p class="text-sm text-slate-300">📍 Punta Negra, Valparaíso</p>
+                                <p class="text-xs text-slate-400 mt-2">Hace 6 horas • 10:15 hrs</p>
+                            </div>
+
+                            <!-- Sismo 3 -->
+                            <div class="glass-card p-4 rounded-lg border-l-4 border-yellow-500 earthquake-yellow">
+                                <div class="flex items-start justify-between mb-3">
+                                    <div>
+                                        <p class="font-semibold text-white">Sismo Region del Biobío</p>
+                                        <p class="text-xs text-slate-400 mt-1">Magnitud: 4.7 | Profundidad: 35 km</p>
+                                    </div>
+                                    <span class="bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-bold">4.7</span>
+                                </div>
+                                <p class="text-sm text-slate-300">📍 Los Angeles, Biobío</p>
+                                <p class="text-xs text-slate-400 mt-2">Hace 12 horas • 04:45 hrs</p>
+                            </div>
+
+                            <!-- Sismo 4 -->
+                            <div class="glass-card p-4 rounded-lg border-l-4 border-green-500 earthquake-green">
+                                <div class="flex items-start justify-between mb-3">
+                                    <div>
+                                        <p class="font-semibold text-white">Sismo Region de La Araucanía</p>
+                                        <p class="text-xs text-slate-400 mt-1">Magnitud: 3.9 | Profundidad: 20 km</p>
+                                    </div>
+                                    <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold">3.9</span>
+                                </div>
+                                <p class="text-sm text-slate-300">📍 Villarrica, La Araucanía</p>
+                                <p class="text-xs text-slate-400 mt-2">Hace 1 día • 20:30 hrs</p>
+                            </div>
+
+                            <!-- Sismo 5 -->
+                            <div class="glass-card p-4 rounded-lg border-l-4 border-green-500 earthquake-green">
+                                <div class="flex items-start justify-between mb-3">
+                                    <div>
+                                        <p class="font-semibold text-white">Sismo Region de Los Lagos</p>
+                                        <p class="text-xs text-slate-400 mt-1">Magnitud: 3.5 | Profundidad: 18 km</p>
+                                    </div>
+                                    <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold">3.5</span>
+                                </div>
+                                <p class="text-sm text-slate-300">📍 Puerto Varas, Los Lagos</p>
+                                <p class="text-xs text-slate-400 mt-2">Hace 1 día • 18:22 hrs</p>
+                            </div>
+                        </div>
+
+                        <!-- ALERTAS TAB -->
+                        <div id="alertas-tab" class="p-6 space-y-3 hidden">
+                            <!-- Alert 1 -->
+                            <div class="glass-card p-4 rounded-lg border-l-4 border-red-500">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div>
+                                        <p class="font-semibold text-white">Alerta Sísmica - Región Metropolitana</p>
+                                        <p class="text-xs text-slate-400 mt-1">Fuente: ONEMI/SENAPRED</p>
+                                    </div>
+                                    <span class="badge-critical px-3 py-1 rounded-full text-xs font-medium">CRÍTICA</span>
+                                </div>
+                                <p class="text-sm text-slate-300 mt-2">Se recomienda evacuar áreas cercanas a la costa. Siga instrucciones de autoridades locales.</p>
+                            </div>
+
+                            <!-- Alert 2 -->
+                            <div class="glass-card p-4 rounded-lg border-l-4 border-orange-500">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div>
+                                        <p class="font-semibold text-white">Corte de Energía Eléctrica</p>
+                                        <p class="text-xs text-slate-400 mt-1">Fuente: Enel</p>
+                                    </div>
+                                    <span class="badge-high px-3 py-1 rounded-full text-xs font-medium">ALTA</span>
+                                </div>
+                                <p class="text-sm text-slate-300 mt-2">Se espera corte programado en zonas cercanas desde 10:00 a 15:00 hrs.</p>
+                            </div>
+
+                            <!-- Alert 3 -->
+                            <div class="glass-card p-4 rounded-lg border-l-4 border-yellow-500">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div>
+                                        <p class="font-semibold text-white">Corte de Agua Potable</p>
+                                        <p class="text-xs text-slate-400 mt-1">Fuente: Aguas Andinas</p>
+                                    </div>
+                                    <span class="badge-medium px-3 py-1 rounded-full text-xs font-medium">MEDIA</span>
+                                </div>
+                                <p class="text-sm text-slate-300 mt-2">Mantenimiento programado: Se espera normalización en 48 horas.</p>
+                            </div>
+
+                            <!-- Alert 4 -->
+                            <div class="glass-card p-4 rounded-lg border-l-4 border-orange-500">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div>
+                                        <p class="font-semibold text-white">Alerta de Seguridad - Sector</p>
+                                        <p class="text-xs text-slate-400 mt-1">Fuente: Administración</p>
+                                    </div>
+                                    <span class="badge-high px-3 py-1 rounded-full text-xs font-medium">ALTA</span>
+                                </div>
+                                <p class="text-sm text-slate-300 mt-2">Mayor vigilancia en accesos. Reportar actividades sospechosas a Carabineros.</p>
+                            </div>
+
+                            <!-- Alert 5 -->
+                            <div class="glass-card p-4 rounded-lg border-l-4 border-red-500">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div>
+                                        <p class="font-semibold text-white">Alerta de Incendio Forestal</p>
+                                        <p class="text-xs text-slate-400 mt-1">Fuente: CONAF</p>
+                                    </div>
+                                    <span class="badge-critical px-3 py-1 rounded-full text-xs font-medium">CRÍTICA</span>
+                                </div>
+                                <p class="text-sm text-slate-300 mt-2">Alerta amarilla en cercanías. Manténgase atento a cambios en condiciones atmosféricas.</p>
+                            </div>
+                        </div>
+
+                        <!-- PROTOCOLOS TAB -->
+                        <div id="protocolos-tab" class="p-6 hidden">
+                            <div class="space-y-3">
+                                <!-- Protocol 1: Sismo -->
+                                <div class="glass-card rounded-lg overflow-hidden">
+                                    <button onclick="toggleAccordion(this)" class="accordion-button w-full p-4 flex items-center justify-between bg-slate-800/40 hover:bg-slate-800/60">
+                                        <span class="font-semibold text-white">🏚️ Protocolo en Caso de Sismo</span>
+                                        <svg class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                                    </button>
+                                    <div class="accordion-content p-4 bg-slate-900/20 border-t border-slate-700/50">
+                                        <ol class="space-y-2 text-sm text-slate-300 list-decimal list-inside">
+                                            <li>Busque un lugar seguro inmediatamente: bajo una mesa o mueble resistente</li>
+                                            <li>Aléjese de ventanas, espejos y objetos que puedan caer</li>
+                                            <li>Permanezca en el lugar seguro hasta que cese el movimiento</li>
+                                            <li>Después del sismo, revise si hay daños en su unidad</li>
+                                            <li>Use escaleras, NO ascensores para desalojar</li>
+                                            <li>Diríjase a zonas de seguridad establecidas</li>
+                                            <li>Manténgase atento a la información oficial de ONEMI</li>
+                                        </ol>
+                                    </div>
+                                </div>
+
+                                <!-- Protocol 2: Incendio -->
+                                <div class="glass-card rounded-lg overflow-hidden">
+                                    <button onclick="toggleAccordion(this)" class="accordion-button w-full p-4 flex items-center justify-between bg-slate-800/40 hover:bg-slate-800/60">
+                                        <span class="font-semibold text-white">🔥 Protocolo en Caso de Incendio</span>
+                                        <svg class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                                    </button>
+                                    <div class="accordion-content p-4 bg-slate-900/20 border-t border-slate-700/50">
+                                        <ol class="space-y-2 text-sm text-slate-300 list-decimal list-inside">
+                                            <li>Active la alarma de incendio inmediatamente</li>
+                                            <li>Llame a Bomberos al 132</li>
+                                            <li>Intente apagar el fuego solo si es pequeño y seguro</li>
+                                            <li>Use escaleras de emergencia para evacuación</li>
+                                            <li>Aléjese del humo: póngase en cuatro puntos si no hay visibilidad</li>
+                                            <li>Diríjase a la zona de seguridad designada</li>
+                                            <li>No regrese al edificio sin autorización de autoridades</li>
+                                        </ol>
+                                    </div>
+                                </div>
+
+                                <!-- Protocol 3: Tsunami -->
+                                <div class="glass-card rounded-lg overflow-hidden">
+                                    <button onclick="toggleAccordion(this)" class="accordion-button w-full p-4 flex items-center justify-between bg-slate-800/40 hover:bg-slate-800/60">
+                                        <span class="font-semibold text-white">🌊 Protocolo en Caso de Tsunami</span>
+                                        <svg class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                                    </button>
+                                    <div class="accordion-content p-4 bg-slate-900/20 border-t border-slate-700/50">
+                                        <ol class="space-y-2 text-sm text-slate-300 list-decimal list-inside">
+                                            <li>Si siente un sismo fuerte, EVAQUE INMEDIATAMENTE hacia zonas altas</li>
+                                            <li>No espere confirmación oficial si sintió fuerte sismo</li>
+                                            <li>Diríjase a zonas elevadas o tierra firme mayor a 30 metros</li>
+                                            <li>Manténgase en zona segura por al menos 2-3 horas</li>
+                                            <li>Siga instrucciones de Carabineros y ONEMI</li>
+                                            <li>Use teléfono solo para emergencias</li>
+                                        </ol>
+                                    </div>
+                                </div>
+
+                                <!-- Protocol 4: Números de Emergencia -->
+                                <div class="glass-card rounded-lg overflow-hidden">
+                                    <button onclick="toggleAccordion(this)" class="accordion-button w-full p-4 flex items-center justify-between bg-slate-800/40 hover:bg-slate-800/60">
+                                        <span class="font-semibold text-white">📱 Números de Emergencia Importantes</span>
+                                        <svg class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                                    </button>
+                                    <div class="accordion-content p-4 bg-slate-900/20 border-t border-slate-700/50">
+                                        <div class="space-y-3">
+                                            <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
+                                                <div>
+                                                    <p class="font-semibold text-red-400">Bomberos</p>
+                                                    <p class="text-xs text-slate-400">Emergencias por fuego</p>
+                                                </div>
+                                                <a href="tel:132" class="gradient-button px-4 py-2 rounded-lg text-sm font-medium text-white">132</a>
+                                            </div>
+                                            <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
+                                                <div>
+                                                    <p class="font-semibold text-blue-400">Carabineros</p>
+                                                    <p class="text-xs text-slate-400">Situación de seguridad</p>
+                                                </div>
+                                                <a href="tel:133" class="gradient-button px-4 py-2 rounded-lg text-sm font-medium text-white">133</a>
+                                            </div>
+                                            <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
+                                                <div>
+                                                    <p class="font-semibold text-emerald-400">SAMU</p>
+                                                    <p class="text-xs text-slate-400">Emergencias médicas</p>
+                                                </div>
+                                                <a href="tel:131" class="gradient-button px-4 py-2 rounded-lg text-sm font-medium text-white">131</a>
+                                            </div>
+                                            <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
+                                                <div>
+                                                    <p class="font-semibold text-purple-400">PDI</p>
+                                                    <p class="text-xs text-slate-400">Investigaciones policiales</p>
+                                                </div>
+                                                <a href="tel:134" class="gradient-button px-4 py-2 rounded-lg text-sm font-medium text-white">134</a>
+                                            </div>
+                                            <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
+                                                <div>
+                                                    <p class="font-semibold text-orange-400">SENAPRED</p>
+                                                    <p class="text-xs text-slate-400">Protección civil y emergencias</p>
+                                                </div>
+                                                <a href="tel:137" class="gradient-button px-4 py-2 rounded-lg text-sm font-medium text-white">137</a>
+                                            </div>
+                                            <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
+                                                <div>
+                                                    <p class="font-semibold text-cyan-400">Hospital de Peñaflor</p>
+                                                    <p class="text-xs text-slate-400">Urgencias 24/7 — Carrera 214, Peñaflor</p>
+                                                </div>
+                                                <a href="tel:+56225742500" class="gradient-button px-4 py-2 rounded-lg text-sm font-medium text-white">(2) 2574 2500</a>
+                                            </div>
+                                            <div class="flex items-center justify-between p-3 bg-slate-800/40 rounded-lg">
+                                                <div>
+                                                    <p class="font-semibold text-white">Conserje CondoIA</p>
+                                                    <p class="text-xs text-slate-400">Soporte dentro del complejo</p>
+                                                </div>
+                                                <a href="tel:+56988156948" class="gradient-button px-4 py-2 rounded-lg text-sm font-medium text-white">+56 9 8815 6948</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AGENTES PAGE -->
+                <div id="agentes-page" class="page-content p-8 space-y-8 hidden">
+                    <div class="glass-card p-6 rounded-lg">
+                        <h3 class="text-lg font-semibold text-white mb-4">Agentes de IA Disponibles</h3>
+                        <div class="space-y-3">
+                            <div class="glass-card p-4 rounded-lg flex items-center justify-between">
+                                <div>
+                                    <p class="font-semibold text-white">Asistente Administrativo</p>
+                                    <p class="text-sm text-slate-400">Gestión de documentos y comunicaciones</p>
+                                </div>
+                                <button class="secondary-button px-4 py-2 rounded-lg text-sm">Activar</button>
+                            </div>
+                            <div class="glass-card p-4 rounded-lg flex items-center justify-between">
+                                <div>
+                                    <p class="font-semibold text-white">Gestor de Presupuestos</p>
+                                    <p class="text-sm text-slate-400">Análisis de gastos y previsiones</p>
+                                </div>
+                                <button class="secondary-button px-4 py-2 rounded-lg text-sm">Activar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- REGLAMENTO PAGE -->
+                <div id="reglamento-page" class="page-content p-8 space-y-8 hidden">
+                    <div class="glass-card p-6 rounded-lg">
+                        <h3 class="text-lg font-semibold text-white mb-4">Reglamento Interno</h3>
+                        <div class="space-y-4 text-slate-300 text-sm leading-relaxed">
+                            <div>
+                                <h4 class="font-semibold text-white mb-2">1. Normas Generales</h4>
+                                <p>Todos los copropietarios deben respetar las normas establecidas en este reglamento.</p>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-white mb-2">2. Uso de Áreas Comunes</h4>
+                                <p>Las áreas comunes deben mantenerse limpias y disponibles para todos los usuarios.</p>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-white mb-2">3. Cuotas Mensuales</h4>
+                                <p>Las cuotas se pagan antes del día 10 de cada mes. Atrasos generan intereses.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PERFIL PAGE -->
+                <div id="perfil-page" class="page-content p-8 space-y-8 hidden">
+                    <div class="glass-card p-6 rounded-lg">
+                        <div class="flex items-center gap-6 mb-6">
+                            <div class="w-20 h-20 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center text-2xl font-bold">CD</div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-white">Claudio Díaz</h3>
+                                <p class="text-slate-400">Administrador del Condominio</p>
+                                <p class="text-sm text-slate-500 mt-1">claudio@condoia.cl</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="glass-card p-4 rounded-lg">
+                                <p class="text-slate-400 text-sm">Unidad</p>
+                                <p class="text-lg font-semibold text-white mt-1">Penthouse 501</p>
+                            </div>
+                            <div class="glass-card p-4 rounded-lg">
+                                <p class="text-slate-400 text-sm">Teléfono</p>
+                                <p class="text-lg font-semibold text-white mt-1">+56 9 8815 6948</p>
+                            </div>
+                            <div class="glass-card p-4 rounded-lg">
+                                <p class="text-slate-400 text-sm">Estado de Cuota</p>
+                                <p class="text-lg font-semibold text-emerald-400 mt-1">Al día</p>
+                            </div>
+                            <div class="glass-card p-4 rounded-lg">
+                                <p class="text-slate-400 text-sm">Rol</p>
+                                <p class="text-lg font-semibold text-white mt-1">Admin</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONFIGURACION PAGE -->
+                <div id="configuracion-page" class="page-content p-8 space-y-8 hidden">
+                    <div class="glass-card p-6 rounded-lg">
+                        <h3 class="text-lg font-semibold text-white mb-4">Preferencias</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-4 bg-slate-800/40 rounded-lg">
+                                <div>
+                                    <p class="font-medium text-white">Notificaciones Push</p>
+                                    <p class="text-sm text-slate-400">Recibir alertas en tiempo real</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-400 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-slate-800/40 rounded-lg">
+                                <div>
+                                    <p class="font-medium text-white">Emails de Reportes</p>
+                                    <p class="text-sm text-slate-400">Resumen mensual de actividades</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-400 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ADMIN PAGE -->
+                <div id="admin-page" class="page-content p-8 space-y-8 hidden">
+                    <div class="glass-card p-6 rounded-lg">
+                        <h3 class="text-lg font-semibold text-white mb-4">Panel de Administración</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="glass-card p-4 rounded-lg flex items-center justify-between">
+                                <div>
+                                    <p class="font-semibold text-white">Usuarios Activos</p>
+                                    <p class="text-2xl font-bold text-blue-400 mt-1">127</p>
+                                </div>
+                                <svg class="w-12 h-12 text-blue-500/20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 4.354a4 4 0 110 5.292M15 12H9m4 5H9m6 0h.01M9 12a4 4 0 110-5.292m6 0a4 4 0 100 5.292"></path></svg>
+                            </div>
+                            <div class="glass-card p-4 rounded-lg flex items-center justify-between">
+                                <div>
+                                    <p class="font-semibold text-white">Versión del Sistema</p>
+                                    <p class="text-2xl font-bold text-emerald-400 mt-1">3.2.1</p>
+                                </div>
+                                <svg class="w-12 h-12 text-emerald-500/20" fill="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <button onclick="procesarPago()" id="btn-pagar" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:#16a34a;color:white;border:none;border-radius:12px;font-weight:600;font-size:15px;cursor:pointer;min-height:48px;">
-              <i data-lucide="wallet" style="width:20px;height:20px"></i>
-              Pagar $97.930
-            </button>
-            <p style="font-size:11px;color:#64748b;text-align:center;margin-top:10px;">Demo — Pago ficticio sin transacción real</p>
-          </div>
         </div>
-      `);
-    }
+    </div>
 
-    // ======= CHART: Ingresos vs Egresos =======
-    const chartData = [
-      { mes:'Oct', ingresos:3850000, egresos:3420000 },
-      { mes:'Nov', ingresos:4100000, egresos:3680000 },
-      { mes:'Dic', ingresos:4350000, egresos:4950000 },
-      { mes:'Ene', ingresos:3920000, egresos:3510000 },
-      { mes:'Feb', ingresos:4200000, egresos:3750000 },
-      { mes:'Mar', ingresos:4176000, egresos:3890000 },
-    ];
-    const maxVal = Math.max(...chartData.flatMap(d=>[d.ingresos,d.egresos])) * 1.15;
-    let currentChartView = 'barras';
-
-    function fmtCLP(n) { return n >= 1e6 ? '$'+(n/1e6).toFixed(1)+'M' : '$'+Math.round(n/1000)+'K'; }
-
-    function setChartView(view) {
-      currentChartView = view;
-      document.getElementById('btn-barras').style.background = view==='barras' ? '#2563eb' : '#1e293b';
-      document.getElementById('btn-barras').style.color = view==='barras' ? 'white' : '#94a3b8';
-      document.getElementById('btn-area').style.background = view==='area' ? '#2563eb' : '#1e293b';
-      document.getElementById('btn-area').style.color = view==='area' ? 'white' : '#94a3b8';
-      renderChart();
-    }
-
-    function renderChart() {
-      const container = document.getElementById('chart-container');
-      if (!container) return;
-      const H = 200, W = 580;
-
-      if (currentChartView === 'barras') {
-        const barW = 24, gap = 8, groupW = barW*2+gap;
-        const totalW = chartData.length * (groupW+36) + 60;
-        let svg = '<svg viewBox="0 0 '+Math.max(totalW,W)+' '+(H+45)+'" style="width:100%;height:auto;" role="img" aria-label="Gráfico de barras Ingresos vs Egresos">';
-        // Grid
-        for (let p of [0,0.25,0.5,0.75,1]) {
-          const y = H - p*H + 10;
-          svg += '<line x1="50" x2="'+Math.max(totalW-10,W)+'" y1="'+y+'" y2="'+y+'" stroke="#334155" stroke-dasharray="'+(p===0?'':'4 4')+'" stroke-width="1"/>';
-          svg += '<text x="46" y="'+(y+4)+'" text-anchor="end" fill="#64748b" font-size="11">'+fmtCLP(p*maxVal)+'</text>';
-        }
-        // Bars
-        chartData.forEach((d,i) => {
-          const gx = 60 + i*(groupW+36);
-          const iH = (d.ingresos/maxVal)*H, eH = (d.egresos/maxVal)*H;
-          svg += '<g class="chart-group" onmouseenter="showChartTip('+i+')" onmouseleave="hideChartTip()" style="cursor:pointer">';
-          svg += '<rect x="'+(gx-6)+'" y="10" width="'+(groupW+12)+'" height="'+H+'" rx="6" fill="transparent" class="chart-hover-bg" data-idx="'+i+'"/>';
-          svg += '<rect x="'+gx+'" y="'+(H+10-iH)+'" width="'+barW+'" height="'+iH+'" rx="4" fill="#10b981"/>';
-          svg += '<rect x="'+(gx+barW+gap)+'" y="'+(H+10-eH)+'" width="'+barW+'" height="'+eH+'" rx="4" fill="#f43f5e"/>';
-          svg += '<text x="'+(gx+barW+gap/2)+'" y="'+(H+30)+'" text-anchor="middle" fill="#94a3b8" font-size="13" font-weight="500">'+d.mes+'</text>';
-          svg += '</g>';
-        });
-        svg += '</svg>';
-        container.innerHTML = svg + '<div id="chart-tooltip" style="display:none;position:absolute;z-index:20;background:#f8fafc;color:#0f172a;border-radius:12px;padding:12px 16px;box-shadow:0 8px 30px rgba(0,0,0,.4);pointer-events:none;min-width:180px;"></div>';
-      } else {
-        const padL = 55;
-        const areaW = W - padL - 10;
-        const step = areaW / (chartData.length-1);
-        function toY(v) { return H-(v/maxVal)*H; }
-        let svg = '<svg viewBox="0 0 '+W+' '+(H+45)+'" style="width:100%;height:auto;" role="img">';
-        svg += '<defs><linearGradient id="gI" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#10b981" stop-opacity="0.35"/><stop offset="100%" stop-color="#10b981" stop-opacity="0.02"/></linearGradient>';
-        svg += '<linearGradient id="gE" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f43f5e" stop-opacity="0.25"/><stop offset="100%" stop-color="#f43f5e" stop-opacity="0.02"/></linearGradient></defs>';
-        svg += '<g transform="translate('+padL+',10)">';
-        // Grid
-        for (let p of [0,0.25,0.5,0.75,1]) {
-          const y = H-p*H;
-          svg += '<line x1="0" x2="'+areaW+'" y1="'+y+'" y2="'+y+'" stroke="#334155" stroke-dasharray="'+(p===0?'':'4 4')+'"/>';
-          svg += '<text x="-8" y="'+(y+4)+'" text-anchor="end" fill="#64748b" font-size="11">'+fmtCLP(p*maxVal)+'</text>';
-        }
-        // Area ingresos
-        let pathI = chartData.map((d,i)=>(i===0?'M':'L')+(i*step)+','+toY(d.ingresos)).join(' ');
-        let pathE = chartData.map((d,i)=>(i===0?'M':'L')+(i*step)+','+toY(d.egresos)).join(' ');
-        const lastX = (chartData.length-1)*step;
-        svg += '<path d="'+pathI+' L'+lastX+','+H+' L0,'+H+' Z" fill="url(#gI)"/>';
-        svg += '<path d="'+pathI+'" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
-        svg += '<path d="'+pathE+' L'+lastX+','+H+' L0,'+H+' Z" fill="url(#gE)"/>';
-        svg += '<path d="'+pathE+'" fill="none" stroke="#f43f5e" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
-        // Points
-        chartData.forEach((d,i) => {
-          const x = i*step;
-          svg += '<g onmouseenter="showChartTip('+i+')" onmouseleave="hideChartTip()" style="cursor:pointer">';
-          svg += '<rect x="'+(x-18)+'" y="0" width="36" height="'+(H+30)+'" fill="transparent"/>';
-          svg += '<circle cx="'+x+'" cy="'+toY(d.ingresos)+'" r="5" fill="#10b981" stroke="white" stroke-width="2"/>';
-          svg += '<circle cx="'+x+'" cy="'+toY(d.egresos)+'" r="5" fill="#f43f5e" stroke="white" stroke-width="2"/>';
-          svg += '<text x="'+x+'" y="'+(H+22)+'" text-anchor="middle" fill="#94a3b8" font-size="13">'+d.mes+'</text>';
-          svg += '</g>';
-        });
-        svg += '</g></svg>';
-        container.innerHTML = svg + '<div id="chart-tooltip" style="display:none;position:absolute;z-index:20;background:#f8fafc;color:#0f172a;border-radius:12px;padding:12px 16px;box-shadow:0 8px 30px rgba(0,0,0,.4);pointer-events:none;min-width:180px;"></div>';
-      }
-    }
-
-    function showChartTip(idx) {
-      const d = chartData[idx];
-      const tip = document.getElementById('chart-tooltip');
-      if (!tip) return;
-      const saldo = d.ingresos - d.egresos;
-      const saldoColor = saldo >= 0 ? '#22c55e' : '#ef4444';
-      tip.innerHTML = '<div style="font-weight:600;margin-bottom:6px;">'+d.mes+'</div>'
-        + '<div style="display:flex;align-items:center;gap:6px;font-size:13px;margin-bottom:3px;"><span style="width:8px;height:8px;border-radius:50%;background:#10b981;display:inline-block;"></span>Ingresos: <strong>$'+d.ingresos.toLocaleString('es-CL')+'</strong></div>'
-        + '<div style="display:flex;align-items:center;gap:6px;font-size:13px;margin-bottom:3px;"><span style="width:8px;height:8px;border-radius:50%;background:#f43f5e;display:inline-block;"></span>Egresos: <strong>$'+d.egresos.toLocaleString('es-CL')+'</strong></div>'
-        + '<div style="font-size:12px;color:'+saldoColor+';margin-top:4px;">Saldo: $'+saldo.toLocaleString('es-CL')+'</div>';
-      tip.style.display = 'block';
-      tip.style.left = Math.min(idx * 90 + 60, 380) + 'px';
-      tip.style.top = '0px';
-    }
-
-    function hideChartTip() {
-      const tip = document.getElementById('chart-tooltip');
-      if (tip) tip.style.display = 'none';
-    }
-
-    // Render chart when gastos page loads
-    const origShowPage = showPage;
-    showPage = function(page) {
-      origShowPage(page);
-      if (page === 'gastos') setTimeout(renderChart, 50);
-    };
-
-    function procesarPago() {
-      const btn = document.getElementById('btn-pagar');
-      btn.innerHTML = '<svg style="animation:spin 1s linear infinite;width:20px;height:20px" viewBox="0 0 24 24"><circle style="opacity:0.25" cx="12" cy="12" r="10" stroke="white" stroke-width="4" fill="none"/><path style="opacity:0.75" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg> Procesando...';
-      btn.style.background = '#15803d';
-      btn.disabled = true;
-      setTimeout(() => {
-        const content = document.getElementById('pago-content');
-        const ref = Math.random().toString(36).slice(2, 10).toUpperCase();
-        content.innerHTML = `
-          <div style="text-align:center;padding:20px 0;">
-            <div style="width:64px;height:64px;border-radius:50%;background:#052e16;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
-              <i data-lucide="check-circle" style="width:32px;height:32px;color:#22c55e"></i>
+    <!-- MODALS -->
+    <!-- Portón Modal -->
+    <div id="porton-modal" class="modal-overlay justify-center items-center" onclick="if(event.target===this) closeModal('porton')">
+        <div class="modal-content glass-card p-8 rounded-lg max-w-md w-full mx-4">
+            <h3 class="text-xl font-bold text-white mb-4">Abrir Portón</h3>
+            <p class="text-slate-300 mb-6">¿Desea abrir el portón de acceso principal?</p>
+            <div class="flex gap-3">
+                <button onclick="closeModal('porton')" class="secondary-button flex-1 px-4 py-3 rounded-lg font-medium">Cancelar</button>
+                <a href="tel:+56988156948" class="gradient-button flex-1 px-4 py-3 rounded-lg text-white font-medium text-center">Llamar Conserje</a>
             </div>
-            <p style="font-size:20px;font-weight:700;color:#22c55e;">Pago Exitoso</p>
-            <p style="font-size:13px;color:#94a3b8;margin-top:8px;">Comprobante N° ${ref}</p>
-            <p style="font-size:13px;color:#64748b;margin-top:4px;">$97.930 — Marzo 2026</p>
-          </div>
-        `;
+        </div>
+    </div>
+
+    <!-- Cámaras Modal -->
+    <div id="camaras-modal" class="modal-overlay justify-center items-center" onclick="if(event.target===this) closeModal('camaras')">
+        <div class="modal-content glass-card p-8 rounded-lg max-w-md w-full mx-4">
+            <h3 class="text-xl font-bold text-white mb-4">Cámaras de Seguridad</h3>
+            <div class="space-y-3 mb-6">
+                <div class="glass-card p-4 rounded-lg">
+                    <p class="font-medium text-white">Entrada Principal</p>
+                    <p class="text-sm text-slate-400 mt-1">Estado: Activa</p>
+                </div>
+                <div class="glass-card p-4 rounded-lg">
+                    <p class="font-medium text-white">Estacionamiento</p>
+                    <p class="text-sm text-slate-400 mt-1">Estado: Activa</p>
+                </div>
+                <div class="glass-card p-4 rounded-lg">
+                    <p class="font-medium text-white">Áreas Comunes</p>
+                    <p class="text-sm text-slate-400 mt-1">Estado: Activa</p>
+                </div>
+            </div>
+            <button onclick="closeModal('camaras')" class="secondary-button w-full px-4 py-3 rounded-lg font-medium">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Pago Modal -->
+    <div id="pago-modal" class="modal-overlay justify-center items-center" onclick="if(event.target===this) closeModal('pago')">
+        <div class="modal-content glass-card p-8 rounded-lg max-w-md w-full mx-4">
+            <h3 class="text-xl font-bold text-white mb-4">Pagar Cuota</h3>
+            <div class="glass-card p-4 rounded-lg mb-6 border-l-4 border-emerald-500">
+                <p class="text-slate-400 text-sm">Monto a Pagar</p>
+                <p class="text-3xl font-bold text-white mt-2">$97,930</p>
+                <p class="text-xs text-slate-400 mt-2">Vencimiento: 10 de cada mes</p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="closeModal('pago')" class="secondary-button flex-1 px-4 py-3 rounded-lg font-medium">Cancelar</button>
+                <button class="gradient-button flex-1 px-4 py-3 rounded-lg text-white font-medium">Pagar Ahora</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Chart.js via CDN if needed
+        const chartScript = document.createElement('script');
+        chartScript.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+        chartScript.onload = initChart;
+        document.head.appendChild(chartScript);
+
+        // Page Navigation
+        function showPage(pageName) {
+            // Hide all pages
+            document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
+
+            // Remove active class from all sidebar links
+            document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
+
+            // Show selected page
+            const pageEl = document.getElementById(pageName + '-page');
+            if (pageEl) {
+                pageEl.classList.remove('hidden');
+            }
+
+            // Set active sidebar link
+            const activeLink = Array.from(document.querySelectorAll('.sidebar-link')).find(el =>
+                el.textContent.includes(getPageTitle(pageName))
+            );
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+
+            // Update page title
+            document.getElementById('page-title').textContent = getPageTitle(pageName);
+        }
+
+        function getPageTitle(pageName) {
+            const titles = {
+                'dashboard': 'Dashboard',
+                'gastos': 'Gastos',
+                'copropietarios': 'Copropietarios',
+                'asambleas': 'Asambleas',
+                'documentos': 'Documentos',
+                'mantenimiento': 'Mantenimiento',
+                'proveedores': 'Proveedores',
+                'emergencias': 'Emergencias',
+                'agentes': 'Agentes IA',
+                'reglamento': 'Reglamento',
+                'perfil': 'Perfil',
+                'configuracion': 'Configuración',
+                'admin': 'Admin'
+            };
+            return titles[pageName] || 'Dashboard';
+        }
+
+        // Modal Functions
+        function openModal(modalName) {
+            document.getElementById(modalName + '-modal').classList.add('active');
+        }
+
+        function closeModal(modalName) {
+            document.getElementById(modalName + '-modal').classList.remove('active');
+        }
+
+        // Chart Functions
+        let chartInstance = null;
+
+        function initChart() {
+            if (window.Chart) {
+                const ctx = document.getElementById('chart');
+                if (ctx) {
+                    chartInstance = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Servicios', 'Mantenimiento', 'Seguros', 'Otros'],
+                            datasets: [{
+                                label: 'Gastos ($)',
+                                data: [1800000, 1200000, 800000, 400000],
+                                backgroundColor: [
+                                    'rgba(59, 130, 246, 0.5)',
+                                    'rgba(34, 197, 94, 0.5)',
+                                    'rgba(249, 115, 22, 0.5)',
+                                    'rgba(168, 85, 247, 0.5)'
+                                ],
+                                borderColor: [
+                                    'rgba(59, 130, 246, 1)',
+                                    'rgba(34, 197, 94, 1)',
+                                    'rgba(249, 115, 22, 1)',
+                                    'rgba(168, 85, 247, 1)'
+                                ],
+                                borderWidth: 2,
+                                borderRadius: 8
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        color: 'rgba(203, 213, 225, 0.7)',
+                                        callback: function(value) {
+                                            return '$' + (value / 1000000).toFixed(1) + 'M';
+                                        }
+                                    },
+                                    grid: {
+                                        color: 'rgba(148, 163, 184, 0.1)'
+                                    }
+                                },
+                                x: {
+                                    ticks: {
+                                        color: 'rgba(203, 213, 225, 0.7)'
+                                    },
+                                    grid: {
+                                        display: false
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        }
+
+        function switchChart(type) {
+            if (!chartInstance) return;
+
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (type === 'barras') {
+                chartInstance.config.type = 'bar';
+            } else if (type === 'tendencia') {
+                chartInstance.config.type = 'line';
+            }
+            chartInstance.update();
+        }
+
+        // Emergencias Tab Switching
+        function switchEmergenciaTab(tabName) {
+            // Hide all tabs
+            document.getElementById('sismos-tab').classList.add('hidden');
+            document.getElementById('alertas-tab').classList.add('hidden');
+            document.getElementById('protocolos-tab').classList.add('hidden');
+
+            // Remove active class from all tab buttons
+            document.querySelectorAll('#emergencias-page .tab-button').forEach(btn => {
+                btn.classList.remove('active');
+                btn.style.borderBottomColor = 'transparent';
+                btn.style.color = 'rgba(203, 213, 225, 0.7)';
+            });
+
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.remove('hidden');
+
+            // Set active tab button
+            event.target.classList.add('active');
+            event.target.style.borderBottomColor = '#3b82f6';
+            event.target.style.color = '#3b82f6';
+        }
+
+        // Accordion Functions
+        function toggleAccordion(button) {
+            const content = button.nextElementSibling;
+            const isActive = content.classList.contains('active');
+
+            // Close all other accordions
+            document.querySelectorAll('.accordion-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.querySelectorAll('.accordion-button').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            // Toggle current
+            if (!isActive) {
+                content.classList.add('active');
+                button.classList.add('active');
+            }
+        }
+
+        // Lucide Icons
         lucide.createIcons();
-      }, 2000);
-    }
-  </script>
-  <style>@keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }</style>
+
+        // Initialize
+        showPage('dashboard');
+    </script>
 </body>
 </html>

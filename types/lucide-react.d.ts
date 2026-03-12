@@ -99,4 +99,16 @@ declare module 'lucide-react' {
   export const ToggleLeft: Icon
   export const ToggleRight: Icon
   export const BarChart3: Icon
+  export const ShieldAlert: Icon
+  export const Radio: Icon
+  export const RefreshCw: Icon
+  export const Waves: Icon
+  export const Flame: Icon
+  export const Wind: Icon
+  export const CloudRain: Icon
+  export const Zap: Icon
+  export const ExternalLink: Icon
+  export const Info: Icon
+  export const ChevronDown: Icon
+  export const ChevronUp: Icon
 }

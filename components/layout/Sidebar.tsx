@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import {
   Building2, LayoutDashboard, DollarSign, Users, CalendarDays,
   FileText, MessageSquare, Wrench, Store, Settings, ChevronLeft,
-  ShieldCheck, BookOpen, X
+  ShieldCheck, BookOpen, X, ShieldAlert
 } from 'lucide-react'
 import type { Perfil, UserRole } from '@/types'
 import { cn } from '@/lib/utils'
@@ -72,6 +72,13 @@ const NAV_ITEMS: NavItem[] = [
     label: 'Proveedores',
     icon: <Store className="h-5 w-5" />,
     roles: ['superadmin', 'administrador'],
+  },
+  {
+    href: '/dashboard/emergencias',
+    label: 'Emergencias',
+    icon: <ShieldAlert className="h-5 w-5" />,
+    roles: ['superadmin', 'administrador', 'tesorero', 'secretario', 'copropietario', 'arrendatario'],
+    badge: 'LIVE',
   },
   {
     href: '/dashboard/reglamento',

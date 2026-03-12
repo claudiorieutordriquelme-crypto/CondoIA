@@ -784,43 +784,60 @@
                 </div>
 
                 <!-- COPROPIETARIOS PAGE -->
-                <div id="copropietarios-page" class="page-content p-8 space-y-8 hidden">
-                    <div class="glass-card p-6 rounded-lg">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold text-white">Directorio</h3>
-                            <button class="gradient-button px-4 py-2 rounded-lg text-sm font-medium text-white">Añadir</button>
+                <div id="copropietarios-page" class="page-content p-8 space-y-6 hidden">
+                    <!-- Header -->
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-semibold text-white">Directorio de Copropietarios</h3>
+                            <p class="text-sm text-slate-400 mt-1">Gestiona la información de contacto de los residentes del condominio</p>
                         </div>
-                        <div class="space-y-3">
-                            <div class="glass-card p-4 rounded-lg flex items-center gap-4">
-                                <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center font-bold">JM</div>
-                                <div class="flex-1">
-                                    <p class="font-medium text-white">Juan Martínez</p>
-                                    <p class="text-sm text-slate-400">Depto 401</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-sm text-emerald-400">Al día</p>
-                                </div>
+                        <button onclick="openModal('add-copropietario')" class="gradient-button px-5 py-2.5 rounded-lg text-sm font-medium text-white flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                            Añadir Copropietario
+                        </button>
+                    </div>
+
+                    <!-- Search & Filter Bar -->
+                    <div class="glass-card rounded-xl overflow-hidden">
+                        <div class="flex flex-wrap items-center gap-3 p-4 border-b border-slate-700/30 bg-slate-800/20">
+                            <div class="flex items-center gap-2 flex-1 min-w-[200px]">
+                                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                                <input id="coprop-search" type="text" placeholder="Buscar por nombre, depto o correo..." oninput="renderCopropietarios()" class="bg-transparent border-none text-sm text-slate-300 placeholder-slate-500 focus:outline-none flex-1">
                             </div>
-                            <div class="glass-card p-4 rounded-lg flex items-center gap-4">
-                                <div class="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center font-bold">LS</div>
-                                <div class="flex-1">
-                                    <p class="font-medium text-white">Laura Silva</p>
-                                    <p class="text-sm text-slate-400">Depto 302</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-sm text-slate-400">-2 meses</p>
-                                </div>
+                            <div class="flex items-center gap-2">
+                                <label class="text-xs text-slate-500 font-medium">Estado:</label>
+                                <select id="coprop-filter-estado" onchange="renderCopropietarios()" class="bg-slate-800/60 border border-slate-700/50 rounded-lg px-3 py-1.5 text-xs text-slate-300 focus:border-blue-500/50 focus:outline-none">
+                                    <option value="todos">Todos</option>
+                                    <option value="al_dia">Al día</option>
+                                    <option value="moroso">Moroso</option>
+                                </select>
                             </div>
-                            <div class="glass-card p-4 rounded-lg flex items-center gap-4">
-                                <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center font-bold">RG</div>
-                                <div class="flex-1">
-                                    <p class="font-medium text-white">Roberto García</p>
-                                    <p class="text-sm text-slate-400">Depto 105</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-sm text-orange-400">-1 mes</p>
-                                </div>
-                            </div>
+                            <span id="coprop-count" class="text-xs text-slate-500"></span>
+                        </div>
+
+                        <!-- Residents List -->
+                        <div id="copropietarios-container" class="p-5 space-y-4">
+                            <!-- Rendered by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <p class="text-2xl font-bold text-blue-400" id="coprop-stat-total">0</p>
+                            <p class="text-xs text-slate-400 mt-1">Total Residentes</p>
+                        </div>
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <p class="text-2xl font-bold text-emerald-400" id="coprop-stat-aldia">0</p>
+                            <p class="text-xs text-slate-400 mt-1">Al Día</p>
+                        </div>
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <p class="text-2xl font-bold text-orange-400" id="coprop-stat-morosos">0</p>
+                            <p class="text-xs text-slate-400 mt-1">Morosos</p>
+                        </div>
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <p class="text-2xl font-bold text-purple-400" id="coprop-stat-deptos">0</p>
+                            <p class="text-xs text-slate-400 mt-1">Deptos. Ocupados</p>
                         </div>
                     </div>
                 </div>
@@ -1421,6 +1438,53 @@
         </div>
     </div>
 
+    <!-- Add Copropietario Modal -->
+    <div id="add-copropietario-modal" class="modal-overlay justify-center items-center" onclick="if(event.target===this) closeModal('add-copropietario')">
+        <div class="modal-content glass-card p-8 rounded-lg max-w-lg w-full mx-4">
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">Añadir Copropietario</h3>
+                    <p class="text-xs text-slate-400">Registra un nuevo residente del condominio</p>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label for="coprop-nombre" class="text-sm text-slate-400 mb-2 block font-medium">Nombre Completo</label>
+                    <input id="coprop-nombre" type="text" placeholder="Ej: María Fernanda López Rojas" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label for="coprop-depto" class="text-sm text-slate-400 mb-2 block font-medium">N° de Casa / Depto</label>
+                        <input id="coprop-depto" type="text" placeholder="Ej: 401, Casa 12" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                    </div>
+                    <div>
+                        <label for="coprop-rol" class="text-sm text-slate-400 mb-2 block font-medium">Rol</label>
+                        <select id="coprop-rol" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                            <option value="copropietario">Copropietario</option>
+                            <option value="arrendatario">Arrendatario</option>
+                            <option value="administrador">Administrador</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label for="coprop-correo" class="text-sm text-slate-400 mb-2 block font-medium">Correo Electrónico</label>
+                    <input id="coprop-correo" type="email" placeholder="correo@ejemplo.cl" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                </div>
+                <div>
+                    <label for="coprop-telefono" class="text-sm text-slate-400 mb-2 block font-medium">Teléfono de Contacto</label>
+                    <input id="coprop-telefono" type="tel" placeholder="+56 9 1234 5678" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                </div>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button onclick="closeModal('add-copropietario')" class="secondary-button flex-1 px-4 py-3 rounded-lg font-medium text-sm">Cancelar</button>
+                <button onclick="addCopropietario()" class="gradient-button flex-1 px-4 py-3 rounded-lg text-white font-medium text-sm">Añadir</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Add Asamblea Modal -->
     <div id="add-asamblea-modal" class="modal-overlay justify-center items-center" onclick="if(event.target===this) closeModal('add-asamblea')">
         <div class="modal-content glass-card p-8 rounded-lg max-w-lg w-full mx-4">
@@ -1509,6 +1573,7 @@
 
             document.getElementById('page-title').textContent = getPageTitle(pageName);
 
+            if (pageName === 'copropietarios') renderCopropietarios();
             if (pageName === 'documentos') renderDocuments();
             if (pageName === 'mantenimiento') renderKanban();
             if (pageName === 'proveedores') renderProviders();
@@ -1846,6 +1911,138 @@
                 </div>
             `).join('');
             document.getElementById('providers-container').innerHTML = html;
+        }
+
+        // Copropietarios Functions
+        const copropietariosData = [
+            { id: 'c1', nombre: 'Juan Martínez Soto', depto: 'Depto 401', correo: 'juan.martinez@gmail.com', telefono: '+56 9 1234 5678', rol: 'copropietario', estado: 'al_dia', mesesDeuda: 0 },
+            { id: 'c2', nombre: 'Laura Silva Pérez', depto: 'Depto 302', correo: 'laura.silva@hotmail.com', telefono: '+56 9 8765 4321', rol: 'copropietario', estado: 'moroso', mesesDeuda: 2 },
+            { id: 'c3', nombre: 'Roberto García Muñoz', depto: 'Depto 105', correo: 'roberto.garcia@outlook.cl', telefono: '+56 9 5555 1234', rol: 'copropietario', estado: 'moroso', mesesDeuda: 1 },
+            { id: 'c4', nombre: 'María Fernanda López', depto: 'Depto 201', correo: 'mf.lopez@gmail.com', telefono: '+56 9 4444 5678', rol: 'copropietario', estado: 'al_dia', mesesDeuda: 0 },
+            { id: 'c5', nombre: 'Carlos Andrés Muñoz Rivera', depto: 'Depto 502', correo: 'carlos.munoz@empresa.cl', telefono: '+56 9 3333 2222', rol: 'administrador', estado: 'al_dia', mesesDeuda: 0 },
+            { id: 'c6', nombre: 'Ana Torres Vidal', depto: 'Casa 12', correo: 'ana.torres@yahoo.com', telefono: '+56 9 7777 8888', rol: 'arrendatario', estado: 'al_dia', mesesDeuda: 0 },
+            { id: 'c7', nombre: 'Pedro Díaz Contreras', depto: 'Depto 103', correo: 'pedro.diaz@gmail.com', telefono: '+56 9 6666 9999', rol: 'copropietario', estado: 'moroso', mesesDeuda: 3 },
+            { id: 'c8', nombre: 'Rosa Vega Fuentes', depto: 'Depto 404', correo: 'rosa.vega@live.cl', telefono: '+56 9 1111 2222', rol: 'copropietario', estado: 'al_dia', mesesDeuda: 0 },
+        ];
+
+        const avatarGradients = [
+            'from-blue-400 to-blue-600', 'from-emerald-400 to-emerald-600', 'from-orange-400 to-orange-600',
+            'from-violet-400 to-violet-600', 'from-rose-400 to-rose-600', 'from-cyan-400 to-cyan-600',
+            'from-amber-400 to-amber-600', 'from-indigo-400 to-indigo-600'
+        ];
+
+        function renderCopropietarios() {
+            const search = (document.getElementById('coprop-search').value || '').toLowerCase();
+            const filterEstado = document.getElementById('coprop-filter-estado').value;
+
+            let filtered = copropietariosData.filter(c => {
+                const matchSearch = !search || c.nombre.toLowerCase().includes(search) || c.depto.toLowerCase().includes(search) || c.correo.toLowerCase().includes(search);
+                const matchEstado = filterEstado === 'todos' || c.estado === filterEstado;
+                return matchSearch && matchEstado;
+            });
+
+            document.getElementById('coprop-count').textContent = filtered.length + ' residente' + (filtered.length !== 1 ? 's' : '');
+
+            const rolLabels = { copropietario: 'Copropietario', arrendatario: 'Arrendatario', administrador: 'Administrador' };
+            const rolBg = { copropietario: 'bg-blue-500/15 text-blue-400', arrendatario: 'bg-violet-500/15 text-violet-400', administrador: 'bg-emerald-500/15 text-emerald-400' };
+
+            if (filtered.length === 0) {
+                document.getElementById('copropietarios-container').innerHTML = `
+                    <div class="text-center py-12">
+                        <svg class="w-12 h-12 text-slate-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        <p class="text-slate-500 text-sm">No se encontraron residentes</p>
+                    </div>`;
+                return;
+            }
+
+            const html = filtered.map((c, idx) => {
+                const initials = c.nombre.split(' ').slice(0, 2).map(n => n[0]).join('');
+                const gradient = avatarGradients[idx % avatarGradients.length];
+                const estadoHtml = c.estado === 'al_dia'
+                    ? '<span class="badge-low px-2.5 py-1 rounded-lg text-xs font-medium">Al día</span>'
+                    : `<span class="badge-critical px-2.5 py-1 rounded-lg text-xs font-medium">-${c.mesesDeuda} mes${c.mesesDeuda > 1 ? 'es' : ''}</span>`;
+
+                return `
+                <div class="glass-card rounded-xl overflow-hidden hover:border-blue-500/30 transition-all">
+                    <div class="p-5">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-gradient-to-br ${gradient} rounded-xl flex items-center justify-center font-bold text-white text-sm flex-shrink-0 shadow-lg">${initials}</div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between gap-3 mb-1">
+                                    <p class="font-semibold text-white text-sm leading-tight">${c.nombre}</p>
+                                    ${estadoHtml}
+                                </div>
+                                <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+                                    <span class="text-xs px-2 py-0.5 rounded-md font-medium bg-slate-700/50 text-slate-300">${c.depto}</span>
+                                    <span class="text-xs px-2 py-0.5 rounded-md font-medium ${rolBg[c.rol]}">${rolLabels[c.rol]}</span>
+                                </div>
+                                <div class="flex items-center gap-5 mt-3 text-xs text-slate-400 flex-wrap">
+                                    <span class="flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                        ${c.correo}
+                                    </span>
+                                    <span class="flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                                        ${c.telefono}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex border-t border-slate-700/40">
+                        <button class="flex-1 py-2.5 text-xs font-medium text-slate-400 hover:text-blue-400 hover:bg-blue-500/5 transition flex items-center justify-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                            Editar
+                        </button>
+                        <div class="w-px bg-slate-700/40"></div>
+                        <button class="flex-1 py-2.5 text-xs font-medium text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/5 transition flex items-center justify-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            Contactar
+                        </button>
+                        <div class="w-px bg-slate-700/40"></div>
+                        <button class="flex-1 py-2.5 text-xs font-medium text-slate-400 hover:text-purple-400 hover:bg-purple-500/5 transition flex items-center justify-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            Historial
+                        </button>
+                    </div>
+                </div>`;
+            }).join('');
+
+            document.getElementById('copropietarios-container').innerHTML = html;
+
+            // Update stats
+            document.getElementById('coprop-stat-total').textContent = copropietariosData.length;
+            document.getElementById('coprop-stat-aldia').textContent = copropietariosData.filter(c => c.estado === 'al_dia').length;
+            document.getElementById('coprop-stat-morosos').textContent = copropietariosData.filter(c => c.estado === 'moroso').length;
+            const deptos = new Set(copropietariosData.map(c => c.depto));
+            document.getElementById('coprop-stat-deptos').textContent = deptos.size;
+        }
+
+        function addCopropietario() {
+            const nombre = document.getElementById('coprop-nombre').value.trim();
+            const depto = document.getElementById('coprop-depto').value.trim();
+            const correo = document.getElementById('coprop-correo').value.trim();
+            const telefono = document.getElementById('coprop-telefono').value.trim();
+            const rol = document.getElementById('coprop-rol').value;
+
+            if (!nombre || !depto) {
+                alert('Por favor complete al menos el nombre y N° de casa/depto.');
+                return;
+            }
+
+            copropietariosData.unshift({
+                id: 'c' + (copropietariosData.length + 1),
+                nombre, depto, correo: correo || 'Sin correo', telefono: telefono || 'Sin teléfono',
+                rol, estado: 'al_dia', mesesDeuda: 0
+            });
+
+            document.getElementById('coprop-nombre').value = '';
+            document.getElementById('coprop-depto').value = '';
+            document.getElementById('coprop-correo').value = '';
+            document.getElementById('coprop-telefono').value = '';
+
+            closeModal('add-copropietario');
+            renderCopropietarios();
         }
 
         // Asambleas Functions

@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://unpkg.com https://cdn.jsdelivr.net https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2 https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co; img-src 'self' data: blob: https:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>CondoIA - Gestión Inteligente de Condominios</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -2763,6 +2767,43 @@
 
     <script>
         // ============================================================
+        // SEGURIDAD — Sanitización de inputs y protección XSS
+        // ============================================================
+        function sanitizeHTML(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function sanitizeInput(str) {
+            if (!str) return '';
+            return str.replace(/[<>"'&]/g, function(match) {
+                const map = { '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;', '&': '&amp;' };
+                return map[match];
+            });
+        }
+
+        function validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 254;
+        }
+
+        function validateMonto(monto) {
+            const num = parseFloat(monto);
+            return !isNaN(num) && num > 0 && num < 1e12;
+        }
+
+        function rateLimiter(key, maxAttempts, windowMs) {
+            const now = Date.now();
+            const attempts = JSON.parse(sessionStorage.getItem('rl_' + key) || '[]')
+                .filter(t => now - t < windowMs);
+            if (attempts.length >= maxAttempts) return false;
+            attempts.push(now);
+            sessionStorage.setItem('rl_' + key, JSON.stringify(attempts));
+            return true;
+        }
+
+        // ============================================================
         // SUPABASE — Conexión a base de datos
         // ============================================================
         const SUPABASE_URL = 'https://sbtwfthsknbbkznntdte.supabase.co';
@@ -2813,6 +2854,18 @@
             const spinner = document.getElementById('login-spinner');
             const btn = document.getElementById('login-btn');
 
+            // Rate limiting: max 5 login attempts per 5 minutes
+            if (!rateLimiter('login', 5, 300000)) {
+                showAuthMessage('Demasiados intentos. Espera unos minutos antes de intentar de nuevo.', 'error');
+                return;
+            }
+
+            // Validate email format
+            if (!validateEmail(email)) {
+                showAuthMessage('Por favor ingresa un email válido.', 'error');
+                return;
+            }
+
             spinner.classList.remove('hidden');
             btn.disabled = true;
             hideAuthMessage();
@@ -2836,12 +2889,38 @@
 
         async function handleRegister(e) {
             e.preventDefault();
-            const name = document.getElementById('register-name').value.trim();
+            const name = sanitizeInput(document.getElementById('register-name').value.trim());
             const email = document.getElementById('register-email').value.trim();
             const password = document.getElementById('register-password').value;
             const role = document.getElementById('register-role').value;
             const spinner = document.getElementById('register-spinner');
             const btn = document.getElementById('register-btn');
+
+            // Rate limiting: max 3 registrations per 10 minutes
+            if (!rateLimiter('register', 3, 600000)) {
+                showAuthMessage('Demasiados intentos de registro. Espera unos minutos.', 'error');
+                return;
+            }
+
+            // Validate inputs
+            if (!name || name.length < 2 || name.length > 100) {
+                showAuthMessage('El nombre debe tener entre 2 y 100 caracteres.', 'error');
+                return;
+            }
+            if (!validateEmail(email)) {
+                showAuthMessage('Por favor ingresa un email válido.', 'error');
+                return;
+            }
+            if (password.length < 8) {
+                showAuthMessage('La contraseña debe tener al menos 8 caracteres.', 'error');
+                return;
+            }
+
+            const allowedRoles = ['copropietario', 'arrendatario'];
+            if (!allowedRoles.includes(role)) {
+                showAuthMessage('Rol no válido.', 'error');
+                return;
+            }
 
             spinner.classList.remove('hidden');
             btn.disabled = true;
@@ -3281,12 +3360,17 @@
 
         async function saveMovimientoDB(movimiento) {
             if (!supabaseReady || !condominioId) return null;
+            // Validate monto before saving
+            if (!validateMonto(movimiento.monto)) {
+                console.error('CondoIA: Monto inválido:', movimiento.monto);
+                return null;
+            }
             try {
                 const dbRecord = {
                     condominio_id: condominioId,
                     tipo: movimiento.tipo,
-                    descripcion: movimiento.desc,
-                    monto: movimiento.monto,
+                    descripcion: sanitizeInput(movimiento.desc),
+                    monto: parseFloat(movimiento.monto),
                     fecha: movimiento.fecha,
                     metodo: movimiento.metodo || 'transferencia',
                     registrado_por: currentUser?.id || '00000000-0000-0000-0000-000000000099'

@@ -523,7 +523,105 @@
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 scrollbar-thin">
-    <div class="flex h-screen">
+    <!-- ============================================================ -->
+    <!-- PANTALLA DE LOGIN -->
+    <!-- ============================================================ -->
+    <div id="login-screen" class="fixed inset-0 z-[9999] flex items-center justify-center" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);">
+        <div class="w-full max-w-md px-6">
+            <!-- Logo -->
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/30">
+                    <svg class="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                    </svg>
+                </div>
+                <h1 class="text-3xl font-bold text-white">CondoIA</h1>
+                <p class="text-slate-400 mt-1">Gestión Inteligente de Condominios</p>
+            </div>
+
+            <!-- Login Card -->
+            <div class="glass-card rounded-2xl p-8">
+                <!-- Tabs: Login / Registro -->
+                <div class="flex gap-1 mb-6 bg-slate-800/50 rounded-lg p-1">
+                    <button id="auth-tab-login" onclick="switchAuthTab('login')" class="flex-1 py-2 px-4 rounded-md text-sm font-medium bg-blue-600 text-white transition-all">Iniciar Sesión</button>
+                    <button id="auth-tab-register" onclick="switchAuthTab('register')" class="flex-1 py-2 px-4 rounded-md text-sm font-medium text-slate-400 hover:text-white transition-all">Registrarse</button>
+                </div>
+
+                <!-- Error/Success Messages -->
+                <div id="auth-message" class="hidden mb-4 p-3 rounded-lg text-sm"></div>
+
+                <!-- Login Form -->
+                <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1.5">Email</label>
+                        <input type="email" id="login-email" required placeholder="tu@email.com"
+                            class="w-full px-4 py-2.5 bg-slate-800/50 border border-slate-600/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1.5">Contraseña</label>
+                        <input type="password" id="login-password" required placeholder="••••••••" minlength="6"
+                            class="w-full px-4 py-2.5 bg-slate-800/50 border border-slate-600/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition">
+                    </div>
+                    <button type="submit" id="login-btn"
+                        class="w-full py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium rounded-lg transition-all shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2">
+                        <span>Iniciar Sesión</span>
+                        <svg id="login-spinner" class="hidden w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                    </button>
+                </form>
+
+                <!-- Register Form (Hidden by default) -->
+                <form id="register-form" onsubmit="handleRegister(event)" class="space-y-4 hidden">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1.5">Nombre completo</label>
+                        <input type="text" id="register-name" required placeholder="Juan Martínez"
+                            class="w-full px-4 py-2.5 bg-slate-800/50 border border-slate-600/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1.5">Email</label>
+                        <input type="email" id="register-email" required placeholder="tu@email.com"
+                            class="w-full px-4 py-2.5 bg-slate-800/50 border border-slate-600/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1.5">Contraseña</label>
+                        <input type="password" id="register-password" required placeholder="Mínimo 6 caracteres" minlength="6"
+                            class="w-full px-4 py-2.5 bg-slate-800/50 border border-slate-600/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1.5">Rol</label>
+                        <select id="register-role" class="w-full px-4 py-2.5 bg-slate-800/50 border border-slate-600/50 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition">
+                            <option value="copropietario">Copropietario</option>
+                            <option value="arrendatario">Arrendatario</option>
+                            <option value="administrador">Administrador</option>
+                            <option value="tesorero">Tesorero</option>
+                            <option value="secretario">Secretario</option>
+                        </select>
+                    </div>
+                    <button type="submit" id="register-btn"
+                        class="w-full py-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-medium rounded-lg transition-all shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2">
+                        <span>Crear Cuenta</span>
+                        <svg id="register-spinner" class="hidden w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                    </button>
+                </form>
+
+                <!-- Demo Access -->
+                <div class="mt-6 pt-4 border-t border-slate-700/50 text-center">
+                    <p class="text-slate-500 text-xs mb-2">Acceso rápido para demo</p>
+                    <button onclick="handleDemoLogin()" id="demo-btn"
+                        class="text-blue-400 hover:text-blue-300 text-sm font-medium transition">
+                        Entrar como Administrador Demo
+                    </button>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <p class="text-center text-slate-600 text-xs mt-6">Ley 21.442 Copropiedad Inmobiliaria — Chile</p>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- APP PRINCIPAL (oculta hasta autenticar) -->
+    <!-- ============================================================ -->
+    <div id="app-container" class="flex h-screen hidden">
         <!-- SIDEBAR -->
         <aside id="app-sidebar" class="sidebar-gradient w-64 overflow-y-auto scrollbar-thin flex flex-col">
             <!-- Logo -->
@@ -576,10 +674,13 @@
                     <span>Emergencias</span>
                     <span style="background:#ef4444;color:white;font-size:9px;padding:1px 6px;border-radius:99px;font-weight:700;margin-left:auto;animation:pulse 2s infinite;">LIVE</span>
                 </button>
+                <!-- Agentes IA: oculto temporalmente, se habilitará como IA Administrador único -->
+                <!--
                 <button onclick="showPage('agentes')" data-page="agentes" class="sidebar-link w-full text-left">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6H3m15.364-6.364l-.707-.707M9 17h.01"></path></svg>
                     <span>Agentes IA</span>
                 </button>
+                -->
                 <button onclick="showPage('reglamento')" data-page="reglamento" class="sidebar-link w-full text-left">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C6.5 6.253 2 10.998 2 17.25S6.5 28 12 28s10-4.745 10-10.75S17.5 6.253 12 6.253z"></path></svg>
                     <span>Reglamento</span>
@@ -602,11 +703,14 @@
             <div class="p-4 border-t border-slate-700/50">
                 <div class="glass-card p-3 rounded-lg">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center text-sm font-bold">CD</div>
+                        <div id="user-avatar" class="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center text-sm font-bold">CR</div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-white truncate">Claudio Díaz</p>
-                            <p class="text-xs text-slate-400 truncate">Admin</p>
+                            <p id="user-display-name" class="text-sm font-medium text-white truncate">Cargando...</p>
+                            <p id="user-display-role" class="text-xs text-slate-400 truncate">—</p>
                         </div>
+                        <button onclick="handleLogout()" title="Cerrar sesión" class="p-1.5 hover:bg-red-500/20 rounded-lg transition group">
+                            <svg class="w-4 h-4 text-slate-500 group-hover:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -2648,6 +2752,270 @@
         const _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let supabaseReady = false;
         let condominioId = null;
+        let currentUser = null;
+        let currentProfile = null;
+
+        // ============================================================
+        // AUTH — Autenticación con Supabase
+        // ============================================================
+
+        function switchAuthTab(tab) {
+            document.getElementById('login-form').classList.toggle('hidden', tab !== 'login');
+            document.getElementById('register-form').classList.toggle('hidden', tab !== 'register');
+            const loginTab = document.getElementById('auth-tab-login');
+            const registerTab = document.getElementById('auth-tab-register');
+            if (tab === 'login') {
+                loginTab.className = 'flex-1 py-2 px-4 rounded-md text-sm font-medium bg-blue-600 text-white transition-all';
+                registerTab.className = 'flex-1 py-2 px-4 rounded-md text-sm font-medium text-slate-400 hover:text-white transition-all';
+            } else {
+                registerTab.className = 'flex-1 py-2 px-4 rounded-md text-sm font-medium bg-emerald-600 text-white transition-all';
+                loginTab.className = 'flex-1 py-2 px-4 rounded-md text-sm font-medium text-slate-400 hover:text-white transition-all';
+            }
+            hideAuthMessage();
+        }
+
+        function showAuthMessage(msg, type) {
+            const el = document.getElementById('auth-message');
+            el.classList.remove('hidden');
+            el.className = 'mb-4 p-3 rounded-lg text-sm ' +
+                (type === 'error' ? 'bg-red-500/10 text-red-400 border border-red-500/20' :
+                 type === 'success' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
+                 'bg-blue-500/10 text-blue-400 border border-blue-500/20');
+            el.textContent = msg;
+        }
+
+        function hideAuthMessage() {
+            document.getElementById('auth-message').classList.add('hidden');
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            const spinner = document.getElementById('login-spinner');
+            const btn = document.getElementById('login-btn');
+
+            spinner.classList.remove('hidden');
+            btn.disabled = true;
+            hideAuthMessage();
+
+            try {
+                const { data, error } = await _sb.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+                await onAuthSuccess(data.user);
+            } catch (err) {
+                showAuthMessage(
+                    err.message === 'Invalid login credentials'
+                        ? 'Email o contraseña incorrectos'
+                        : err.message || 'Error al iniciar sesión',
+                    'error'
+                );
+            } finally {
+                spinner.classList.add('hidden');
+                btn.disabled = false;
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('register-name').value.trim();
+            const email = document.getElementById('register-email').value.trim();
+            const password = document.getElementById('register-password').value;
+            const role = document.getElementById('register-role').value;
+            const spinner = document.getElementById('register-spinner');
+            const btn = document.getElementById('register-btn');
+
+            spinner.classList.remove('hidden');
+            btn.disabled = true;
+            hideAuthMessage();
+
+            try {
+                const { data, error } = await _sb.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: { nombre_completo: name, rol: role }
+                    }
+                });
+                if (error) throw error;
+
+                if (data.user && !data.user.confirmed_at) {
+                    showAuthMessage('Cuenta creada. Revisa tu email para confirmar, o usa el botón de demo para acceder.', 'success');
+                } else if (data.user) {
+                    // Auto-confirmed (e.g., email confirmations disabled)
+                    // Update profile with the selected role
+                    await _sb.from('perfiles').update({
+                        nombre_completo: name,
+                        rol: role
+                    }).eq('id', data.user.id);
+                    await onAuthSuccess(data.user);
+                }
+            } catch (err) {
+                showAuthMessage(
+                    err.message.includes('already registered')
+                        ? 'Este email ya está registrado. Intenta iniciar sesión.'
+                        : err.message || 'Error al registrarse',
+                    'error'
+                );
+            } finally {
+                spinner.classList.add('hidden');
+                btn.disabled = false;
+            }
+        }
+
+        async function handleDemoLogin() {
+            const btn = document.getElementById('demo-btn');
+            btn.textContent = 'Conectando...';
+            btn.disabled = true;
+
+            try {
+                // Try demo admin account
+                const { data, error } = await _sb.auth.signInWithPassword({
+                    email: 'admin@condoia.cl',
+                    password: 'CondoIA2026!'
+                });
+
+                if (error) {
+                    // Create demo account if it doesn't exist
+                    const { data: signUpData, error: signUpError } = await _sb.auth.signUp({
+                        email: 'admin@condoia.cl',
+                        password: 'CondoIA2026!',
+                        options: {
+                            data: { nombre_completo: 'Administrador Demo', rol: 'administrador' }
+                        }
+                    });
+                    if (signUpError) throw signUpError;
+
+                    if (signUpData.user) {
+                        // Try login again (if auto-confirmed)
+                        const { data: loginData, error: loginError } = await _sb.auth.signInWithPassword({
+                            email: 'admin@condoia.cl',
+                            password: 'CondoIA2026!'
+                        });
+                        if (loginError) {
+                            showAuthMessage('Cuenta demo creada. Confirma el email o desactiva confirmación en Supabase Auth settings.', 'info');
+                            return;
+                        }
+                        await onAuthSuccess(loginData.user);
+                        return;
+                    }
+                }
+
+                if (data?.user) {
+                    await onAuthSuccess(data.user);
+                }
+            } catch (err) {
+                showAuthMessage('Error con cuenta demo: ' + err.message, 'error');
+            } finally {
+                btn.textContent = 'Entrar como Administrador Demo';
+                btn.disabled = false;
+            }
+        }
+
+        async function onAuthSuccess(user) {
+            currentUser = user;
+
+            // Load user profile
+            try {
+                const { data: profile } = await _sb
+                    .from('perfiles')
+                    .select('*')
+                    .eq('id', user.id)
+                    .single();
+                currentProfile = profile;
+            } catch (e) {
+                console.warn('CondoIA: No se pudo cargar perfil:', e);
+                currentProfile = {
+                    nombre_completo: user.user_metadata?.nombre_completo || user.email,
+                    rol: user.user_metadata?.rol || 'copropietario'
+                };
+            }
+
+            // Update UI with user info
+            updateUserUI();
+
+            // Hide login, show app
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('app-container').classList.remove('hidden');
+
+            // Initialize data from Supabase
+            await initSupabaseData();
+
+            console.log('CondoIA: Sesión iniciada como', currentProfile?.rol, '-', currentProfile?.nombre_completo);
+        }
+
+        function updateUserUI() {
+            const nameEl = document.getElementById('user-display-name');
+            const roleEl = document.getElementById('user-display-role');
+            const avatarEl = document.getElementById('user-avatar');
+            const name = currentProfile?.nombre_completo || currentUser?.email || '';
+
+            if (nameEl) nameEl.textContent = name;
+            if (avatarEl) {
+                const parts = name.split(' ');
+                avatarEl.textContent = parts.length >= 2
+                    ? (parts[0][0] + parts[1][0]).toUpperCase()
+                    : name.substring(0, 2).toUpperCase();
+            }
+            if (roleEl && currentProfile) {
+                const roleLabels = {
+                    superadmin: 'Super Admin',
+                    administrador: 'Administrador',
+                    tesorero: 'Tesorero',
+                    secretario: 'Secretario',
+                    copropietario: 'Copropietario',
+                    arrendatario: 'Arrendatario'
+                };
+                roleEl.textContent = roleLabels[currentProfile.rol] || currentProfile.rol;
+                // Color avatar based on role
+                const roleColors = {
+                    superadmin: 'from-purple-400 to-purple-600',
+                    administrador: 'from-blue-400 to-blue-600',
+                    tesorero: 'from-amber-400 to-amber-600',
+                    secretario: 'from-cyan-400 to-cyan-600',
+                    copropietario: 'from-emerald-400 to-emerald-600',
+                    arrendatario: 'from-slate-400 to-slate-600'
+                };
+                if (avatarEl && roleColors[currentProfile.rol]) {
+                    avatarEl.className = 'w-10 h-10 bg-gradient-to-br ' + roleColors[currentProfile.rol] + ' rounded-full flex items-center justify-center text-sm font-bold';
+                }
+            }
+        }
+
+        async function handleLogout() {
+            await _sb.auth.signOut();
+            currentUser = null;
+            currentProfile = null;
+            document.getElementById('app-container').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+        }
+
+        // Check for existing session on page load
+        async function checkExistingSession() {
+            try {
+                const { data: { session } } = await _sb.auth.getSession();
+                if (session?.user) {
+                    await onAuthSuccess(session.user);
+                    return true;
+                }
+            } catch (e) {
+                console.warn('CondoIA: Error checking session:', e);
+            }
+            return false;
+        }
+
+        // Listen for auth state changes
+        _sb.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_OUT') {
+                currentUser = null;
+                currentProfile = null;
+                document.getElementById('app-container').classList.add('hidden');
+                document.getElementById('login-screen').classList.remove('hidden');
+            }
+        });
+
+        // Auto-check session on load
+        checkExistingSession();
 
         // ============================================================
         // DATA LAYER — Carga desde Supabase con fallback a datos locales
@@ -2903,7 +3271,7 @@
                     monto: movimiento.monto,
                     fecha: movimiento.fecha,
                     metodo: movimiento.metodo || 'transferencia',
-                    registrado_por: '00000000-0000-0000-0000-000000000099' // System user por ahora
+                    registrado_por: currentUser?.id || '00000000-0000-0000-0000-000000000099'
                 };
                 if (movimiento.tipo === 'ingreso') {
                     dbRecord.categoria_ingreso = movimiento.categoria;
@@ -2924,8 +3292,7 @@
             }
         }
 
-        // Iniciar carga de datos de Supabase (no bloqueante)
-        initSupabaseData();
+        // initSupabaseData se llama ahora desde onAuthSuccess() tras autenticarse
 
         // Initialize Chart.js via CDN if needed
         const chartScript = document.createElement('script');

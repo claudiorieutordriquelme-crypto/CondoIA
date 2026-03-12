@@ -2705,14 +2705,14 @@
                     .from('asambleas')
                     .select('*')
                     .eq('condominio_id', condominioId)
-                    .order('fecha', { ascending: false });
+                    .order('fecha_convocatoria', { ascending: false });
                 if (error) throw error;
 
                 // Cargar datos relacionados para cada asamblea
                 const ids = asambleas.map(a => a.id);
 
                 const [agendaRes, compromisosRes, adjuntosRes, rsvpRes] = await Promise.all([
-                    _sb.from('agenda_items').select('*').in('asamblea_id', ids).order('orden'),
+                    _sb.from('agenda_items').select('*').in('asamblea_id', ids).order('numero'),
                     _sb.from('compromisos').select('*').in('asamblea_id', ids),
                     _sb.from('adjuntos_asamblea').select('*').in('asamblea_id', ids),
                     _sb.from('rsvp_asamblea').select('*').in('asamblea_id', ids)
@@ -2734,9 +2734,9 @@
                 (compromisosRes.data || []).forEach(item => {
                     if (!compromisosByAsamblea[item.asamblea_id]) compromisosByAsamblea[item.asamblea_id] = [];
                     compromisosByAsamblea[item.asamblea_id].push({
-                        texto: item.descripcion,
+                        texto: item.texto,
                         responsable: item.responsable,
-                        fecha: item.fecha_limite,
+                        fecha: item.fecha_compromiso,
                         estado: item.estado
                     });
                 });
@@ -2746,8 +2746,8 @@
                     if (!adjuntosByAsamblea[item.asamblea_id]) adjuntosByAsamblea[item.asamblea_id] = [];
                     adjuntosByAsamblea[item.asamblea_id].push({
                         nombre: item.nombre,
-                        tipo: item.tipo_archivo,
-                        tamano: item.tamano,
+                        tipo: item.tipo,
+                        tamano: item.tamano_bytes ? (item.tamano_bytes / 1048576).toFixed(1) + ' MB' : 'N/A',
                         url: item.url
                     });
                 });
@@ -2766,19 +2766,24 @@
                     if (estado === 'convocada') estado = 'programada';
                     if (estado === 'finalizada') estado = 'realizada';
 
+                    // Extraer fecha y hora de fecha_convocatoria (TIMESTAMPTZ)
+                    const fc = new Date(a.fecha_convocatoria);
+                    const fecha = fc.toISOString().split('T')[0];
+                    const hora = fc.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit', hour12: false });
+
                     return {
                         id: a.id,
                         titulo: a.titulo,
                         tipo: a.tipo,
-                        fecha: a.fecha,
-                        hora: a.hora,
-                        lugar: a.lugar,
+                        fecha: fecha,
+                        hora: hora,
+                        lugar: a.sala_virtual_url || 'Sala de Reuniones',
                         estado: estado,
                         descripcion: a.descripcion,
-                        quorum: a.quorum_tipo || 'simple',
-                        asistencia: a.porcentaje_asistencia,
+                        quorum: a.quorum_requerido > 50 ? 'calificada' : 'simple',
+                        asistencia: a.quorum_alcanzado,
                         rsvp: rsvpByAsamblea[a.id] || { confirmados: [], rechazados: [], pendientes: [] },
-                        notas: a.notas,
+                        notas: a.resumen_ia || a.transcripcion,
                         compromisos: compromisosByAsamblea[a.id] || null,
                         agenda: agendaByAsamblea[a.id] || null,
                         adjuntos: adjuntosByAsamblea[a.id] || null,
@@ -2795,7 +2800,7 @@
             try {
                 const { data, error } = await _sb
                     .from('unidades')
-                    .select('*, perfiles!unidades_propietario_id_fkey(nombre, apellido, email, telefono)')
+                    .select('*, propietario:perfiles!unidades_propietario_id_fkey(nombre_completo, telefono, rol)')
                     .eq('condominio_id', condominioId)
                     .order('numero');
                 if (error) throw error;
@@ -2811,7 +2816,7 @@
                 const { data, error } = await _sb
                     .from('proveedores')
                     .select('*')
-                    .eq('condominio_id', condominioId)
+                    .eq('activo', true)
                     .order('nombre');
                 if (error) throw error;
                 return data;

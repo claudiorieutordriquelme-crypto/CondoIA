@@ -747,6 +747,15 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-2">
+                                <button onclick="openPaymentModal()" class="text-xs px-3 py-1.5 rounded-lg font-medium text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/10 transition flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"/></svg>
+                                    Ingreso
+                                </button>
+                                <button onclick="openExpenseModal()" class="text-xs px-3 py-1.5 rounded-lg font-medium text-rose-400 border border-rose-500/30 hover:bg-rose-500/10 transition flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6"/></svg>
+                                    Egreso
+                                </button>
+                                <div class="w-px h-5 bg-slate-700/50"></div>
                                 <div class="sos-realtime-dot"></div>
                                 <span class="text-xs text-emerald-400 font-medium">En línea</span>
                             </div>
@@ -772,24 +781,7 @@
                                         <span class="text-xs font-semibold text-emerald-400 uppercase tracking-wider">Ingresos</span>
                                     </div>
                                     <p id="consol-ingresos" class="text-2xl font-bold text-emerald-400">$4.200.000</p>
-                                    <div class="mt-3 space-y-2">
-                                        <div class="flex justify-between items-center text-xs">
-                                            <div class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span class="text-slate-500">Gastos Comunes</span></div>
-                                            <span class="text-emerald-400/80 font-medium">$2.100.000</span>
-                                        </div>
-                                        <div class="flex justify-between items-center text-xs">
-                                            <div class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-300"></span><span class="text-slate-500">Fondo Reserva</span></div>
-                                            <span class="text-emerald-400/80 font-medium">$1.200.000</span>
-                                        </div>
-                                        <div class="flex justify-between items-center text-xs">
-                                            <div class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-200"></span><span class="text-slate-500">Multas</span></div>
-                                            <span class="text-emerald-400/80 font-medium">$580.000</span>
-                                        </div>
-                                        <div class="flex justify-between items-center text-xs">
-                                            <div class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-100"></span><span class="text-slate-500">Arriendos</span></div>
-                                            <span class="text-emerald-400/80 font-medium">$320.000</span>
-                                        </div>
-                                    </div>
+                                    <div id="consol-ingresos-breakdown" class="mt-3 space-y-2"></div>
                                 </div>
                                 <!-- Egresos -->
                                 <div class="p-4 rounded-xl bg-rose-500/8 border border-rose-500/20">
@@ -800,24 +792,7 @@
                                         <span class="text-xs font-semibold text-rose-400 uppercase tracking-wider">Egresos</span>
                                     </div>
                                     <p id="consol-egresos" class="text-2xl font-bold text-rose-400">$3.800.000</p>
-                                    <div id="consol-egresos-detail" class="mt-3 space-y-2">
-                                        <div class="flex justify-between items-center text-xs">
-                                            <div class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span><span class="text-slate-500">Servicios Básicos</span></div>
-                                            <span class="text-rose-400/80 font-medium">$1.800.000</span>
-                                        </div>
-                                        <div class="flex justify-between items-center text-xs">
-                                            <div class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-rose-300"></span><span class="text-slate-500">Mantenimiento</span></div>
-                                            <span class="text-rose-400/80 font-medium">$1.200.000</span>
-                                        </div>
-                                        <div class="flex justify-between items-center text-xs">
-                                            <div class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-rose-200"></span><span class="text-slate-500">Seguros</span></div>
-                                            <span class="text-rose-400/80 font-medium">$580.000</span>
-                                        </div>
-                                        <div class="flex justify-between items-center text-xs">
-                                            <div class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-rose-100"></span><span class="text-slate-500">Otros</span></div>
-                                            <span class="text-rose-400/80 font-medium">$220.000</span>
-                                        </div>
-                                    </div>
+                                    <div id="consol-egresos-breakdown" class="mt-3 space-y-2"></div>
                                 </div>
                                 <!-- Balance + Execution -->
                                 <div class="p-4 rounded-xl bg-blue-500/8 border border-blue-500/20">
@@ -849,32 +824,17 @@
                             </div>
                             <!-- Recent movements timeline -->
                             <div class="mt-5">
-                                <p class="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-3">Últimos Movimientos</p>
-                                <div id="consol-movimientos" class="space-y-2">
-                                    <div class="flex items-center gap-3 p-2.5 rounded-lg bg-slate-800/30 hover:bg-slate-800/50 transition">
-                                        <div class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"/></svg></div>
-                                        <div class="flex-1"><p class="text-xs text-white font-medium">Juan Martínez — Depto 401</p><p class="text-xs text-slate-500">Pago cuota mensual</p></div>
-                                        <span class="text-xs font-bold text-emerald-400">+$55.000</span>
-                                        <span class="text-xs text-slate-500">hace 2h</span>
+                                <div class="flex items-center justify-between mb-3">
+                                    <p class="text-xs uppercase tracking-wider text-slate-500 font-semibold">Últimos Movimientos</p>
+                                    <div class="flex items-center gap-1.5">
+                                        <button onclick="filterMovimientos('todos')" id="mov-filter-todos" class="text-xs px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-400 font-medium transition hover:bg-blue-500/30">Todos</button>
+                                        <button onclick="filterMovimientos('ingreso')" id="mov-filter-ingreso" class="text-xs px-2.5 py-1 rounded-full bg-slate-700/50 text-slate-400 font-medium transition hover:bg-slate-700/80">Ingresos</button>
+                                        <button onclick="filterMovimientos('egreso')" id="mov-filter-egreso" class="text-xs px-2.5 py-1 rounded-full bg-slate-700/50 text-slate-400 font-medium transition hover:bg-slate-700/80">Egresos</button>
                                     </div>
-                                    <div class="flex items-center gap-3 p-2.5 rounded-lg bg-slate-800/30 hover:bg-slate-800/50 transition">
-                                        <div class="w-8 h-8 rounded-full bg-rose-500/20 flex items-center justify-center"><svg class="w-3.5 h-3.5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6"/></svg></div>
-                                        <div class="flex-1"><p class="text-xs text-white font-medium">Enel Distribución — Electricidad</p><p class="text-xs text-slate-500">Servicio básico</p></div>
-                                        <span class="text-xs font-bold text-rose-400">-$485.000</span>
-                                        <span class="text-xs text-slate-500">hace 5h</span>
-                                    </div>
-                                    <div class="flex items-center gap-3 p-2.5 rounded-lg bg-slate-800/30 hover:bg-slate-800/50 transition">
-                                        <div class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"/></svg></div>
-                                        <div class="flex-1"><p class="text-xs text-white font-medium">María García — Depto 302</p><p class="text-xs text-slate-500">Pago cuota mensual</p></div>
-                                        <span class="text-xs font-bold text-emerald-400">+$55.000</span>
-                                        <span class="text-xs text-slate-500">hace 1 día</span>
-                                    </div>
-                                    <div class="flex items-center gap-3 p-2.5 rounded-lg bg-slate-800/30 hover:bg-slate-800/50 transition">
-                                        <div class="w-8 h-8 rounded-full bg-rose-500/20 flex items-center justify-center"><svg class="w-3.5 h-3.5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6"/></svg></div>
-                                        <div class="flex-1"><p class="text-xs text-white font-medium">Aguas Andinas — Agua potable</p><p class="text-xs text-slate-500">Servicio básico</p></div>
-                                        <span class="text-xs font-bold text-rose-400">-$320.000</span>
-                                        <span class="text-xs text-slate-500">hace 1 día</span>
-                                    </div>
+                                </div>
+                                <div id="consol-movimientos" class="space-y-2 max-h-80 overflow-y-auto pr-1 custom-scrollbar"></div>
+                                <div class="mt-3 text-center">
+                                    <button onclick="toggleAllMovimientos()" id="ver-mas-mov-btn" class="text-xs text-blue-400 hover:text-blue-300 transition font-medium">Ver todos los movimientos</button>
                                 </div>
                             </div>
                         </div>
@@ -4688,8 +4648,72 @@
 
 
         // Payment Registration + Real-time Dashboard
-        let totalIngresos = 4200000; // Starting value $4.2M
-        let totalEgresos = 3800000; // Starting value $3.8M
+        // === MODELO DE DATOS FINANCIERO ===
+        const ingresoCategorias = {
+            gasto_comun: { label: 'Gastos Comunes', color: 'emerald-400' },
+            fondo_reserva: { label: 'Fondo Reserva', color: 'emerald-300' },
+            multa: { label: 'Multas / Intereses', color: 'emerald-200' },
+            arriendo: { label: 'Arriendos', color: 'teal-300' },
+            extraordinario: { label: 'Extraordinario', color: 'cyan-300' }
+        };
+        const egresoCategorias = {
+            servicios_basicos: { label: 'Servicios Básicos', color: 'rose-400' },
+            mantenimiento: { label: 'Mantenimiento', color: 'rose-300' },
+            seguridad: { label: 'Seguridad', color: 'pink-300' },
+            seguros: { label: 'Seguros', color: 'rose-200' },
+            limpieza: { label: 'Limpieza / Jardinería', color: 'pink-200' },
+            administracion: { label: 'Administración', color: 'red-300' },
+            reparaciones: { label: 'Reparaciones', color: 'red-200' },
+            otros: { label: 'Otros', color: 'rose-100' }
+        };
+
+        let movimientosData = [
+            { id: 'm1', tipo: 'ingreso', categoria: 'gasto_comun', desc: 'Juan Martínez — Depto 401', monto: 55000, fecha: '2026-03-12', metodo: 'transferencia' },
+            { id: 'm2', tipo: 'egreso', categoria: 'servicios_basicos', desc: 'Enel Distribución — Electricidad', monto: 485000, fecha: '2026-03-12', metodo: 'debito_automatico' },
+            { id: 'm3', tipo: 'ingreso', categoria: 'gasto_comun', desc: 'María García — Depto 302', monto: 55000, fecha: '2026-03-11', metodo: 'transferencia' },
+            { id: 'm4', tipo: 'egreso', categoria: 'servicios_basicos', desc: 'Aguas Andinas — Agua potable', monto: 320000, fecha: '2026-03-11', metodo: 'transferencia' },
+            { id: 'm5', tipo: 'ingreso', categoria: 'gasto_comun', desc: 'Carlos López — Depto 501', monto: 55000, fecha: '2026-03-10', metodo: 'pago_linea' },
+            { id: 'm6', tipo: 'ingreso', categoria: 'gasto_comun', desc: 'Ana Rojas — Depto 201', monto: 55000, fecha: '2026-03-10', metodo: 'transferencia' },
+            { id: 'm7', tipo: 'egreso', categoria: 'mantenimiento', desc: 'Ascensores Schindler — Mantención mensual', monto: 380000, fecha: '2026-03-09', metodo: 'transferencia' },
+            { id: 'm8', tipo: 'ingreso', categoria: 'fondo_reserva', desc: 'Aporte mensual fondo reserva', monto: 1200000, fecha: '2026-03-08', metodo: 'transferencia' },
+            { id: 'm9', tipo: 'egreso', categoria: 'seguridad', desc: 'Securitas — Vigilancia marzo', monto: 650000, fecha: '2026-03-07', metodo: 'transferencia' },
+            { id: 'm10', tipo: 'ingreso', categoria: 'gasto_comun', desc: 'Pedro Soto — Depto 602', monto: 55000, fecha: '2026-03-07', metodo: 'efectivo' },
+            { id: 'm11', tipo: 'ingreso', categoria: 'gasto_comun', desc: 'Laura Muñoz — Depto 103', monto: 55000, fecha: '2026-03-06', metodo: 'transferencia' },
+            { id: 'm12', tipo: 'egreso', categoria: 'limpieza', desc: 'CleanPro — Aseo áreas comunes', monto: 280000, fecha: '2026-03-06', metodo: 'transferencia' },
+            { id: 'm13', tipo: 'ingreso', categoria: 'multa', desc: 'Multa ruido excesivo — Depto 301', monto: 80000, fecha: '2026-03-05', metodo: 'transferencia' },
+            { id: 'm14', tipo: 'ingreso', categoria: 'gasto_comun', desc: 'Roberto Vargas — Depto 402', monto: 55000, fecha: '2026-03-05', metodo: 'pago_linea' },
+            { id: 'm15', tipo: 'egreso', categoria: 'seguros', desc: 'Mapfre — Seguro edificio marzo', monto: 580000, fecha: '2026-03-04', metodo: 'debito_automatico' },
+            { id: 'm16', tipo: 'ingreso', categoria: 'gasto_comun', desc: 'Sofía Herrera — Depto 702', monto: 55000, fecha: '2026-03-04', metodo: 'transferencia' },
+            { id: 'm17', tipo: 'ingreso', categoria: 'arriendo', desc: 'Arriendo salón multiuso — Evento privado', monto: 120000, fecha: '2026-03-03', metodo: 'transferencia' },
+            { id: 'm18', tipo: 'egreso', categoria: 'servicios_basicos', desc: 'Metrogas — Gas áreas comunes', monto: 195000, fecha: '2026-03-03', metodo: 'debito_automatico' },
+            { id: 'm19', tipo: 'ingreso', categoria: 'gasto_comun', desc: 'Diego Fuentes — Depto 801', monto: 55000, fecha: '2026-03-02', metodo: 'transferencia' },
+            { id: 'm20', tipo: 'ingreso', categoria: 'arriendo', desc: 'Arriendo estacionamiento visita — E5', monto: 200000, fecha: '2026-03-01', metodo: 'efectivo' },
+            { id: 'm21', tipo: 'egreso', categoria: 'mantenimiento', desc: 'Jardines del Valle — Jardinería', monto: 180000, fecha: '2026-03-01', metodo: 'transferencia' },
+            { id: 'm22', tipo: 'ingreso', categoria: 'multa', desc: 'Multa estacionamiento indebido — Depto 503', monto: 50000, fecha: '2026-03-01', metodo: 'transferencia' },
+            { id: 'm23', tipo: 'ingreso', categoria: 'gasto_comun', desc: 'Valentina Reyes — Depto 903', monto: 55000, fecha: '2026-03-01', metodo: 'pago_linea' },
+            { id: 'm24', tipo: 'egreso', categoria: 'administracion', desc: 'Honorarios administración — Marzo', monto: 450000, fecha: '2026-03-01', metodo: 'transferencia' },
+            { id: 'm25', tipo: 'egreso', categoria: 'otros', desc: 'Insumos oficina conserje', monto: 45000, fecha: '2026-03-01', metodo: 'efectivo' },
+            { id: 'm26', tipo: 'ingreso', categoria: 'gasto_comun', desc: 'Fernando Torres — Depto 1001', monto: 55000, fecha: '2026-03-01', metodo: 'transferencia' }
+        ];
+
+        function calcTotales() {
+            const ingresos = movimientosData.filter(m => m.tipo === 'ingreso').reduce((s, m) => s + m.monto, 0);
+            const egresos = movimientosData.filter(m => m.tipo === 'egreso').reduce((s, m) => s + m.monto, 0);
+            return { ingresos, egresos, balance: ingresos - egresos };
+        }
+        function calcByCategoria(tipo) {
+            const cats = tipo === 'ingreso' ? ingresoCategorias : egresoCategorias;
+            const items = movimientosData.filter(m => m.tipo === tipo);
+            const result = {};
+            Object.keys(cats).forEach(key => {
+                const total = items.filter(m => m.categoria === key).reduce((s, m) => s + m.monto, 0);
+                if (total > 0) result[key] = total;
+            });
+            return result;
+        }
+
+        let totalIngresos = calcTotales().ingresos;
+        let totalEgresos = calcTotales().egresos;
 
         const proveedorLabels = {
             enel: 'Enel Distribución',
@@ -4714,12 +4738,9 @@
             otros: 'Otros'
         };
 
-        let movimientosRecientes = [
-            { tipo: 'ingreso', desc: 'Juan Martínez — Depto 401', monto: 55000, tiempo: 'hace 2h' },
-            { tipo: 'egreso', desc: 'Enel Distribución — Electricidad', monto: 485000, tiempo: 'hace 5h' },
-            { tipo: 'ingreso', desc: 'María García — Depto 302', monto: 55000, tiempo: 'hace 1 día' },
-            { tipo: 'egreso', desc: 'Aguas Andinas — Agua potable', monto: 320000, tiempo: 'hace 1 día' },
-        ];
+        function getMovimientosRecientes() {
+            return movimientosData.slice().sort((a, b) => b.fecha.localeCompare(a.fecha)).slice(0, 8);
+        }
 
         const pagosRecientes = [
             { nombre: 'Juan Martínez', depto: 'Depto 401', monto: 55000, tiempo: 'hace 2h' },
@@ -4767,14 +4788,18 @@
             });
             if (pagosRecientes.length > 5) pagosRecientes.pop();
 
-            // Add to consolidated movimientos
-            movimientosRecientes.unshift({
+            // Add to movimientos data
+            const concepto2 = document.getElementById('pago-concepto').value;
+            movimientosData.unshift({
+                id: 'm' + (movimientosData.length + 1),
                 tipo: 'ingreso',
+                categoria: concepto2,
                 desc: coprop.nombre + ' — ' + coprop.depto,
                 monto: monto,
-                tiempo: 'ahora'
+                fecha: new Date().toISOString().slice(0, 10),
+                metodo: document.getElementById('pago-metodo').value,
+                _new: true
             });
-            if (movimientosRecientes.length > 6) movimientosRecientes.pop();
 
             closeModal('register-payment');
 
@@ -4887,14 +4912,17 @@
 
             totalEgresos += monto;
 
-            // Add to movimientos
-            movimientosRecientes.unshift({
+            // Add to movimientos data
+            movimientosData.unshift({
+                id: 'm' + (movimientosData.length + 1),
                 tipo: 'egreso',
+                categoria: categoria,
                 desc: proveedorNombre + ' — ' + categoriaLabels[categoria],
                 monto: monto,
-                tiempo: 'ahora'
+                fecha: new Date().toISOString().slice(0, 10),
+                metodo: document.getElementById('egreso-metodo').value,
+                _new: true
             });
-            if (movimientosRecientes.length > 6) movimientosRecientes.pop();
 
             closeModal('register-expense');
 
@@ -4948,8 +4976,23 @@
                 }
             }
 
-            // Update movimientos list
+            // Update movimientos list and breakdowns
             updateMovimientosList();
+            renderConsolBreakdowns();
+
+            // Update donut chart
+            if (window.consolDonut) {
+                window.consolDonut.data.datasets[0].data = [totalIngresos, totalEgresos];
+                window.consolDonut.update('active');
+            }
+
+            // Update donut center balance
+            const donutBal = document.getElementById('consol-donut-balance');
+            if (donutBal) {
+                const b = balance;
+                donutBal.textContent = (b >= 0 ? '$' : '-$') + (Math.abs(b) >= 1000000 ? (Math.abs(b)/1000000).toFixed(1) + 'M' : Math.abs(b).toLocaleString('es-CL'));
+                donutBal.className = 'text-lg font-bold ' + (b >= 0 ? 'text-emerald-400' : 'text-rose-400');
+            }
 
             // Flash consolidation panel
             const panel = document.getElementById('consolidation-panel');
@@ -4960,17 +5003,46 @@
             }
         }
 
+        function renderConsolBreakdowns() {
+            // Render ingresos breakdown
+            const ingContainer = document.getElementById('consol-ingresos-breakdown');
+            if (ingContainer) {
+                const byCat = calcByCategoria('ingreso');
+                ingContainer.innerHTML = Object.entries(byCat).sort((a, b) => b[1] - a[1]).map(([key, val]) => {
+                    const cat = ingresoCategorias[key];
+                    return `<div class="flex justify-between items-center text-xs">
+                        <div class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-${cat.color}"></span><span class="text-slate-500">${cat.label}</span></div>
+                        <span class="text-emerald-400/80 font-medium">$${val.toLocaleString('es-CL')}</span>
+                    </div>`;
+                }).join('');
+            }
+
+            // Render egresos breakdown
+            const egContainer = document.getElementById('consol-egresos-breakdown');
+            if (egContainer) {
+                const byCat = calcByCategoria('egreso');
+                egContainer.innerHTML = Object.entries(byCat).sort((a, b) => b[1] - a[1]).map(([key, val]) => {
+                    const cat = egresoCategorias[key];
+                    return `<div class="flex justify-between items-center text-xs">
+                        <div class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-${cat.color}"></span><span class="text-slate-500">${cat.label}</span></div>
+                        <span class="text-rose-400/80 font-medium">$${val.toLocaleString('es-CL')}</span>
+                    </div>`;
+                }).join('');
+            }
+        }
+
         function initConsolDonut() {
             const canvas = document.getElementById('consol-donut-chart');
             if (!canvas || !window.Chart) return;
             const ctx = canvas.getContext('2d');
             if (window.consolDonut) window.consolDonut.destroy();
+            const totals = calcTotales();
             window.consolDonut = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
                     labels: ['Ingresos', 'Egresos'],
                     datasets: [{
-                        data: [4200000, 3800000],
+                        data: [totals.ingresos, totals.egresos],
                         backgroundColor: ['#10b981', '#f43f5e'],
                         borderColor: ['#059669', '#e11d48'],
                         borderWidth: 2,
@@ -4991,6 +5063,16 @@
                     }
                 }
             });
+            // Also render breakdowns and update balance display
+            renderConsolBreakdowns();
+            updateMovimientosList();
+            // Update donut center balance
+            const balEl = document.getElementById('consol-donut-balance');
+            if (balEl) {
+                const b = totals.balance;
+                balEl.textContent = (b >= 0 ? '$' : '-$') + (Math.abs(b) >= 1000000 ? (Math.abs(b)/1000000).toFixed(1) + 'M' : Math.abs(b).toLocaleString('es-CL'));
+                balEl.className = 'text-lg font-bold ' + (b >= 0 ? 'text-emerald-400' : 'text-rose-400');
+            }
         }
 
         function renderMorososDetail() {
@@ -5075,21 +5157,75 @@
             }
         }
 
+        let movFilterCurrent = 'todos';
+        let showAllMovimientos = false;
+
+        function filterMovimientos(tipo) {
+            movFilterCurrent = tipo;
+            ['todos', 'ingreso', 'egreso'].forEach(t => {
+                const btn = document.getElementById('mov-filter-' + t);
+                if (btn) {
+                    if (t === tipo) {
+                        btn.className = 'text-xs px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-400 font-medium transition hover:bg-blue-500/30';
+                    } else {
+                        btn.className = 'text-xs px-2.5 py-1 rounded-full bg-slate-700/50 text-slate-400 font-medium transition hover:bg-slate-700/80';
+                    }
+                }
+            });
+            updateMovimientosList();
+        }
+
+        function toggleAllMovimientos() {
+            showAllMovimientos = !showAllMovimientos;
+            const btn = document.getElementById('ver-mas-mov-btn');
+            if (btn) btn.textContent = showAllMovimientos ? 'Ver menos' : 'Ver todos los movimientos';
+            updateMovimientosList();
+        }
+
+        function formatFechaRelativa(fecha) {
+            const hoy = new Date();
+            const f = new Date(fecha + 'T12:00:00');
+            const diff = Math.floor((hoy - f) / (1000 * 60 * 60 * 24));
+            if (diff === 0) return 'Hoy';
+            if (diff === 1) return 'Ayer';
+            if (diff < 7) return 'hace ' + diff + ' días';
+            return f.toLocaleDateString('es-CL', { day: 'numeric', month: 'short' });
+        }
+
         function updateMovimientosList() {
             const container = document.getElementById('consol-movimientos');
             if (!container) return;
 
-            container.innerHTML = movimientosRecientes.slice(0, 5).map(m => {
+            let items = movimientosData.slice().sort((a, b) => b.fecha.localeCompare(a.fecha) || b.id.localeCompare(a.id));
+            if (movFilterCurrent !== 'todos') {
+                items = items.filter(m => m.tipo === movFilterCurrent);
+            }
+            const limit = showAllMovimientos ? items.length : 6;
+            items = items.slice(0, limit);
+
+            if (items.length === 0) {
+                container.innerHTML = '<p class="text-xs text-slate-500 text-center py-4">No hay movimientos para mostrar</p>';
+                return;
+            }
+
+            container.innerHTML = items.map(m => {
                 const isIngreso = m.tipo === 'ingreso';
                 const color = isIngreso ? 'emerald' : 'rose';
                 const arrowPath = isIngreso ? 'M7 11l5-5m0 0l5 5m-5-5v12' : 'M17 13l-5 5m0 0l-5-5m5 5V6';
                 const sign = isIngreso ? '+' : '-';
-                const isNew = m.tiempo === 'ahora';
-                return `<div class="flex items-center gap-3 p-2.5 rounded-lg ${isNew ? 'bg-' + color + '-500/10 border border-' + color + '-500/20' : 'bg-slate-800/30'}">
-                    <div class="w-6 h-6 rounded-full bg-${color}-500/20 flex items-center justify-center"><svg class="w-3 h-3 text-${color}-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${arrowPath}"/></svg></div>
-                    <div class="flex-1"><p class="text-xs text-white">${m.desc}</p></div>
-                    <span class="text-xs font-semibold text-${color}-400">${sign}$${m.monto.toLocaleString('es-CL')}</span>
-                    <span class="text-xs text-slate-500">${m.tiempo}</span>
+                const cats = isIngreso ? ingresoCategorias : egresoCategorias;
+                const catLabel = cats[m.categoria] ? cats[m.categoria].label : m.categoria;
+                const isNew = m._new;
+                return `<div class="flex items-center gap-3 p-2.5 rounded-lg ${isNew ? 'bg-' + color + '-500/10 border border-' + color + '-500/20' : 'bg-slate-800/30'} hover:bg-slate-800/50 transition">
+                    <div class="w-8 h-8 rounded-full bg-${color}-500/20 flex items-center justify-center flex-shrink-0"><svg class="w-3.5 h-3.5 text-${color}-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${arrowPath}"/></svg></div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs text-white font-medium truncate">${m.desc}</p>
+                        <p class="text-xs text-slate-500">${catLabel}</p>
+                    </div>
+                    <div class="text-right flex-shrink-0">
+                        <span class="text-xs font-bold text-${color}-400 block">${sign}$${m.monto.toLocaleString('es-CL')}</span>
+                        <span class="text-xs text-slate-500">${formatFechaRelativa(m.fecha)}</span>
+                    </div>
                     ${isNew ? '<div class="sos-realtime-dot flex-shrink-0"></div>' : ''}
                 </div>`;
             }).join('');

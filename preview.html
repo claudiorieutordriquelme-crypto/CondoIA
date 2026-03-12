@@ -6,6 +6,7 @@
     <title>CondoIA - Gestión Inteligente de Condominios</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
@@ -623,6 +624,11 @@
                     <h2 id="page-title" class="text-xl md:text-2xl font-bold text-white">Dashboard</h2>
                 </div>
                 <div class="flex items-center gap-4">
+                    <!-- Supabase Connection Status -->
+                    <div id="supabase-status" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-500/10 text-yellow-400 border border-yellow-500/20" title="Conectando a base de datos...">
+                        <span class="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span>
+                        <span class="hidden sm:inline">Conectando...</span>
+                    </div>
                     <!-- Notification Bell -->
                     <div class="relative">
                         <button onclick="toggleNotifPanel()" class="p-2 hover:bg-slate-800 rounded-lg transition relative" id="notif-bell-btn">
@@ -2634,6 +2640,288 @@
     </div>
 
     <script>
+        // ============================================================
+        // SUPABASE — Conexión a base de datos
+        // ============================================================
+        const SUPABASE_URL = 'https://sbtwfthsknbbkznntdte.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNidHdmdGhza25iYmt6bm50ZHRlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzMzg1ODcsImV4cCI6MjA4ODkxNDU4N30.DBF2ujkzQr3FOUvAqkLeSZs5DRllOVBH1JY_vbXvOBU';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let supabaseReady = false;
+        let condominioId = null;
+
+        // ============================================================
+        // DATA LAYER — Carga desde Supabase con fallback a datos locales
+        // ============================================================
+
+        async function loadCondominioId() {
+            try {
+                const { data, error } = await supabase
+                    .from('condominios')
+                    .select('id')
+                    .limit(1)
+                    .single();
+                if (error) throw error;
+                condominioId = data.id;
+                return condominioId;
+            } catch (e) {
+                console.warn('CondoIA: No se pudo obtener condominio_id:', e.message);
+                return null;
+            }
+        }
+
+        async function loadMovimientosFromDB() {
+            try {
+                const { data, error } = await supabase
+                    .from('movimientos_financieros')
+                    .select('*')
+                    .eq('condominio_id', condominioId)
+                    .eq('anulado', false)
+                    .order('fecha', { ascending: false })
+                    .order('creado_en', { ascending: false });
+                if (error) throw error;
+                // Mapear columnas DB → formato frontend
+                return data.map(m => ({
+                    id: m.id,
+                    tipo: m.tipo,
+                    categoria: m.tipo === 'ingreso' ? m.categoria_ingreso : m.categoria_egreso,
+                    desc: m.descripcion,
+                    monto: parseFloat(m.monto),
+                    fecha: m.fecha,
+                    metodo: m.metodo,
+                    proveedor_id: m.proveedor_id,
+                    unidad_id: m.unidad_id,
+                    notas: m.notas,
+                    _db: m // Guardar registro original para referencia
+                }));
+            } catch (e) {
+                console.warn('CondoIA: Fallback a datos locales (movimientos):', e.message);
+                return null;
+            }
+        }
+
+        async function loadAsambleasFromDB() {
+            try {
+                const { data: asambleas, error } = await supabase
+                    .from('asambleas')
+                    .select('*')
+                    .eq('condominio_id', condominioId)
+                    .order('fecha', { ascending: false });
+                if (error) throw error;
+
+                // Cargar datos relacionados para cada asamblea
+                const ids = asambleas.map(a => a.id);
+
+                const [agendaRes, compromisosRes, adjuntosRes, rsvpRes] = await Promise.all([
+                    supabase.from('agenda_items').select('*').in('asamblea_id', ids).order('orden'),
+                    supabase.from('compromisos').select('*').in('asamblea_id', ids),
+                    supabase.from('adjuntos_asamblea').select('*').in('asamblea_id', ids),
+                    supabase.from('rsvp_asamblea').select('*').in('asamblea_id', ids)
+                ]);
+
+                // Agrupar por asamblea_id
+                const agendaByAsamblea = {};
+                (agendaRes.data || []).forEach(item => {
+                    if (!agendaByAsamblea[item.asamblea_id]) agendaByAsamblea[item.asamblea_id] = [];
+                    agendaByAsamblea[item.asamblea_id].push({
+                        tema: item.tema,
+                        descripcion: item.descripcion,
+                        acuerdo: item.acuerdo,
+                        votos: item.votos_favor != null ? { favor: item.votos_favor, contra: item.votos_contra, abstencion: item.votos_abstencion } : undefined
+                    });
+                });
+
+                const compromisosByAsamblea = {};
+                (compromisosRes.data || []).forEach(item => {
+                    if (!compromisosByAsamblea[item.asamblea_id]) compromisosByAsamblea[item.asamblea_id] = [];
+                    compromisosByAsamblea[item.asamblea_id].push({
+                        texto: item.descripcion,
+                        responsable: item.responsable,
+                        fecha: item.fecha_limite,
+                        estado: item.estado
+                    });
+                });
+
+                const adjuntosByAsamblea = {};
+                (adjuntosRes.data || []).forEach(item => {
+                    if (!adjuntosByAsamblea[item.asamblea_id]) adjuntosByAsamblea[item.asamblea_id] = [];
+                    adjuntosByAsamblea[item.asamblea_id].push({
+                        nombre: item.nombre,
+                        tipo: item.tipo_archivo,
+                        tamano: item.tamano,
+                        url: item.url
+                    });
+                });
+
+                const rsvpByAsamblea = {};
+                (rsvpRes.data || []).forEach(item => {
+                    if (!rsvpByAsamblea[item.asamblea_id]) rsvpByAsamblea[item.asamblea_id] = { confirmados: [], rechazados: [], pendientes: [] };
+                    const key = item.estado === 'confirmado' ? 'confirmados' : item.estado === 'rechazado' ? 'rechazados' : 'pendientes';
+                    rsvpByAsamblea[item.asamblea_id][key].push(item.perfil_id);
+                });
+
+                // Mapear al formato frontend
+                return asambleas.map(a => {
+                    // Mapear estados de DB a frontend
+                    let estado = a.estado;
+                    if (estado === 'convocada') estado = 'programada';
+                    if (estado === 'finalizada') estado = 'realizada';
+
+                    return {
+                        id: a.id,
+                        titulo: a.titulo,
+                        tipo: a.tipo,
+                        fecha: a.fecha,
+                        hora: a.hora,
+                        lugar: a.lugar,
+                        estado: estado,
+                        descripcion: a.descripcion,
+                        quorum: a.quorum_tipo || 'simple',
+                        asistencia: a.porcentaje_asistencia,
+                        rsvp: rsvpByAsamblea[a.id] || { confirmados: [], rechazados: [], pendientes: [] },
+                        notas: a.notas,
+                        compromisos: compromisosByAsamblea[a.id] || null,
+                        agenda: agendaByAsamblea[a.id] || null,
+                        adjuntos: adjuntosByAsamblea[a.id] || null,
+                        _db: a
+                    };
+                });
+            } catch (e) {
+                console.warn('CondoIA: Fallback a datos locales (asambleas):', e.message);
+                return null;
+            }
+        }
+
+        async function loadUnidadesFromDB() {
+            try {
+                const { data, error } = await supabase
+                    .from('unidades')
+                    .select('*, perfiles!unidades_propietario_id_fkey(nombre, apellido, email, telefono)')
+                    .eq('condominio_id', condominioId)
+                    .order('numero');
+                if (error) throw error;
+                return data;
+            } catch (e) {
+                console.warn('CondoIA: Fallback a datos locales (unidades):', e.message);
+                return null;
+            }
+        }
+
+        async function loadProveedoresFromDB() {
+            try {
+                const { data, error } = await supabase
+                    .from('proveedores')
+                    .select('*')
+                    .eq('condominio_id', condominioId)
+                    .order('nombre');
+                if (error) throw error;
+                return data;
+            } catch (e) {
+                console.warn('CondoIA: Fallback a datos locales (proveedores):', e.message);
+                return null;
+            }
+        }
+
+        // Función principal de inicialización de datos
+        async function initSupabaseData() {
+            try {
+                await loadCondominioId();
+                if (!condominioId) {
+                    console.warn('CondoIA: Sin condominio_id, usando datos locales');
+                    return;
+                }
+
+                const [dbMovimientos, dbAsambleas, dbUnidades, dbProveedores] = await Promise.all([
+                    loadMovimientosFromDB(),
+                    loadAsambleasFromDB(),
+                    loadUnidadesFromDB(),
+                    loadProveedoresFromDB()
+                ]);
+
+                if (dbMovimientos) {
+                    movimientosData = dbMovimientos;
+                    console.log('CondoIA: Movimientos cargados desde Supabase:', movimientosData.length);
+                }
+                if (dbAsambleas) {
+                    asambleasData.length = 0;
+                    dbAsambleas.forEach(a => asambleasData.push(a));
+                    console.log('CondoIA: Asambleas cargadas desde Supabase:', asambleasData.length);
+                }
+                if (dbUnidades) {
+                    window._supabaseUnidades = dbUnidades;
+                    console.log('CondoIA: Unidades cargadas desde Supabase:', dbUnidades.length);
+                }
+                if (dbProveedores) {
+                    window._supabaseProveedores = dbProveedores;
+                    console.log('CondoIA: Proveedores cargados desde Supabase:', dbProveedores.length);
+                }
+
+                supabaseReady = true;
+                console.log('CondoIA: Conexión a Supabase exitosa');
+
+                // Actualizar indicador de conexión
+                const statusEl = document.getElementById('supabase-status');
+                if (statusEl) {
+                    statusEl.className = 'flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+                    statusEl.title = 'Conectado a Supabase';
+                    statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400"></span><span class="hidden sm:inline">En línea</span>';
+                }
+
+                // Re-render con datos reales
+                const totales = calcTotales();
+                totalIngresos = totales.ingresos;
+                totalEgresos = totales.egresos;
+                showPage('dashboard');
+
+            } catch (e) {
+                console.error('CondoIA: Error inicializando Supabase:', e);
+                // Indicador de error
+                const statusEl = document.getElementById('supabase-status');
+                if (statusEl) {
+                    statusEl.className = 'flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20';
+                    statusEl.title = 'Error de conexión: ' + e.message;
+                    statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-400"></span><span class="hidden sm:inline">Offline</span>';
+                }
+            }
+        }
+
+        // ============================================================
+        // WRITE OPERATIONS — Escribir a Supabase
+        // ============================================================
+
+        async function saveMovimientoDB(movimiento) {
+            if (!supabaseReady || !condominioId) return null;
+            try {
+                const dbRecord = {
+                    condominio_id: condominioId,
+                    tipo: movimiento.tipo,
+                    descripcion: movimiento.desc,
+                    monto: movimiento.monto,
+                    fecha: movimiento.fecha,
+                    metodo: movimiento.metodo || 'transferencia',
+                    registrado_por: '00000000-0000-0000-0000-000000000099' // System user por ahora
+                };
+                if (movimiento.tipo === 'ingreso') {
+                    dbRecord.categoria_ingreso = movimiento.categoria;
+                } else {
+                    dbRecord.categoria_egreso = movimiento.categoria;
+                }
+                const { data, error } = await supabase
+                    .from('movimientos_financieros')
+                    .insert(dbRecord)
+                    .select()
+                    .single();
+                if (error) throw error;
+                console.log('CondoIA: Movimiento guardado en Supabase:', data.id);
+                return data;
+            } catch (e) {
+                console.error('CondoIA: Error guardando movimiento:', e.message);
+                return null;
+            }
+        }
+
+        // Iniciar carga de datos de Supabase (no bloqueante)
+        initSupabaseData();
+
         // Initialize Chart.js via CDN if needed
         const chartScript = document.createElement('script');
         chartScript.src = 'https://cdn.jsdelivr.net/npm/chart.js';
@@ -3300,7 +3588,7 @@
         }
 
         // Asambleas Functions
-        const asambleasData = [
+        let asambleasData = [
             { id: 'a1', titulo: 'Asamblea Ordinaria Anual 2026', tipo: 'ordinaria', fecha: '2026-04-15', hora: '19:00', lugar: 'Sala de Reuniones Piso 1', estado: 'programada', descripcion: 'Revisión de gestión anual, aprobación de presupuesto 2026-2027, elección de nueva directiva', quorum: 'simple', asistencia: null, rsvp: { confirmados: ['c1','c3','c5'], rechazados: ['c7'], pendientes: ['c2','c4','c6','c8'] }, notas: null, compromisos: null, agenda: [{tema:'Lectura y aprobación del acta anterior',descripcion:'Validar acta de enero 2026'},{tema:'Presentación balance anual 2025',descripcion:'Informe financiero completo'},{tema:'Aprobación presupuesto 2026-2027',descripcion:'Votación de nuevo presupuesto'},{tema:'Elección nueva directiva',descripcion:'Candidatos y votación'},{tema:'Varios',descripcion:'Temas adicionales'}], adjuntos: [{nombre:'Balance Anual 2025.pdf',tipo:'pdf',tamano:'4.1 MB'},{nombre:'Presupuesto 2026-2027.xlsx',tipo:'xlsx',tamano:'1.5 MB'},{nombre:'Candidatos Directiva.docx',tipo:'docx',tamano:'0.3 MB'}] },
             { id: 'a2', titulo: 'Reunión Comité Administración', tipo: 'comite', fecha: '2026-03-28', hora: '18:30', lugar: 'Sala de Reuniones Piso 1', estado: 'confirmada', descripcion: 'Revisión avance obras, seguimiento proveedores, aprobación gastos extraordinarios', quorum: 'simple', asistencia: null, rsvp: { confirmados: ['c1','c2','c3','c4','c5'], rechazados: ['c6'], pendientes: ['c7','c8'] }, notas: null, compromisos: null, agenda: [{tema:'Avance obras fachada norte',descripcion:'Estado de avance y plazos'},{tema:'Seguimiento proveedores',descripcion:'Evaluación de cumplimiento'},{tema:'Gastos extraordinarios pendientes',descripcion:'Aprobación de gastos > $500.000'}] },
             { id: 'a3', titulo: 'Asamblea Extraordinaria - Seguridad', tipo: 'extraordinaria', fecha: '2026-03-20', hora: '19:00', lugar: 'Virtual (Zoom)', estado: 'confirmada', descripcion: 'Aprobación sistema de cámaras IP, contratación guardia 24/7, presupuesto seguridad', quorum: 'calificada', asistencia: null, rsvp: { confirmados: ['c1','c2','c3','c4','c5','c6'], rechazados: [], pendientes: ['c7','c8'] }, notas: null, compromisos: null, agenda: [{tema:'Presentación sistema cámaras IP',descripcion:'Cotización y especificaciones técnicas'},{tema:'Contratación guardia 24/7',descripcion:'Propuestas de empresas de seguridad'},{tema:'Aprobación presupuesto seguridad',descripcion:'Votación de inversión total'}], adjuntos: [{nombre:'Cotización Cámaras IP - TechSecure.pdf',tipo:'pdf',tamano:'2.4 MB'},{nombre:'Comparativo Empresas Seguridad.xlsx',tipo:'xlsx',tamano:'1.1 MB'},{nombre:'Plano ubicación cámaras.pdf',tipo:'pdf',tamano:'3.2 MB'}] },
@@ -4790,7 +5078,7 @@
 
             // Add to movimientos data
             const concepto2 = document.getElementById('pago-concepto').value;
-            movimientosData.unshift({
+            const newIngreso = {
                 id: 'm' + (movimientosData.length + 1),
                 tipo: 'ingreso',
                 categoria: concepto2,
@@ -4799,6 +5087,10 @@
                 fecha: new Date().toISOString().slice(0, 10),
                 metodo: document.getElementById('pago-metodo').value,
                 _new: true
+            };
+            movimientosData.unshift(newIngreso);
+            saveMovimientoDB(newIngreso).then(dbData => {
+                if (dbData) newIngreso.id = dbData.id;
             });
 
             closeModal('register-payment');
@@ -4913,7 +5205,7 @@
             totalEgresos += monto;
 
             // Add to movimientos data
-            movimientosData.unshift({
+            const newEgreso = {
                 id: 'm' + (movimientosData.length + 1),
                 tipo: 'egreso',
                 categoria: categoria,
@@ -4922,6 +5214,10 @@
                 fecha: new Date().toISOString().slice(0, 10),
                 metodo: document.getElementById('egreso-metodo').value,
                 _new: true
+            };
+            movimientosData.unshift(newEgreso);
+            saveMovimientoDB(newEgreso).then(dbData => {
+                if (dbData) newEgreso.id = dbData.id;
             });
 
             closeModal('register-expense');

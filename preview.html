@@ -499,9 +499,38 @@
                     <h2 id="page-title" class="text-2xl font-bold text-white">Dashboard</h2>
                 </div>
                 <div class="flex items-center gap-4">
-                    <button class="p-2 hover:bg-slate-800 rounded-lg transition">
-                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-                    </button>
+                    <!-- Notification Bell -->
+                    <div class="relative">
+                        <button onclick="toggleNotifPanel()" class="p-2 hover:bg-slate-800 rounded-lg transition relative" id="notif-bell-btn">
+                            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                            <span id="notif-badge" class="absolute -top-0.5 -right-0.5 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center shadow-lg shadow-red-500/30">0</span>
+                        </button>
+                        <!-- Notification Panel -->
+                        <div id="notif-panel" class="hidden absolute right-0 top-12 w-96 max-h-[32rem] glass-card rounded-xl shadow-2xl shadow-black/40 border border-slate-700/50 z-50 overflow-hidden">
+                            <div class="p-4 border-b border-slate-700/50 flex items-center justify-between">
+                                <h4 class="font-semibold text-white text-sm flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                                    Notificaciones
+                                </h4>
+                                <button onclick="markAllNotifRead()" class="text-xs text-blue-400 hover:text-blue-300 transition font-medium">Marcar todas leídas</button>
+                            </div>
+                            <!-- Filter tabs -->
+                            <div class="flex gap-1 p-2 border-b border-slate-700/30">
+                                <button onclick="filterNotifs('todas')" class="notif-filter-btn active px-2.5 py-1 text-xs font-medium rounded-md bg-blue-500/15 text-blue-400 transition">Todas</button>
+                                <button onclick="filterNotifs('documentos')" class="notif-filter-btn px-2.5 py-1 text-xs font-medium rounded-md text-slate-400 hover:bg-slate-700/50 transition">Docs</button>
+                                <button onclick="filterNotifs('asambleas')" class="notif-filter-btn px-2.5 py-1 text-xs font-medium rounded-md text-slate-400 hover:bg-slate-700/50 transition">Asambleas</button>
+                                <button onclick="filterNotifs('pagos')" class="notif-filter-btn px-2.5 py-1 text-xs font-medium rounded-md text-slate-400 hover:bg-slate-700/50 transition">Pagos</button>
+                                <button onclick="filterNotifs('mantenimiento')" class="notif-filter-btn px-2.5 py-1 text-xs font-medium rounded-md text-slate-400 hover:bg-slate-700/50 transition">Mant.</button>
+                            </div>
+                            <div id="notif-list" class="overflow-y-auto max-h-80 divide-y divide-slate-700/30">
+                                <!-- Notifications rendered here -->
+                            </div>
+                            <div id="notif-empty" class="hidden p-8 text-center">
+                                <svg class="w-8 h-8 text-slate-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
+                                <p class="text-xs text-slate-500">Sin notificaciones pendientes</p>
+                            </div>
+                        </div>
+                    </div>
                     <button class="p-2 hover:bg-slate-800 rounded-lg transition">
                         <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
                     </button>
@@ -660,7 +689,7 @@
                                     <div class="flex items-center gap-3 p-2.5 rounded-lg bg-slate-800/30">
                                         <div class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center"><svg class="w-3 h-3 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"/></svg></div>
                                         <div class="flex-1"><p class="text-xs text-white">Juan Martínez — Depto 401</p></div>
-                                        <span class="text-xs font-semibold text-emerald-400">+$97.930</span>
+                                        <span class="text-xs font-semibold text-emerald-400">+$55.000</span>
                                         <span class="text-xs text-slate-500">hace 2h</span>
                                     </div>
                                     <div class="flex items-center gap-3 p-2.5 rounded-lg bg-slate-800/30">
@@ -672,7 +701,7 @@
                                     <div class="flex items-center gap-3 p-2.5 rounded-lg bg-slate-800/30">
                                         <div class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center"><svg class="w-3 h-3 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"/></svg></div>
                                         <div class="flex-1"><p class="text-xs text-white">María García — Depto 302</p></div>
-                                        <span class="text-xs font-semibold text-emerald-400">+$97.930</span>
+                                        <span class="text-xs font-semibold text-emerald-400">+$55.000</span>
                                         <span class="text-xs text-slate-500">hace 1 día</span>
                                     </div>
                                     <div class="flex items-center gap-3 p-2.5 rounded-lg bg-slate-800/30">
@@ -746,7 +775,7 @@
                                                 <p class="text-sm font-medium text-white truncate">Juan Martínez</p>
                                                 <p class="text-xs text-slate-500">Depto 401 • hace 2h</p>
                                             </div>
-                                            <span class="text-xs font-semibold text-emerald-400 flex-shrink-0">$97.930</span>
+                                            <span class="text-xs font-semibold text-emerald-400 flex-shrink-0">$55.000</span>
                                         </div>
                                         <div class="flex items-center gap-3 p-2.5 rounded-lg bg-slate-800/30 hover:bg-slate-800/50 transition">
                                             <div class="w-8 h-8 rounded-full bg-blue-500/15 flex items-center justify-center text-blue-400 text-xs font-bold flex-shrink-0">MG</div>
@@ -754,7 +783,7 @@
                                                 <p class="text-sm font-medium text-white truncate">María García</p>
                                                 <p class="text-xs text-slate-500">Depto 302 • hace 1 día</p>
                                             </div>
-                                            <span class="text-xs font-semibold text-emerald-400 flex-shrink-0">$97.930</span>
+                                            <span class="text-xs font-semibold text-emerald-400 flex-shrink-0">$55.000</span>
                                         </div>
                                         <div class="flex items-center gap-3 p-2.5 rounded-lg bg-slate-800/30 hover:bg-slate-800/50 transition">
                                             <div class="w-8 h-8 rounded-full bg-purple-500/15 flex items-center justify-center text-purple-400 text-xs font-bold flex-shrink-0">RL</div>
@@ -762,7 +791,7 @@
                                                 <p class="text-sm font-medium text-white truncate">Roberto López</p>
                                                 <p class="text-xs text-slate-500">Depto 105 • hace 2 días</p>
                                             </div>
-                                            <span class="text-xs font-semibold text-emerald-400 flex-shrink-0">$97.930</span>
+                                            <span class="text-xs font-semibold text-emerald-400 flex-shrink-0">$55.000</span>
                                         </div>
                                     </div>
                                 </div>
@@ -857,7 +886,7 @@
                                     <p class="text-xs text-slate-500">Depto 302 • 2 meses de atraso</p>
                                 </div>
                                 <div class="text-right flex-shrink-0">
-                                    <p class="text-sm font-bold text-orange-400">$195.860</p>
+                                    <p class="text-sm font-bold text-orange-400">$110.000</p>
                                     <button class="text-xs text-blue-400 hover:text-blue-300 mt-1">Contactar →</button>
                                 </div>
                             </div>
@@ -868,7 +897,7 @@
                                     <p class="text-xs text-slate-500">Depto 105 • 1 mes de atraso</p>
                                 </div>
                                 <div class="text-right flex-shrink-0">
-                                    <p class="text-sm font-bold text-orange-400">$97.930</p>
+                                    <p class="text-sm font-bold text-orange-400">$55.000</p>
                                     <button class="text-xs text-blue-400 hover:text-blue-300 mt-1">Contactar →</button>
                                 </div>
                             </div>
@@ -879,12 +908,12 @@
                                     <p class="text-xs text-slate-500">Depto 501 • 15 días de atraso</p>
                                 </div>
                                 <div class="text-right flex-shrink-0">
-                                    <p class="text-sm font-bold text-amber-400">$97.930</p>
+                                    <p class="text-sm font-bold text-amber-400">$55.000</p>
                                     <button class="text-xs text-blue-400 hover:text-blue-300 mt-1">Contactar →</button>
                                 </div>
                             </div>
                             <div class="mt-2 p-3 rounded-lg bg-orange-500/8 border border-orange-500/15 text-center">
-                                <p class="text-xs text-orange-300/80">Deuda total acumulada: <span class="font-bold text-orange-400">$391.720</span></p>
+                                <p class="text-xs text-orange-300/80">Deuda total acumulada: <span class="font-bold text-orange-400">$220.000</span></p>
                             </div>
                         </div>
                     </div>
@@ -1527,7 +1556,7 @@
             </div>
             <div>
                 <p class="text-sm font-semibold text-white" id="payment-toast-name">Pago recibido</p>
-                <p class="text-xs text-slate-400" id="payment-toast-detail">Depto 401 - $97.930</p>
+                <p class="text-xs text-slate-400" id="payment-toast-detail">Depto 401 - $55.000</p>
             </div>
             <div class="sos-realtime-dot ml-2"></div>
         </div>
@@ -1635,7 +1664,7 @@
                 </div>
                 <div>
                     <label for="pago-monto" class="text-sm text-slate-400 mb-2 block font-medium">Monto (CLP)</label>
-                    <input id="pago-monto" type="number" value="97930" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                    <input id="pago-monto" type="number" value="55000" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
                 </div>
                 <div>
                     <label for="pago-concepto" class="text-sm text-slate-400 mb-2 block font-medium">Concepto</label>
@@ -1793,31 +1822,70 @@
 
     <!-- Upload Document Modal -->
     <div id="upload-doc-modal" class="modal-overlay justify-center items-center" onclick="if(event.target===this) closeModal('upload-doc')">
-        <div class="modal-content glass-card p-8 rounded-lg max-w-md w-full mx-4">
-            <h3 class="text-xl font-bold text-white mb-4">Subir Documento</h3>
-            <div class="space-y-4">
-                <div>
-                    <label class="text-sm text-slate-400 mb-2 block">Nombre del archivo</label>
-                    <input type="text" placeholder="Ej: Certificado_Agua" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white">
+        <div class="modal-content glass-card p-8 rounded-lg max-w-lg w-full mx-4">
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
                 </div>
                 <div>
-                    <label class="text-sm text-slate-400 mb-2 block">Categoría</label>
-                    <select class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white">
-                        <option>Certificaciones</option>
-                        <option>Reglamentos</option>
-                        <option>Actas</option>
-                        <option>Contratos</option>
-                        <option>Financieros</option>
+                    <h3 class="text-xl font-bold text-white">Subir Documento</h3>
+                    <p class="text-xs text-slate-400">Suba un nuevo documento al repositorio</p>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label for="doc-nombre" class="text-sm text-slate-400 mb-2 block font-medium">Nombre del documento</label>
+                    <input id="doc-nombre" type="text" placeholder="Ej: Certificado Agua Potable 2026" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition placeholder-slate-600">
+                </div>
+                <div>
+                    <label for="doc-categoria" class="text-sm text-slate-400 mb-2 block font-medium">Categoría</label>
+                    <select id="doc-categoria" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                        <option value="certificaciones">Certificaciones</option>
+                        <option value="reglamentos">Reglamentos</option>
+                        <option value="actas">Actas</option>
+                        <option value="contratos">Contratos</option>
+                        <option value="financieros">Financieros</option>
                     </select>
                 </div>
                 <div>
-                    <label class="text-sm text-slate-400 mb-2 block">Descripción</label>
-                    <textarea placeholder="Detalles adicionales..." class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white" rows="3"></textarea>
+                    <label for="doc-autor" class="text-sm text-slate-400 mb-2 block font-medium">Autor / Responsable</label>
+                    <input id="doc-autor" type="text" placeholder="Ej: Aguas Andinas" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition placeholder-slate-600">
+                </div>
+                <!-- Fechas de vigencia -->
+                <div class="p-4 rounded-xl bg-slate-800/30 border border-slate-700/50 space-y-3">
+                    <p class="text-sm text-slate-300 font-medium flex items-center gap-2">
+                        <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        Vigencia del documento
+                    </p>
+                    <div class="flex items-center gap-2">
+                        <input id="doc-sin-vencimiento" type="checkbox" onchange="toggleDocExpiry()" class="w-4 h-4 rounded bg-slate-700 border-slate-600 text-blue-500 focus:ring-blue-500/30 cursor-pointer">
+                        <label for="doc-sin-vencimiento" class="text-sm text-slate-400 cursor-pointer">Sin fecha de vencimiento</label>
+                    </div>
+                    <div id="doc-fechas-container" class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label for="doc-fecha-desde" class="text-xs text-slate-500 mb-1 block">Fecha desde</label>
+                            <input id="doc-fecha-desde" type="date" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                        </div>
+                        <div>
+                            <label for="doc-fecha-hasta" class="text-xs text-slate-500 mb-1 block">Fecha hasta (vencimiento)</label>
+                            <input id="doc-fecha-hasta" type="date" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label for="doc-descripcion" class="text-sm text-slate-400 mb-2 block font-medium">Descripción (opcional)</label>
+                    <textarea id="doc-descripcion" placeholder="Detalles adicionales..." class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition placeholder-slate-600" rows="2"></textarea>
+                </div>
+                <!-- Área de carga de archivo -->
+                <div class="border-2 border-dashed border-slate-600 rounded-xl p-6 text-center hover:border-blue-500/50 transition-colors cursor-pointer">
+                    <svg class="w-8 h-8 text-slate-500 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                    <p class="text-sm text-slate-400">Arrastra el archivo aquí o <span class="text-blue-400 font-medium">selecciona</span></p>
+                    <p class="text-xs text-slate-600 mt-1">PDF, DOC, DOCX, XLS, XLSX (máx. 25MB)</p>
                 </div>
             </div>
-            <div class="flex gap-3 mt-6">
-                <button onclick="closeModal('upload-doc')" class="secondary-button flex-1 px-4 py-3 rounded-lg font-medium">Cancelar</button>
-                <button class="gradient-button flex-1 px-4 py-3 rounded-lg text-white font-medium">Subir</button>
+            <div class="flex gap-3 mt-5">
+                <button onclick="closeModal('upload-doc')" class="secondary-button flex-1 px-4 py-3 rounded-lg font-medium text-sm">Cancelar</button>
+                <button onclick="uploadDocument()" class="gradient-button flex-1 px-4 py-3 rounded-lg text-white font-medium text-sm">Subir Documento</button>
             </div>
         </div>
     </div>
@@ -2759,11 +2827,12 @@
             }
 
             const newId = 'a' + (asambleasData.length + 1);
-            asambleasData.unshift({
+            const newAsamblea = {
                 id: newId, titulo, tipo, fecha, hora: hora || '19:00',
                 lugar: lugar || 'Por definir', estado: 'programada',
                 descripcion: descripcion || 'Sin descripción', quorum, asistencia: null
-            });
+            };
+            asambleasData.unshift(newAsamblea);
 
             // Reset form
             document.getElementById('asm-titulo').value = '';
@@ -2773,6 +2842,7 @@
             document.getElementById('asm-descripcion').value = '';
 
             closeModal('add-asamblea');
+            addNotifAsamblea(newAsamblea);
             asambleaView = 'proximas';
             switchAsambleaView('proximas');
         }
@@ -2848,16 +2918,16 @@
         };
 
         let movimientosRecientes = [
-            { tipo: 'ingreso', desc: 'Juan Martínez — Depto 401', monto: 97930, tiempo: 'hace 2h' },
+            { tipo: 'ingreso', desc: 'Juan Martínez — Depto 401', monto: 55000, tiempo: 'hace 2h' },
             { tipo: 'egreso', desc: 'Enel Distribución — Electricidad', monto: 485000, tiempo: 'hace 5h' },
-            { tipo: 'ingreso', desc: 'María García — Depto 302', monto: 97930, tiempo: 'hace 1 día' },
+            { tipo: 'ingreso', desc: 'María García — Depto 302', monto: 55000, tiempo: 'hace 1 día' },
             { tipo: 'egreso', desc: 'Aguas Andinas — Agua potable', monto: 320000, tiempo: 'hace 1 día' },
         ];
 
         const pagosRecientes = [
-            { nombre: 'Juan Martínez', depto: 'Depto 401', monto: 97930, tiempo: 'hace 2h' },
-            { nombre: 'María García', depto: 'Depto 302', monto: 97930, tiempo: 'hace 1 día' },
-            { nombre: 'Roberto López', depto: 'Depto 105', monto: 97930, tiempo: 'hace 2 días' }
+            { nombre: 'Juan Martínez', depto: 'Depto 401', monto: 55000, tiempo: 'hace 2h' },
+            { nombre: 'María García', depto: 'Depto 302', monto: 55000, tiempo: 'hace 1 día' },
+            { nombre: 'Roberto López', depto: 'Depto 105', monto: 55000, tiempo: 'hace 2 días' }
         ];
 
         function openPaymentModal() {
@@ -3184,6 +3254,365 @@
             event.target.style.borderBottomColor = '#3b82f6';
             event.target.style.color = '#3b82f6';
         }
+
+        // === NOTIFICATION SYSTEM ===
+        const CUOTA_MENSUAL = 55000;
+        const DIA_PAGO = 26;
+
+        let notificaciones = [];
+        let notifFilter = 'todas';
+
+        function generateNotifications() {
+            notificaciones = [];
+            const hoy = new Date();
+            const hoyStr = hoy.toISOString().split('T')[0];
+
+            // 1. Documentos por vencer (30 días de anticipación)
+            documentsData.forEach(doc => {
+                if (doc.status === 'por_vencer' && doc.expiry) {
+                    const expiry = new Date(doc.expiry);
+                    const diasRestantes = Math.ceil((expiry - hoy) / (1000 * 60 * 60 * 24));
+                    if (diasRestantes <= 30 && diasRestantes > 0) {
+                        notificaciones.push({
+                            id: 'doc_' + doc.name,
+                            tipo: 'documentos',
+                            icono: 'doc',
+                            color: 'amber',
+                            titulo: 'Documento por vencer',
+                            mensaje: doc.name + ' vence en ' + diasRestantes + ' días (' + doc.expiry + ')',
+                            tiempo: 'Vence: ' + doc.expiry,
+                            leida: false,
+                            prioridad: diasRestantes <= 7 ? 'alta' : 'media'
+                        });
+                    }
+                }
+                if (doc.status === 'vigente' && doc.expiry) {
+                    const expiry = new Date(doc.expiry);
+                    const diasRestantes = Math.ceil((expiry - hoy) / (1000 * 60 * 60 * 24));
+                    if (diasRestantes <= 60 && diasRestantes > 30) {
+                        notificaciones.push({
+                            id: 'doc_soon_' + doc.name,
+                            tipo: 'documentos',
+                            icono: 'doc',
+                            color: 'blue',
+                            titulo: 'Documento próximo a vencer',
+                            mensaje: doc.name + ' vence en ' + diasRestantes + ' días',
+                            tiempo: 'Vence: ' + doc.expiry,
+                            leida: false,
+                            prioridad: 'baja'
+                        });
+                    }
+                }
+            });
+
+            // 2. Asambleas - notificar creación y día anterior
+            if (typeof asambleasData !== 'undefined') {
+                asambleasData.forEach(a => {
+                    if (a.estado === 'programada' || a.estado === 'confirmada') {
+                        const fechaAsamblea = new Date(a.fecha);
+                        const diasHasta = Math.ceil((fechaAsamblea - hoy) / (1000 * 60 * 60 * 24));
+                        // Notificar asambleas creadas (próximas)
+                        notificaciones.push({
+                            id: 'asam_' + a.titulo,
+                            tipo: 'asambleas',
+                            icono: 'asamblea',
+                            color: diasHasta <= 1 ? 'red' : diasHasta <= 3 ? 'amber' : 'violet',
+                            titulo: diasHasta <= 1 ? 'Asamblea MAÑANA' : 'Asamblea programada',
+                            mensaje: a.titulo + ' — ' + a.fecha + ' ' + (a.hora || '') + (a.lugar ? ' en ' + a.lugar : ''),
+                            tiempo: diasHasta <= 0 ? 'Hoy' : diasHasta === 1 ? 'Mañana' : 'En ' + diasHasta + ' días',
+                            leida: false,
+                            prioridad: diasHasta <= 1 ? 'alta' : 'media'
+                        });
+                    }
+                });
+            }
+
+            // 3. Morosidad - copropietarios con cuotas en mora (fecha de pago día 26)
+            const diaActual = hoy.getDate();
+            const mesPago = hoy.getMonth();
+            const anioPago = hoy.getFullYear();
+
+            copropietariosData.forEach(c => {
+                if (c.estado === 'moroso') {
+                    const mesesDeuda = c.mesesDeuda || 1;
+                    const montoDeuda = mesesDeuda * CUOTA_MENSUAL;
+                    notificaciones.push({
+                        id: 'mora_' + c.id,
+                        tipo: 'pagos',
+                        icono: 'pago',
+                        color: mesesDeuda >= 2 ? 'red' : 'orange',
+                        titulo: 'Cuota en mora — ' + c.nombre,
+                        mensaje: c.depto + ' • ' + mesesDeuda + (mesesDeuda === 1 ? ' mes' : ' meses') + ' sin pago • Deuda: $' + montoDeuda.toLocaleString('es-CL'),
+                        tiempo: 'Vto. día ' + DIA_PAGO + ' de cada mes',
+                        leida: false,
+                        prioridad: mesesDeuda >= 2 ? 'alta' : 'media'
+                    });
+                }
+            });
+
+            // Alerta general si estamos pasado del día 26 y hay morosos
+            if (diaActual > DIA_PAGO) {
+                const morosos = copropietariosData.filter(c => c.estado === 'moroso');
+                if (morosos.length > 0) {
+                    notificaciones.push({
+                        id: 'mora_general',
+                        tipo: 'pagos',
+                        icono: 'alerta',
+                        color: 'red',
+                        titulo: 'Fecha de pago vencida',
+                        mensaje: morosos.length + ' copropietario(s) no han pagado la cuota de $' + CUOTA_MENSUAL.toLocaleString('es-CL') + ' (vto. día ' + DIA_PAGO + ')',
+                        tiempo: 'Desde el ' + DIA_PAGO + '/' + (mesPago + 1).toString().padStart(2, '0'),
+                        leida: false,
+                        prioridad: 'alta'
+                    });
+                }
+            }
+
+            // 4. Mantenciones - notificar creadas y terminadas
+            if (typeof maintenanceData !== 'undefined') {
+                maintenanceData.solicitado.forEach(m => {
+                    notificaciones.push({
+                        id: 'mant_new_' + m.id,
+                        tipo: 'mantenimiento',
+                        icono: 'mant',
+                        color: 'blue',
+                        titulo: 'Mantención solicitada',
+                        mensaje: m.title + ' — Responsable: ' + m.responsable + ' • Prioridad: ' + m.priority,
+                        tiempo: m.date,
+                        leida: false,
+                        prioridad: m.priority === 'Alta' ? 'alta' : 'media'
+                    });
+                });
+                maintenanceData.desarrollo.forEach(m => {
+                    notificaciones.push({
+                        id: 'mant_prog_' + m.id,
+                        tipo: 'mantenimiento',
+                        icono: 'mant',
+                        color: 'amber',
+                        titulo: 'Mantención en desarrollo',
+                        mensaje: m.title + ' — ' + m.responsable,
+                        tiempo: m.date,
+                        leida: true,
+                        prioridad: 'baja'
+                    });
+                });
+                maintenanceData.terminado.forEach(m => {
+                    notificaciones.push({
+                        id: 'mant_done_' + m.id,
+                        tipo: 'mantenimiento',
+                        icono: 'mant_done',
+                        color: 'emerald',
+                        titulo: 'Mantención completada',
+                        mensaje: m.title + ' — Finalizada correctamente',
+                        tiempo: m.date,
+                        leida: true,
+                        prioridad: 'baja'
+                    });
+                });
+            }
+
+            // Sort: unread first, then by priority
+            const prioOrder = { alta: 0, media: 1, baja: 2 };
+            notificaciones.sort((a, b) => {
+                if (a.leida !== b.leida) return a.leida ? 1 : -1;
+                return (prioOrder[a.prioridad] || 2) - (prioOrder[b.prioridad] || 2);
+            });
+
+            updateNotifBadge();
+            renderNotifications();
+        }
+
+        function updateNotifBadge() {
+            const unread = notificaciones.filter(n => !n.leida).length;
+            const badge = document.getElementById('notif-badge');
+            if (badge) {
+                badge.textContent = unread;
+                badge.classList.toggle('hidden', unread === 0);
+            }
+        }
+
+        function toggleNotifPanel() {
+            const panel = document.getElementById('notif-panel');
+            panel.classList.toggle('hidden');
+            // Close on outside click
+            if (!panel.classList.contains('hidden')) {
+                setTimeout(() => {
+                    document.addEventListener('click', closeNotifOnOutsideClick);
+                }, 10);
+            }
+        }
+
+        function closeNotifOnOutsideClick(e) {
+            const panel = document.getElementById('notif-panel');
+            const btn = document.getElementById('notif-bell-btn');
+            if (!panel.contains(e.target) && !btn.contains(e.target)) {
+                panel.classList.add('hidden');
+                document.removeEventListener('click', closeNotifOnOutsideClick);
+            }
+        }
+
+        function filterNotifs(tipo) {
+            notifFilter = tipo;
+            document.querySelectorAll('.notif-filter-btn').forEach(btn => {
+                btn.className = 'notif-filter-btn px-2.5 py-1 text-xs font-medium rounded-md text-slate-400 hover:bg-slate-700/50 transition';
+            });
+            event.target.className = 'notif-filter-btn active px-2.5 py-1 text-xs font-medium rounded-md bg-blue-500/15 text-blue-400 transition';
+            renderNotifications();
+        }
+
+        function markAllNotifRead() {
+            notificaciones.forEach(n => n.leida = true);
+            updateNotifBadge();
+            renderNotifications();
+        }
+
+        function markNotifRead(id) {
+            const notif = notificaciones.find(n => n.id === id);
+            if (notif) notif.leida = true;
+            updateNotifBadge();
+            renderNotifications();
+        }
+
+        function renderNotifications() {
+            const container = document.getElementById('notif-list');
+            const emptyEl = document.getElementById('notif-empty');
+            if (!container) return;
+
+            let filtered = notifFilter === 'todas' ? notificaciones : notificaciones.filter(n => n.tipo === notifFilter);
+
+            emptyEl.classList.toggle('hidden', filtered.length > 0);
+            container.classList.toggle('hidden', filtered.length === 0);
+
+            const iconMap = {
+                doc: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>',
+                asamblea: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>',
+                pago: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+                alerta: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>',
+                mant: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>',
+                mant_done: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>'
+            };
+
+            container.innerHTML = filtered.map(n => {
+                const prioBorder = n.prioridad === 'alta' ? 'border-l-2 border-l-red-500' : n.prioridad === 'media' ? 'border-l-2 border-l-amber-500' : '';
+                return `
+                <div class="p-3 hover:bg-slate-800/40 transition cursor-pointer ${n.leida ? 'opacity-60' : ''} ${prioBorder}" onclick="markNotifRead('${n.id}')">
+                    <div class="flex gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-${n.color}-500/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <svg class="w-4 h-4 text-${n.color}-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">${iconMap[n.icono] || iconMap.alerta}</svg>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2">
+                                <p class="text-xs font-semibold ${n.leida ? 'text-slate-400' : 'text-white'} truncate">${n.titulo}</p>
+                                ${!n.leida ? '<span class="w-2 h-2 rounded-full bg-blue-400 flex-shrink-0"></span>' : ''}
+                            </div>
+                            <p class="text-xs text-slate-500 mt-0.5 line-clamp-2">${n.mensaje}</p>
+                            <p class="text-xs text-slate-600 mt-1">${n.tiempo}</p>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // Toggle document expiry fields
+        function toggleDocExpiry() {
+            const checked = document.getElementById('doc-sin-vencimiento').checked;
+            const container = document.getElementById('doc-fechas-container');
+            if (checked) {
+                container.style.opacity = '0.3';
+                container.style.pointerEvents = 'none';
+                document.getElementById('doc-fecha-desde').value = '';
+                document.getElementById('doc-fecha-hasta').value = '';
+            } else {
+                container.style.opacity = '1';
+                container.style.pointerEvents = 'auto';
+            }
+        }
+
+        // Upload document function
+        function uploadDocument() {
+            const nombre = document.getElementById('doc-nombre').value.trim();
+            const categoria = document.getElementById('doc-categoria').value;
+            const autor = document.getElementById('doc-autor').value.trim() || 'Admin';
+            const sinVencimiento = document.getElementById('doc-sin-vencimiento').checked;
+            const fechaDesde = document.getElementById('doc-fecha-desde').value;
+            const fechaHasta = document.getElementById('doc-fecha-hasta').value;
+
+            if (!nombre) { alert('Ingrese un nombre para el documento.'); return; }
+            if (!sinVencimiento && !fechaDesde) { alert('Ingrese la fecha de inicio o marque "Sin fecha de vencimiento".'); return; }
+
+            const newDoc = {
+                name: nombre,
+                category: categoria,
+                version: 'v1.0',
+                date: fechaDesde || new Date().toISOString().split('T')[0],
+                expiry: sinVencimiento ? null : (fechaHasta || null),
+                author: autor,
+                status: sinVencimiento ? 'vigente' : (fechaHasta ? 'vigente' : 'vigente')
+            };
+
+            // Check if about to expire (within 30 days)
+            if (fechaHasta && !sinVencimiento) {
+                const diasHastaVenc = Math.ceil((new Date(fechaHasta) - new Date()) / (1000 * 60 * 60 * 24));
+                if (diasHastaVenc <= 30) newDoc.status = 'por_vencer';
+                if (diasHastaVenc <= 0) newDoc.status = 'vencido';
+            }
+
+            documentsData.unshift(newDoc);
+            closeModal('upload-doc');
+            renderDocuments();
+
+            // Regenerate notifications
+            generateNotifications();
+
+            // Show toast
+            const toast = document.getElementById('payment-toast');
+            document.getElementById('payment-toast-name').textContent = 'Documento subido: ' + nombre;
+            document.getElementById('payment-toast-detail').textContent = categoria + ' • ' + autor;
+            toast.classList.add('active');
+            setTimeout(() => toast.classList.remove('active'), 4000);
+        }
+
+        // Add notification when asamblea is created
+        function addNotifAsamblea(asamblea) {
+            notificaciones.unshift({
+                id: 'asam_new_' + Date.now(),
+                tipo: 'asambleas',
+                icono: 'asamblea',
+                color: 'violet',
+                titulo: 'Nueva asamblea creada',
+                mensaje: asamblea.titulo + ' — ' + asamblea.fecha + ' ' + (asamblea.hora || ''),
+                tiempo: 'Ahora',
+                leida: false,
+                prioridad: 'media'
+            });
+            updateNotifBadge();
+            renderNotifications();
+        }
+
+        // Add notification when maintenance state changes
+        function addNotifMaintenance(item, tipo) {
+            const msgs = {
+                creada: { titulo: 'Nueva mantención solicitada', color: 'blue', icono: 'mant' },
+                terminada: { titulo: 'Mantención completada', color: 'emerald', icono: 'mant_done' }
+            };
+            const cfg = msgs[tipo] || msgs.creada;
+            notificaciones.unshift({
+                id: 'mant_notif_' + Date.now(),
+                tipo: 'mantenimiento',
+                icono: cfg.icono,
+                color: cfg.color,
+                titulo: cfg.titulo,
+                mensaje: item.title + ' — ' + (item.responsable || ''),
+                tiempo: 'Ahora',
+                leida: false,
+                prioridad: tipo === 'terminada' ? 'baja' : 'media'
+            });
+            updateNotifBadge();
+            renderNotifications();
+        }
+
+        // Generate on load
+        generateNotifications();
 
         // Lucide Icons
         lucide.createIcons();

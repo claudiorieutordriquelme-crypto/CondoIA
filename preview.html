@@ -826,30 +826,91 @@
                 </div>
 
                 <!-- ASAMBLEAS PAGE -->
-                <div id="asambleas-page" class="page-content p-8 space-y-8 hidden">
-                    <div class="glass-card p-6 rounded-lg">
-                        <h3 class="text-lg font-semibold text-white mb-4">Próximas Asambleas</h3>
-                        <div class="space-y-3">
-                            <div class="glass-card p-4 rounded-lg border-l-4 border-blue-500">
-                                <div class="flex items-start justify-between">
-                                    <div>
-                                        <p class="font-semibold text-white">Asamblea Ordinaria 2024</p>
-                                        <p class="text-sm text-slate-400 mt-2">📅 15 Noviembre, 19:00</p>
-                                        <p class="text-sm text-slate-400">📍 Sala de Reuniones</p>
-                                    </div>
-                                    <span class="badge-medium px-3 py-1 rounded-full text-xs font-medium">Pendiente</span>
-                                </div>
+                <div id="asambleas-page" class="page-content p-8 space-y-6 hidden">
+                    <!-- Header with Create Button -->
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-semibold text-white">Gestión de Asambleas</h3>
+                            <p class="text-sm text-slate-400 mt-1">Programa, gestiona y consulta el historial de asambleas del condominio</p>
+                        </div>
+                        <button onclick="openModal('add-asamblea')" class="gradient-button px-5 py-2.5 rounded-lg text-sm font-medium text-white flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                            Crear Evento
+                        </button>
+                    </div>
+
+                    <!-- Tabs: Próximas / Histórico -->
+                    <div class="glass-card rounded-xl overflow-hidden">
+                        <div class="flex border-b border-slate-700/50">
+                            <button onclick="switchAsambleaView('proximas')" id="asm-tab-proximas" class="tab-button active px-6 py-3.5 text-sm font-medium flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                Próximas
+                            </button>
+                            <button onclick="switchAsambleaView('historico')" id="asm-tab-historico" class="tab-button px-6 py-3.5 text-sm font-medium text-slate-400 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                Histórico
+                            </button>
+                        </div>
+
+                        <!-- Filters Bar -->
+                        <div class="flex flex-wrap items-center gap-3 p-4 border-b border-slate-700/30 bg-slate-800/20">
+                            <div class="flex items-center gap-2">
+                                <label class="text-xs text-slate-500 font-medium">Tipo:</label>
+                                <select id="asm-filter-tipo" onchange="renderAsambleas()" class="bg-slate-800/60 border border-slate-700/50 rounded-lg px-3 py-1.5 text-xs text-slate-300 focus:border-blue-500/50 focus:outline-none">
+                                    <option value="todos">Todos</option>
+                                    <option value="ordinaria">Ordinaria</option>
+                                    <option value="extraordinaria">Extraordinaria</option>
+                                    <option value="directiva">Directiva</option>
+                                    <option value="comite">Comité</option>
+                                </select>
                             </div>
-                            <div class="glass-card p-4 rounded-lg border-l-4 border-emerald-500">
-                                <div class="flex items-start justify-between">
-                                    <div>
-                                        <p class="font-semibold text-white">Revisión Presupuesto 2025</p>
-                                        <p class="text-sm text-slate-400 mt-2">📅 22 Noviembre, 18:30</p>
-                                        <p class="text-sm text-slate-400">📍 Virtual</p>
-                                    </div>
-                                    <span class="badge-low px-3 py-1 rounded-full text-xs font-medium">Confirmada</span>
-                                </div>
+                            <div class="flex items-center gap-2">
+                                <label class="text-xs text-slate-500 font-medium">Estado:</label>
+                                <select id="asm-filter-estado" onchange="renderAsambleas()" class="bg-slate-800/60 border border-slate-700/50 rounded-lg px-3 py-1.5 text-xs text-slate-300 focus:border-blue-500/50 focus:outline-none">
+                                    <option value="todos">Todos</option>
+                                    <option value="programada">Programada</option>
+                                    <option value="confirmada">Confirmada</option>
+                                    <option value="en_curso">En Curso</option>
+                                    <option value="realizada">Realizada</option>
+                                    <option value="cancelada">Cancelada</option>
+                                </select>
                             </div>
+                            <div class="flex items-center gap-2">
+                                <label class="text-xs text-slate-500 font-medium">Año:</label>
+                                <select id="asm-filter-year" onchange="renderAsambleas()" class="bg-slate-800/60 border border-slate-700/50 rounded-lg px-3 py-1.5 text-xs text-slate-300 focus:border-blue-500/50 focus:outline-none">
+                                    <option value="todos">Todos</option>
+                                    <option value="2026">2026</option>
+                                    <option value="2025">2025</option>
+                                    <option value="2024">2024</option>
+                                </select>
+                            </div>
+                            <div class="flex-1"></div>
+                            <span id="asm-count" class="text-xs text-slate-500"></span>
+                        </div>
+
+                        <!-- Events Container -->
+                        <div id="asambleas-container" class="p-5 space-y-4">
+                            <!-- Rendered by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Stats Summary -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <p class="text-2xl font-bold text-blue-400" id="asm-stat-total">0</p>
+                            <p class="text-xs text-slate-400 mt-1">Total Eventos</p>
+                        </div>
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <p class="text-2xl font-bold text-emerald-400" id="asm-stat-confirmadas">0</p>
+                            <p class="text-xs text-slate-400 mt-1">Confirmadas</p>
+                        </div>
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <p class="text-2xl font-bold text-amber-400" id="asm-stat-pendientes">0</p>
+                            <p class="text-xs text-slate-400 mt-1">Pendientes</p>
+                        </div>
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <p class="text-2xl font-bold text-purple-400" id="asm-stat-asistencia">78%</p>
+                            <p class="text-xs text-slate-400 mt-1">Asistencia Prom.</p>
                         </div>
                     </div>
                 </div>
@@ -1360,6 +1421,66 @@
         </div>
     </div>
 
+    <!-- Add Asamblea Modal -->
+    <div id="add-asamblea-modal" class="modal-overlay justify-center items-center" onclick="if(event.target===this) closeModal('add-asamblea')">
+        <div class="modal-content glass-card p-8 rounded-lg max-w-lg w-full mx-4">
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">Crear Evento de Asamblea</h3>
+                    <p class="text-xs text-slate-400">Programa una nueva asamblea o reunión</p>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label for="asm-titulo" class="text-sm text-slate-400 mb-2 block font-medium">Título del Evento</label>
+                    <input id="asm-titulo" type="text" placeholder="Ej: Asamblea Ordinaria Anual 2026" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                </div>
+                <div>
+                    <label for="asm-tipo" class="text-sm text-slate-400 mb-2 block font-medium">Tipología del Evento</label>
+                    <select id="asm-tipo" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                        <option value="ordinaria">Asamblea Ordinaria</option>
+                        <option value="extraordinaria">Asamblea Extraordinaria</option>
+                        <option value="directiva">Reunión de Directiva</option>
+                        <option value="comite">Comité de Administración</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label for="asm-fecha" class="text-sm text-slate-400 mb-2 block font-medium">Fecha</label>
+                        <input id="asm-fecha" type="date" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                    </div>
+                    <div>
+                        <label for="asm-hora" class="text-sm text-slate-400 mb-2 block font-medium">Hora</label>
+                        <input id="asm-hora" type="time" value="19:00" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                    </div>
+                </div>
+                <div>
+                    <label for="asm-lugar" class="text-sm text-slate-400 mb-2 block font-medium">Lugar</label>
+                    <input id="asm-lugar" type="text" placeholder="Ej: Sala de Reuniones, Virtual (Zoom)" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                </div>
+                <div>
+                    <label for="asm-descripcion" class="text-sm text-slate-400 mb-2 block font-medium">Descripción / Tabla de Temas</label>
+                    <textarea id="asm-descripcion" placeholder="Detalle los temas a tratar en la asamblea..." class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition" rows="3"></textarea>
+                </div>
+                <div>
+                    <label for="asm-quorum" class="text-sm text-slate-400 mb-2 block font-medium">Quórum requerido</label>
+                    <select id="asm-quorum" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                        <option value="simple">Mayoría Simple (50% + 1)</option>
+                        <option value="calificada">Mayoría Calificada (2/3)</option>
+                        <option value="unanimidad">Unanimidad</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button onclick="closeModal('add-asamblea')" class="secondary-button flex-1 px-4 py-3 rounded-lg font-medium text-sm">Cancelar</button>
+                <button onclick="addAsamblea()" class="gradient-button flex-1 px-4 py-3 rounded-lg text-white font-medium text-sm">Crear Evento</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Initialize Chart.js via CDN if needed
         const chartScript = document.createElement('script');
@@ -1391,6 +1512,7 @@
             if (pageName === 'documentos') renderDocuments();
             if (pageName === 'mantenimiento') renderKanban();
             if (pageName === 'proveedores') renderProviders();
+            if (pageName === 'asambleas') renderAsambleas();
         }
 
         function getPageTitle(pageName) {
@@ -1724,6 +1846,183 @@
                 </div>
             `).join('');
             document.getElementById('providers-container').innerHTML = html;
+        }
+
+        // Asambleas Functions
+        const asambleasData = [
+            { id: 'a1', titulo: 'Asamblea Ordinaria Anual 2026', tipo: 'ordinaria', fecha: '2026-04-15', hora: '19:00', lugar: 'Sala de Reuniones Piso 1', estado: 'programada', descripcion: 'Revisión de gestión anual, aprobación de presupuesto 2026-2027, elección de nueva directiva', quorum: 'simple', asistencia: null },
+            { id: 'a2', titulo: 'Reunión Comité Administración', tipo: 'comite', fecha: '2026-03-28', hora: '18:30', lugar: 'Sala de Reuniones Piso 1', estado: 'confirmada', descripcion: 'Revisión avance obras, seguimiento proveedores, aprobación gastos extraordinarios', quorum: 'simple', asistencia: null },
+            { id: 'a3', titulo: 'Asamblea Extraordinaria - Seguridad', tipo: 'extraordinaria', fecha: '2026-03-20', hora: '19:00', lugar: 'Virtual (Zoom)', estado: 'confirmada', descripcion: 'Aprobación sistema de cámaras IP, contratación guardia 24/7, presupuesto seguridad', quorum: 'calificada', asistencia: null },
+            { id: 'a4', titulo: 'Reunión Directiva Febrero', tipo: 'directiva', fecha: '2026-02-15', hora: '18:00', lugar: 'Oficina Administración', estado: 'realizada', descripcion: 'Planificación primer trimestre, revisión contratos mantención', quorum: 'simple', asistencia: 85 },
+            { id: 'a5', titulo: 'Asamblea Ordinaria Ene 2026', tipo: 'ordinaria', fecha: '2026-01-20', hora: '19:00', lugar: 'Sala de Reuniones Piso 1', estado: 'realizada', descripcion: 'Presentación balance 2025, plan de mejoras primer semestre', quorum: 'simple', asistencia: 72 },
+            { id: 'a6', titulo: 'Asamblea Extraordinaria - Fachada', tipo: 'extraordinaria', fecha: '2025-11-10', hora: '19:00', lugar: 'Sala de Reuniones Piso 1', estado: 'realizada', descripcion: 'Aprobación proyecto pintura fachada norte, adjudicación proveedor', quorum: 'calificada', asistencia: 68 },
+            { id: 'a7', titulo: 'Asamblea Ordinaria Nov 2025', tipo: 'ordinaria', fecha: '2025-11-05', hora: '19:00', lugar: 'Sala de Reuniones Piso 1', estado: 'realizada', descripcion: 'Revisión trimestral, aprobación gastos mantención ascensor', quorum: 'simple', asistencia: 80 },
+            { id: 'a8', titulo: 'Reunión Directiva Octubre', tipo: 'directiva', fecha: '2025-10-15', hora: '18:00', lugar: 'Virtual (Zoom)', estado: 'realizada', descripcion: 'Evaluación presupuesto anual, planificación cierre de año', quorum: 'simple', asistencia: 90 },
+            { id: 'a9', titulo: 'Asamblea Extraordinaria - Ascensores', tipo: 'extraordinaria', fecha: '2025-09-08', hora: '19:00', lugar: 'Sala de Reuniones Piso 1', estado: 'cancelada', descripcion: 'Cotización modernización ascensores — cancelada por falta de quórum', quorum: 'calificada', asistencia: null }
+        ];
+
+        let asambleaView = 'proximas';
+        const today = new Date().toISOString().split('T')[0];
+
+        function switchAsambleaView(view) {
+            asambleaView = view;
+            document.getElementById('asm-tab-proximas').classList.toggle('active', view === 'proximas');
+            document.getElementById('asm-tab-proximas').classList.toggle('text-slate-400', view !== 'proximas');
+            document.getElementById('asm-tab-historico').classList.toggle('active', view === 'historico');
+            document.getElementById('asm-tab-historico').classList.toggle('text-slate-400', view !== 'historico');
+            renderAsambleas();
+        }
+
+        function renderAsambleas() {
+            const filterTipo = document.getElementById('asm-filter-tipo').value;
+            const filterEstado = document.getElementById('asm-filter-estado').value;
+            const filterYear = document.getElementById('asm-filter-year').value;
+
+            let filtered = asambleasData.filter(a => {
+                if (asambleaView === 'proximas') {
+                    return ['programada', 'confirmada', 'en_curso'].includes(a.estado);
+                } else {
+                    return ['realizada', 'cancelada'].includes(a.estado);
+                }
+            });
+
+            if (filterTipo !== 'todos') filtered = filtered.filter(a => a.tipo === filterTipo);
+            if (filterEstado !== 'todos') filtered = filtered.filter(a => a.estado === filterEstado);
+            if (filterYear !== 'todos') filtered = filtered.filter(a => a.fecha.startsWith(filterYear));
+
+            // Sort: proximas by date asc, historico by date desc
+            filtered.sort((a, b) => asambleaView === 'proximas' ? a.fecha.localeCompare(b.fecha) : b.fecha.localeCompare(a.fecha));
+
+            document.getElementById('asm-count').textContent = filtered.length + ' evento' + (filtered.length !== 1 ? 's' : '');
+
+            const tipoLabels = { ordinaria: 'Ordinaria', extraordinaria: 'Extraordinaria', directiva: 'Directiva', comite: 'Comité' };
+            const tipoColors = { ordinaria: 'from-blue-500 to-indigo-600', extraordinaria: 'from-amber-500 to-orange-600', directiva: 'from-violet-500 to-purple-600', comite: 'from-emerald-500 to-teal-600' };
+            const tipoBg = { ordinaria: 'bg-blue-500/15 text-blue-400', extraordinaria: 'bg-amber-500/15 text-amber-400', directiva: 'bg-violet-500/15 text-violet-400', comite: 'bg-emerald-500/15 text-emerald-400' };
+            const estadoLabels = { programada: 'Programada', confirmada: 'Confirmada', en_curso: 'En Curso', realizada: 'Realizada', cancelada: 'Cancelada' };
+            const estadoBadge = { programada: 'badge-medium', confirmada: 'badge-low', en_curso: 'badge-critical pulse-critical', realizada: 'bg-slate-500/15 text-slate-400 border border-slate-500/30', cancelada: 'bg-red-500/10 text-red-400/70 border border-red-500/20 line-through' };
+            const quorumLabels = { simple: 'Mayoría Simple', calificada: 'Mayoría 2/3', unanimidad: 'Unanimidad' };
+
+            if (filtered.length === 0) {
+                document.getElementById('asambleas-container').innerHTML = `
+                    <div class="text-center py-12">
+                        <svg class="w-12 h-12 text-slate-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        <p class="text-slate-500 text-sm">No se encontraron eventos con los filtros seleccionados</p>
+                    </div>`;
+                return;
+            }
+
+            const html = filtered.map(a => {
+                const dateObj = new Date(a.fecha + 'T12:00:00');
+                const dateStr = dateObj.toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+                const borderColor = a.estado === 'cancelada' ? 'border-red-500/30' : (a.estado === 'realizada' ? 'border-slate-600/50' : (a.estado === 'confirmada' ? 'border-emerald-500' : 'border-blue-500'));
+                const opacity = a.estado === 'cancelada' ? 'opacity-60' : '';
+
+                return `
+                <div class="glass-card rounded-xl overflow-hidden border-l-4 ${borderColor} ${opacity} hover:border-l-blue-400 transition-all group">
+                    <div class="p-5">
+                        <div class="flex items-start justify-between gap-4">
+                            <div class="flex items-start gap-3.5 flex-1 min-w-0">
+                                <div class="w-11 h-11 bg-gradient-to-br ${tipoColors[a.tipo]} rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-semibold text-white text-sm leading-tight ${a.estado === 'cancelada' ? 'line-through' : ''}">${a.titulo}</p>
+                                    <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+                                        <span class="text-xs px-2 py-0.5 rounded-md font-medium ${tipoBg[a.tipo]}">${tipoLabels[a.tipo]}</span>
+                                        <span class="text-xs px-2 py-0.5 rounded-md font-medium ${estadoBadge[a.estado]}">${estadoLabels[a.estado]}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-right flex-shrink-0">
+                                <p class="text-sm font-semibold text-white">${a.hora}</p>
+                                <p class="text-xs text-slate-400 mt-0.5 capitalize">${dateStr}</p>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center gap-4 text-xs text-slate-400 flex-wrap">
+                            <span class="flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                ${a.lugar}
+                            </span>
+                            <span class="flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                Quórum: ${quorumLabels[a.quorum]}
+                            </span>
+                            ${a.asistencia !== null ? `<span class="flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                Asistencia: ${a.asistencia}%
+                            </span>` : ''}
+                        </div>
+                        <p class="mt-3 text-xs text-slate-500 leading-relaxed">${a.descripcion}</p>
+                    </div>
+                    <div class="flex border-t border-slate-700/40">
+                        ${a.estado !== 'cancelada' && a.estado !== 'realizada' ? `
+                        <button class="flex-1 py-2.5 text-xs font-medium text-slate-400 hover:text-blue-400 hover:bg-blue-500/5 transition flex items-center justify-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                            Editar
+                        </button>
+                        <div class="w-px bg-slate-700/40"></div>
+                        <button class="flex-1 py-2.5 text-xs font-medium text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/5 transition flex items-center justify-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            Notificar
+                        </button>` : `
+                        <button class="flex-1 py-2.5 text-xs font-medium text-slate-400 hover:text-blue-400 hover:bg-blue-500/5 transition flex items-center justify-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            Ver Acta
+                        </button>
+                        <div class="w-px bg-slate-700/40"></div>
+                        <button class="flex-1 py-2.5 text-xs font-medium text-slate-400 hover:text-purple-400 hover:bg-purple-500/5 transition flex items-center justify-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                            Descargar
+                        </button>`}
+                    </div>
+                </div>`;
+            }).join('');
+
+            document.getElementById('asambleas-container').innerHTML = html;
+
+            // Update stats
+            const allUpcoming = asambleasData.filter(a => ['programada', 'confirmada', 'en_curso'].includes(a.estado));
+            const allRealized = asambleasData.filter(a => a.estado === 'realizada');
+            document.getElementById('asm-stat-total').textContent = asambleasData.length;
+            document.getElementById('asm-stat-confirmadas').textContent = asambleasData.filter(a => a.estado === 'confirmada').length;
+            document.getElementById('asm-stat-pendientes').textContent = asambleasData.filter(a => a.estado === 'programada').length;
+            if (allRealized.length > 0) {
+                const avgAtt = Math.round(allRealized.reduce((s, a) => s + (a.asistencia || 0), 0) / allRealized.length);
+                document.getElementById('asm-stat-asistencia').textContent = avgAtt + '%';
+            }
+        }
+
+        function addAsamblea() {
+            const titulo = document.getElementById('asm-titulo').value.trim();
+            const tipo = document.getElementById('asm-tipo').value;
+            const fecha = document.getElementById('asm-fecha').value;
+            const hora = document.getElementById('asm-hora').value;
+            const lugar = document.getElementById('asm-lugar').value.trim();
+            const descripcion = document.getElementById('asm-descripcion').value.trim();
+            const quorum = document.getElementById('asm-quorum').value;
+
+            if (!titulo || !fecha) {
+                alert('Por favor complete al menos el título y la fecha del evento.');
+                return;
+            }
+
+            const newId = 'a' + (asambleasData.length + 1);
+            asambleasData.unshift({
+                id: newId, titulo, tipo, fecha, hora: hora || '19:00',
+                lugar: lugar || 'Por definir', estado: 'programada',
+                descripcion: descripcion || 'Sin descripción', quorum, asistencia: null
+            });
+
+            // Reset form
+            document.getElementById('asm-titulo').value = '';
+            document.getElementById('asm-fecha').value = '';
+            document.getElementById('asm-hora').value = '19:00';
+            document.getElementById('asm-lugar').value = '';
+            document.getElementById('asm-descripcion').value = '';
+
+            closeModal('add-asamblea');
+            asambleaView = 'proximas';
+            switchAsambleaView('proximas');
         }
 
         // Emergencias Tab Switching

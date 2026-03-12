@@ -1528,29 +1528,105 @@
                 </div>
 
                 <!-- CONFIGURACION PAGE -->
-                <div id="configuracion-page" class="page-content p-8 space-y-8 hidden">
-                    <div class="glass-card p-6 rounded-lg">
-                        <h3 class="text-lg font-semibold text-white mb-4">Preferencias</h3>
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between p-4 bg-slate-800/40 rounded-lg">
+                <div id="configuracion-page" class="page-content p-8 space-y-6 hidden">
+                    <!-- Header -->
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-semibold text-white">Configuración de Notificaciones</h3>
+                            <p class="text-sm text-slate-400 mt-1">Configure las reglas, canales y parámetros para cada tipo de notificación</p>
+                        </div>
+                        <button onclick="openModal('add-notif-rule')" class="gradient-button px-4 py-2 rounded-lg text-sm font-medium text-white flex items-center gap-1.5">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                            Nueva Regla
+                        </button>
+                    </div>
+
+                    <!-- General Preferences -->
+                    <div class="glass-card rounded-xl overflow-hidden">
+                        <div class="p-5 border-b border-slate-700/50">
+                            <h4 class="font-semibold text-white text-sm flex items-center gap-2">
+                                <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/></svg>
+                                Preferencias Generales
+                            </h4>
+                        </div>
+                        <div class="p-5 space-y-3">
+                            <div class="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg">
                                 <div>
-                                    <p class="font-medium text-white">Notificaciones Push</p>
-                                    <p class="text-sm text-slate-400">Recibir alertas en tiempo real</p>
+                                    <p class="text-sm font-medium text-white">Notificaciones Push</p>
+                                    <p class="text-xs text-slate-500">Alertas en tiempo real en la plataforma</p>
                                 </div>
                                 <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" checked class="sr-only peer">
+                                    <input type="checkbox" checked class="sr-only peer" id="cfg-push">
                                     <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-400 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                                 </label>
                             </div>
-                            <div class="flex items-center justify-between p-4 bg-slate-800/40 rounded-lg">
+                            <div class="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg">
                                 <div>
-                                    <p class="font-medium text-white">Emails de Reportes</p>
-                                    <p class="text-sm text-slate-400">Resumen mensual de actividades</p>
+                                    <p class="text-sm font-medium text-white">Notificaciones por Email</p>
+                                    <p class="text-xs text-slate-500">Enviar copia al correo del destinatario</p>
                                 </div>
                                 <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" checked class="sr-only peer">
+                                    <input type="checkbox" checked class="sr-only peer" id="cfg-email">
                                     <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-400 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                                 </label>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg">
+                                <div>
+                                    <p class="text-sm font-medium text-white">Notificaciones WhatsApp</p>
+                                    <p class="text-xs text-slate-500">Enviar por WhatsApp Business API</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer" id="cfg-whatsapp">
+                                    <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-400 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg">
+                                <div>
+                                    <p class="text-sm font-medium text-white">Resumen Mensual</p>
+                                    <p class="text-xs text-slate-500">Email con consolidado de notificaciones del mes</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer" id="cfg-resumen">
+                                    <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-400 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notification Rules -->
+                    <div class="glass-card rounded-xl overflow-hidden">
+                        <div class="p-5 border-b border-slate-700/50 flex items-center justify-between">
+                            <h4 class="font-semibold text-white text-sm flex items-center gap-2">
+                                <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                                Reglas de Notificación
+                            </h4>
+                            <span class="text-xs text-slate-500" id="cfg-rules-count">0 reglas activas</span>
+                        </div>
+                        <div id="cfg-rules-container" class="divide-y divide-slate-700/30">
+                            <!-- Rendered by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Payment Parameters -->
+                    <div class="glass-card rounded-xl overflow-hidden">
+                        <div class="p-5 border-b border-slate-700/50">
+                            <h4 class="font-semibold text-white text-sm flex items-center gap-2">
+                                <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                Parámetros de Cobranza
+                            </h4>
+                        </div>
+                        <div class="p-5 grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="text-xs text-slate-500 mb-1.5 block font-medium">Monto cuota mensual (CLP)</label>
+                                <input id="cfg-cuota-monto" type="number" value="55000" onchange="updateCuotaParam()" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label class="text-xs text-slate-500 mb-1.5 block font-medium">Día de vencimiento</label>
+                                <input id="cfg-dia-pago" type="number" min="1" max="28" value="26" onchange="updateCuotaParam()" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label class="text-xs text-slate-500 mb-1.5 block font-medium">Interés por mora (%)</label>
+                                <input id="cfg-interes-mora" type="number" step="0.1" value="1.5" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
                             </div>
                         </div>
                     </div>
@@ -1936,6 +2012,97 @@
             <div class="flex gap-3 mt-5">
                 <button onclick="closeModal('upload-doc')" class="secondary-button flex-1 px-4 py-3 rounded-lg font-medium text-sm">Cancelar</button>
                 <button onclick="uploadDocument()" class="gradient-button flex-1 px-4 py-3 rounded-lg text-white font-medium text-sm">Subir Documento</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Notification Rule Modal -->
+    <div id="add-notif-rule-modal" class="modal-overlay justify-center items-center" onclick="if(event.target===this) closeModal('add-notif-rule')">
+        <div class="modal-content glass-card p-8 rounded-lg max-w-lg w-full mx-4">
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">Nueva Regla de Notificación</h3>
+                    <p class="text-xs text-slate-400">Defina cuándo y a quién notificar</p>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-sm text-slate-400 mb-2 block font-medium">Tipo de evento</label>
+                    <select id="rule-tipo" onchange="updateRuleFields()" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                        <option value="doc_vencimiento">Documento por vencer</option>
+                        <option value="asamblea_creada">Asamblea creada</option>
+                        <option value="asamblea_recordatorio">Recordatorio de asamblea</option>
+                        <option value="pago_mora">Cuota en mora</option>
+                        <option value="pago_recibido">Pago recibido</option>
+                        <option value="mantencion_creada">Mantención creada</option>
+                        <option value="mantencion_terminada">Mantención terminada</option>
+                        <option value="sos_activada">Alerta SOS activada</option>
+                        <option value="sos_resuelta">Alerta SOS resuelta</option>
+                        <option value="personalizada">Personalizada</option>
+                    </select>
+                </div>
+                <div id="rule-custom-name-container" class="hidden">
+                    <label class="text-sm text-slate-400 mb-2 block font-medium">Nombre de la regla</label>
+                    <input id="rule-custom-name" type="text" placeholder="Ej: Recordatorio limpieza semanal" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition placeholder-slate-600">
+                </div>
+                <div id="rule-dias-container">
+                    <label class="text-sm text-slate-400 mb-2 block font-medium" id="rule-dias-label">Días de anticipación</label>
+                    <input id="rule-dias" type="number" value="30" min="1" max="90" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                    <p class="text-xs text-slate-600 mt-1" id="rule-dias-help">Cuántos días antes del vencimiento notificar</p>
+                </div>
+                <div>
+                    <label class="text-sm text-slate-400 mb-2 block font-medium">Destinatarios</label>
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 p-2 bg-slate-800/30 rounded-lg cursor-pointer hover:bg-slate-800/50 transition">
+                            <input type="checkbox" checked id="rule-dest-admin" class="w-4 h-4 rounded bg-slate-700 border-slate-600 text-blue-500">
+                            <span class="text-sm text-slate-300">Administrador</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 bg-slate-800/30 rounded-lg cursor-pointer hover:bg-slate-800/50 transition">
+                            <input type="checkbox" id="rule-dest-coprop" class="w-4 h-4 rounded bg-slate-700 border-slate-600 text-blue-500">
+                            <span class="text-sm text-slate-300">Todos los copropietarios</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 bg-slate-800/30 rounded-lg cursor-pointer hover:bg-slate-800/50 transition">
+                            <input type="checkbox" id="rule-dest-comite" class="w-4 h-4 rounded bg-slate-700 border-slate-600 text-blue-500">
+                            <span class="text-sm text-slate-300">Comité de administración</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 bg-slate-800/30 rounded-lg cursor-pointer hover:bg-slate-800/50 transition">
+                            <input type="checkbox" id="rule-dest-conserjeria" class="w-4 h-4 rounded bg-slate-700 border-slate-600 text-blue-500">
+                            <span class="text-sm text-slate-300">Conserjería</span>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label class="text-sm text-slate-400 mb-2 block font-medium">Canales</label>
+                    <div class="flex gap-3">
+                        <label class="flex items-center gap-2 p-2 px-3 bg-slate-800/30 rounded-lg cursor-pointer hover:bg-slate-800/50 transition">
+                            <input type="checkbox" checked id="rule-ch-push" class="w-4 h-4 rounded bg-slate-700 border-slate-600 text-blue-500">
+                            <span class="text-xs text-slate-300">Push</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 px-3 bg-slate-800/30 rounded-lg cursor-pointer hover:bg-slate-800/50 transition">
+                            <input type="checkbox" checked id="rule-ch-email" class="w-4 h-4 rounded bg-slate-700 border-slate-600 text-blue-500">
+                            <span class="text-xs text-slate-300">Email</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 px-3 bg-slate-800/30 rounded-lg cursor-pointer hover:bg-slate-800/50 transition">
+                            <input type="checkbox" id="rule-ch-whatsapp" class="w-4 h-4 rounded bg-slate-700 border-slate-600 text-blue-500">
+                            <span class="text-xs text-slate-300">WhatsApp</span>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label class="text-sm text-slate-400 mb-2 block font-medium">Prioridad</label>
+                    <select id="rule-prioridad" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                        <option value="alta">Alta — Notificación inmediata</option>
+                        <option value="media" selected>Media — Notificación estándar</option>
+                        <option value="baja">Baja — Solo en resumen</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex gap-3 mt-5">
+                <button onclick="closeModal('add-notif-rule')" class="secondary-button flex-1 px-4 py-3 rounded-lg font-medium text-sm">Cancelar</button>
+                <button onclick="addNotifRule()" class="gradient-button flex-1 px-4 py-3 rounded-lg text-white font-medium text-sm">Guardar Regla</button>
             </div>
         </div>
     </div>
@@ -3836,8 +4003,231 @@
             renderNotifications();
         }
 
+        // === NOTIFICATION RULES CONFIG ===
+        let notifRules = [
+            { id: 'r1', tipo: 'doc_vencimiento', nombre: 'Documento por vencer', dias: 30, destinatarios: ['admin'], canales: ['push', 'email'], prioridad: 'media', activa: true },
+            { id: 'r2', tipo: 'doc_vencimiento', nombre: 'Documento vencimiento urgente', dias: 7, destinatarios: ['admin', 'comite'], canales: ['push', 'email', 'whatsapp'], prioridad: 'alta', activa: true },
+            { id: 'r3', tipo: 'asamblea_creada', nombre: 'Asamblea creada', dias: 0, destinatarios: ['admin', 'coprop'], canales: ['push', 'email'], prioridad: 'media', activa: true },
+            { id: 'r4', tipo: 'asamblea_recordatorio', nombre: 'Recordatorio día anterior', dias: 1, destinatarios: ['admin', 'coprop'], canales: ['push', 'email', 'whatsapp'], prioridad: 'alta', activa: true },
+            { id: 'r5', tipo: 'pago_mora', nombre: 'Cuota en mora', dias: 0, destinatarios: ['admin'], canales: ['push', 'email'], prioridad: 'alta', activa: true },
+            { id: 'r6', tipo: 'pago_recibido', nombre: 'Pago recibido', dias: 0, destinatarios: ['admin'], canales: ['push'], prioridad: 'baja', activa: true },
+            { id: 'r7', tipo: 'mantencion_creada', nombre: 'Mantención solicitada', dias: 0, destinatarios: ['admin', 'comite'], canales: ['push', 'email'], prioridad: 'media', activa: true },
+            { id: 'r8', tipo: 'mantencion_terminada', nombre: 'Mantención completada', dias: 0, destinatarios: ['admin'], canales: ['push'], prioridad: 'baja', activa: true },
+            { id: 'r9', tipo: 'sos_activada', nombre: 'Alerta SOS activada', dias: 0, destinatarios: ['admin', 'coprop', 'conserjeria'], canales: ['push', 'email', 'whatsapp'], prioridad: 'alta', activa: true },
+            { id: 'r10', tipo: 'sos_resuelta', nombre: 'Alerta SOS resuelta', dias: 0, destinatarios: ['admin', 'coprop'], canales: ['push'], prioridad: 'media', activa: true },
+        ];
+
+        const ruleTypeLabels = {
+            doc_vencimiento: 'Documento por vencer',
+            asamblea_creada: 'Asamblea creada',
+            asamblea_recordatorio: 'Recordatorio asamblea',
+            pago_mora: 'Cuota en mora',
+            pago_recibido: 'Pago recibido',
+            mantencion_creada: 'Mantención creada',
+            mantencion_terminada: 'Mantención terminada',
+            sos_activada: 'Alerta SOS activada',
+            sos_resuelta: 'Alerta SOS resuelta',
+            personalizada: 'Personalizada'
+        };
+
+        const ruleTypeColors = {
+            doc_vencimiento: 'amber',
+            asamblea_creada: 'violet',
+            asamblea_recordatorio: 'violet',
+            pago_mora: 'red',
+            pago_recibido: 'emerald',
+            mantencion_creada: 'blue',
+            mantencion_terminada: 'emerald',
+            sos_activada: 'red',
+            sos_resuelta: 'emerald',
+            personalizada: 'slate'
+        };
+
+        const destLabels = { admin: 'Admin', coprop: 'Copropietarios', comite: 'Comité', conserjeria: 'Conserjería' };
+        const canalIcons = { push: '🔔', email: '📧', whatsapp: '💬' };
+
+        function renderNotifRules() {
+            var container = document.getElementById('cfg-rules-container');
+            var countEl = document.getElementById('cfg-rules-count');
+            if (!container) return;
+
+            var activas = notifRules.filter(r => r.activa).length;
+            if (countEl) countEl.textContent = activas + ' reglas activas';
+
+            container.innerHTML = notifRules.map(function(rule) {
+                var color = ruleTypeColors[rule.tipo] || 'slate';
+                var dests = rule.destinatarios.map(d => destLabels[d] || d).join(', ');
+                var canales = rule.canales.map(c => canalIcons[c] || c).join(' ');
+                var prioBadge = rule.prioridad === 'alta' ? 'bg-red-500/15 text-red-400' : rule.prioridad === 'media' ? 'bg-amber-500/15 text-amber-400' : 'bg-slate-500/15 text-slate-400';
+
+                return '<div class="p-4 hover:bg-slate-800/30 transition ' + (rule.activa ? '' : 'opacity-40') + '">' +
+                    '<div class="flex items-center justify-between">' +
+                        '<div class="flex items-center gap-3 flex-1 min-w-0">' +
+                            '<div class="w-2 h-8 rounded-full bg-' + color + '-500 flex-shrink-0"></div>' +
+                            '<div class="flex-1 min-w-0">' +
+                                '<div class="flex items-center gap-2 flex-wrap">' +
+                                    '<p class="text-sm font-medium text-white">' + rule.nombre + '</p>' +
+                                    '<span class="px-2 py-0.5 rounded-md text-xs font-medium ' + prioBadge + '">' + rule.prioridad + '</span>' +
+                                    (rule.dias > 0 ? '<span class="text-xs text-slate-500">' + rule.dias + ' días anticipación</span>' : '') +
+                                '</div>' +
+                                '<div class="flex items-center gap-3 mt-1">' +
+                                    '<span class="text-xs text-slate-500">→ ' + dests + '</span>' +
+                                    '<span class="text-xs">' + canales + '</span>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="flex items-center gap-2 flex-shrink-0">' +
+                            '<button onclick="editNotifRule(\'' + rule.id + '\')" class="p-1.5 hover:bg-slate-700 rounded-lg transition" title="Editar">' +
+                                '<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>' +
+                            '</button>' +
+                            '<label class="relative inline-flex items-center cursor-pointer">' +
+                                '<input type="checkbox" ' + (rule.activa ? 'checked' : '') + ' onchange="toggleNotifRule(\'' + rule.id + '\')" class="sr-only peer">' +
+                                '<div class="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[\'\'] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>' +
+                            '</label>' +
+                            '<button onclick="deleteNotifRule(\'' + rule.id + '\')" class="p-1.5 hover:bg-red-500/20 rounded-lg transition" title="Eliminar">' +
+                                '<svg class="w-4 h-4 text-slate-500 hover:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>' +
+                            '</button>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+
+        function toggleNotifRule(id) {
+            var rule = notifRules.find(r => r.id === id);
+            if (rule) rule.activa = !rule.activa;
+            renderNotifRules();
+            generateNotifications();
+        }
+
+        function deleteNotifRule(id) {
+            notifRules = notifRules.filter(r => r.id !== id);
+            renderNotifRules();
+            generateNotifications();
+        }
+
+        function updateRuleFields() {
+            var tipo = document.getElementById('rule-tipo').value;
+            var diasContainer = document.getElementById('rule-dias-container');
+            var customContainer = document.getElementById('rule-custom-name-container');
+            var diasLabel = document.getElementById('rule-dias-label');
+            var diasHelp = document.getElementById('rule-dias-help');
+
+            customContainer.classList.toggle('hidden', tipo !== 'personalizada');
+
+            if (tipo === 'doc_vencimiento') {
+                diasContainer.classList.remove('hidden');
+                diasLabel.textContent = 'Días de anticipación';
+                diasHelp.textContent = 'Cuántos días antes del vencimiento notificar';
+                document.getElementById('rule-dias').value = 30;
+            } else if (tipo === 'asamblea_recordatorio') {
+                diasContainer.classList.remove('hidden');
+                diasLabel.textContent = 'Días antes de la asamblea';
+                diasHelp.textContent = 'Cuántos días antes recordar (1 = día anterior)';
+                document.getElementById('rule-dias').value = 1;
+            } else if (tipo === 'pago_mora') {
+                diasContainer.classList.remove('hidden');
+                diasLabel.textContent = 'Días después del vencimiento';
+                diasHelp.textContent = 'Cuántos días después del día ' + DIA_PAGO + ' notificar mora';
+                document.getElementById('rule-dias').value = 1;
+            } else {
+                diasContainer.classList.add('hidden');
+            }
+        }
+
+        function addNotifRule() {
+            var tipo = document.getElementById('rule-tipo').value;
+            var dias = parseInt(document.getElementById('rule-dias').value) || 0;
+            var prioridad = document.getElementById('rule-prioridad').value;
+
+            var nombre = tipo === 'personalizada'
+                ? (document.getElementById('rule-custom-name').value.trim() || 'Regla personalizada')
+                : ruleTypeLabels[tipo] + (dias > 0 ? ' (' + dias + ' días)' : '');
+
+            var destinatarios = [];
+            if (document.getElementById('rule-dest-admin').checked) destinatarios.push('admin');
+            if (document.getElementById('rule-dest-coprop').checked) destinatarios.push('coprop');
+            if (document.getElementById('rule-dest-comite').checked) destinatarios.push('comite');
+            if (document.getElementById('rule-dest-conserjeria').checked) destinatarios.push('conserjeria');
+            if (destinatarios.length === 0) destinatarios.push('admin');
+
+            var canales = [];
+            if (document.getElementById('rule-ch-push').checked) canales.push('push');
+            if (document.getElementById('rule-ch-email').checked) canales.push('email');
+            if (document.getElementById('rule-ch-whatsapp').checked) canales.push('whatsapp');
+            if (canales.length === 0) canales.push('push');
+
+            notifRules.push({
+                id: 'r_' + Date.now(),
+                tipo: tipo,
+                nombre: nombre,
+                dias: dias,
+                destinatarios: destinatarios,
+                canales: canales,
+                prioridad: prioridad,
+                activa: true
+            });
+
+            closeModal('add-notif-rule');
+            renderNotifRules();
+            generateNotifications();
+
+            // Toast
+            var toast = document.getElementById('payment-toast');
+            document.getElementById('payment-toast-name').textContent = 'Regla creada: ' + nombre;
+            document.getElementById('payment-toast-detail').textContent = destinatarios.map(d => destLabels[d]).join(', ') + ' • ' + canales.join(', ');
+            toast.classList.add('active');
+            setTimeout(() => toast.classList.remove('active'), 4000);
+        }
+
+        function editNotifRule(id) {
+            var rule = notifRules.find(r => r.id === id);
+            if (!rule) return;
+
+            document.getElementById('rule-tipo').value = rule.tipo;
+            document.getElementById('rule-dias').value = rule.dias;
+            document.getElementById('rule-prioridad').value = rule.prioridad;
+            document.getElementById('rule-dest-admin').checked = rule.destinatarios.includes('admin');
+            document.getElementById('rule-dest-coprop').checked = rule.destinatarios.includes('coprop');
+            document.getElementById('rule-dest-comite').checked = rule.destinatarios.includes('comite');
+            document.getElementById('rule-dest-conserjeria').checked = rule.destinatarios.includes('conserjeria');
+            document.getElementById('rule-ch-push').checked = rule.canales.includes('push');
+            document.getElementById('rule-ch-email').checked = rule.canales.includes('email');
+            document.getElementById('rule-ch-whatsapp').checked = rule.canales.includes('whatsapp');
+
+            updateRuleFields();
+
+            // Remove old rule, will be re-added on save
+            notifRules = notifRules.filter(r => r.id !== id);
+            renderNotifRules();
+            openModal('add-notif-rule');
+        }
+
+        function updateCuotaParam() {
+            var monto = parseInt(document.getElementById('cfg-cuota-monto').value) || 55000;
+            var dia = parseInt(document.getElementById('cfg-dia-pago').value) || 26;
+
+            // Update global constants (simulated - in production these would save to Supabase)
+            if (typeof CUOTA_MENSUAL !== 'undefined') {
+                // Can't reassign const, but this shows the intent
+            }
+
+            // Toast confirmation
+            var toast = document.getElementById('payment-toast');
+            document.getElementById('payment-toast-name').textContent = 'Parámetros actualizados';
+            document.getElementById('payment-toast-detail').textContent = 'Cuota: $' + monto.toLocaleString('es-CL') + ' • Vto: día ' + dia;
+            toast.classList.add('active');
+            setTimeout(() => toast.classList.remove('active'), 3000);
+        }
+
+        // Render rules on config page load
+        function initConfigPage() {
+            renderNotifRules();
+        }
+
         // Generate on load
         generateNotifications();
+        initConfigPage();
 
         // Lucide Icons
         lucide.createIcons();

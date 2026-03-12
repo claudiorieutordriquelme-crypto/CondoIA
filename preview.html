@@ -303,10 +303,11 @@
 
         .kanban-column {
             background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(148, 163, 184, 0.1);
-            border-radius: 0.5rem;
+            border: 1px dashed rgba(148, 163, 184, 0.15);
+            border-radius: 0.75rem;
             padding: 1rem;
             min-height: 500px;
+            transition: all 0.2s ease;
         }
 
         .kanban-card {
@@ -874,9 +875,15 @@
 
                 <!-- MANTENIMIENTO PAGE -->
                 <div id="mantenimiento-page" class="page-content p-8 space-y-8 hidden">
-                    <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center justify-between mb-4">
                         <h3 class="text-lg font-semibold text-white">Tablero de Mantenimiento</h3>
                         <button onclick="openModal('add-maintenance')" class="gradient-button px-4 py-2 rounded-lg text-sm font-medium text-white">+ Agregar Actividad</button>
+                    </div>
+                    <div class="flex items-center gap-4 mb-2 text-xs">
+                        <span class="flex items-center gap-1.5 text-slate-500"><svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>Arrastra tarjetas para cambiar estado</span>
+                        <span class="flex items-center gap-1.5 px-2 py-1 rounded-md bg-blue-500/10 text-blue-400 font-medium">Rol: Administrador</span>
+                        <span class="flex items-center gap-1.5 text-slate-600">|</span>
+                        <span class="flex items-center gap-1.5 text-slate-500">Monedas: <span class="text-emerald-400 font-medium">CLP</span> <span class="text-blue-400 font-medium">UF</span> <span class="text-amber-400 font-medium">USD</span></span>
                     </div>
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <!-- Solicitado Column -->
@@ -1264,27 +1271,41 @@
     <!-- Add Maintenance Modal -->
     <div id="add-maintenance-modal" class="modal-overlay justify-center items-center" onclick="if(event.target===this) closeModal('add-maintenance')">
         <div class="modal-content glass-card p-8 rounded-lg max-w-md w-full mx-4">
-            <h3 class="text-xl font-bold text-white mb-4">Agregar Actividad</h3>
+            <h3 class="text-xl font-bold text-white mb-2">Agregar Actividad</h3>
+            <p class="text-xs text-slate-500 mb-4 flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                Solo Administrador o Usuario Maestro
+            </p>
             <div class="space-y-4">
                 <div>
                     <label class="text-sm text-slate-400 mb-2 block">Tipo de Actividad</label>
-                    <input type="text" placeholder="Ej: Reparación ascensor" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                    <input type="text" placeholder="Ej: Reparación ascensor" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white text-sm">
                 </div>
                 <div>
                     <label class="text-sm text-slate-400 mb-2 block">Descripción</label>
-                    <textarea placeholder="Detalles..." class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white" rows="2"></textarea>
+                    <textarea placeholder="Detalles de la actividad..." class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white text-sm" rows="2"></textarea>
                 </div>
                 <div>
                     <label class="text-sm text-slate-400 mb-2 block">Responsable</label>
-                    <input type="text" placeholder="Nombre" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                    <input type="text" placeholder="Nombre completo" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white text-sm">
                 </div>
-                <div>
-                    <label class="text-sm text-slate-400 mb-2 block">Monto ($)</label>
-                    <input type="number" placeholder="0" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-sm text-slate-400 mb-2 block">Monto</label>
+                        <input type="number" placeholder="0" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white text-sm">
+                    </div>
+                    <div>
+                        <label class="text-sm text-slate-400 mb-2 block">Moneda</label>
+                        <select class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white text-sm">
+                            <option value="CLP">CLP (Pesos)</option>
+                            <option value="UF">UF</option>
+                            <option value="USD">USD (Dólares)</option>
+                        </select>
+                    </div>
                 </div>
                 <div>
                     <label class="text-sm text-slate-400 mb-2 block">Prioridad</label>
-                    <select class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                    <select class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2 text-white text-sm">
                         <option>Alta</option>
                         <option>Media</option>
                         <option>Baja</option>
@@ -1292,8 +1313,8 @@
                 </div>
             </div>
             <div class="flex gap-3 mt-6">
-                <button onclick="closeModal('add-maintenance')" class="secondary-button flex-1 px-4 py-3 rounded-lg font-medium">Cancelar</button>
-                <button class="gradient-button flex-1 px-4 py-3 rounded-lg text-white font-medium">Agregar</button>
+                <button onclick="closeModal('add-maintenance')" class="secondary-button flex-1 px-4 py-3 rounded-lg font-medium text-sm">Cancelar</button>
+                <button class="gradient-button flex-1 px-4 py-3 rounded-lg text-white font-medium text-sm">Agregar</button>
             </div>
         </div>
     </div>
@@ -1396,7 +1417,8 @@
         }
 
         function closeModal(modalName) {
-            document.getElementById(modalName + '-modal').classList.remove('active');
+            const el = document.getElementById(modalName + '-modal');
+            if (el) { el.classList.remove('active'); if (modalName === 'move-card') el.remove(); }
         }
 
         // Stat Card Details
@@ -1551,39 +1573,114 @@
         }
 
         // Kanban Functions
+        const currentUserRole = 'administrador'; // Simulated role: administrador | usuario_maestro | copropietario
+        const canManageKanban = ['administrador', 'usuario_maestro'].includes(currentUserRole);
+
         const maintenanceData = {
             solicitado: [
-                { title: 'Reparación ascensor', responsable: 'Carlos Muñoz', monto: 850000, priority: 'Alta', date: '2024-02-28' },
-                { title: 'Pintura fachada norte', responsable: 'Juan Pérez', monto: 1200000, priority: 'Media', date: '2024-02-27' },
-                { title: 'Cambio bomba agua', responsable: 'Luis Soto', monto: 420000, priority: 'Alta', date: '2024-02-26' }
+                { id:'m1', title: 'Reparación ascensor', responsable: 'Carlos Muñoz', monto: 850000, currency: 'CLP', priority: 'Alta', date: '2024-02-28' },
+                { id:'m2', title: 'Pintura fachada norte', responsable: 'Juan Pérez', monto: 28.5, currency: 'UF', priority: 'Media', date: '2024-02-27' },
+                { id:'m3', title: 'Cambio bomba agua', responsable: 'Luis Soto', monto: 420000, currency: 'CLP', priority: 'Alta', date: '2024-02-26' }
             ],
             desarrollo: [
-                { title: 'Impermeabilización terraza', responsable: 'María López', monto: 2100000, priority: 'Alta', date: '2024-02-25' },
-                { title: 'Mantención jardines', responsable: 'Pedro Díaz', monto: 180000, priority: 'Baja', date: '2024-02-24' },
-                { title: 'Reparación portón', responsable: 'Ana Torres', monto: 350000, priority: 'Media', date: '2024-02-23' }
+                { id:'m4', title: 'Impermeabilización terraza', responsable: 'María López', monto: 2450, currency: 'USD', priority: 'Alta', date: '2024-02-25' },
+                { id:'m5', title: 'Mantención jardines', responsable: 'Pedro Díaz', monto: 180000, currency: 'CLP', priority: 'Baja', date: '2024-02-24' },
+                { id:'m6', title: 'Reparación portón', responsable: 'Ana Torres', monto: 8.3, currency: 'UF', priority: 'Media', date: '2024-02-23' }
             ],
             terminado: [
-                { title: 'Cambio luminarias LED', responsable: 'Rosa Vega', monto: 680000, priority: 'Media', date: '2024-02-20' },
-                { title: 'Reparación cañería piso 2', responsable: 'Carlos Muñoz', monto: 290000, priority: 'Alta', date: '2024-02-18' }
+                { id:'m7', title: 'Cambio luminarias LED', responsable: 'Rosa Vega', monto: 680000, currency: 'CLP', priority: 'Media', date: '2024-02-20' },
+                { id:'m8', title: 'Reparación cañería piso 2', responsable: 'Carlos Muñoz', monto: 290000, currency: 'CLP', priority: 'Alta', date: '2024-02-18' }
             ]
         };
 
+        function formatMonto(monto, currency) {
+            if (currency === 'UF') return monto.toFixed(1) + ' UF';
+            if (currency === 'USD') return 'US$' + monto.toLocaleString('en-US');
+            return '$' + (monto >= 1000000 ? (monto/1000000).toFixed(1)+'M' : (monto/1000).toFixed(0)+'K');
+        }
+
+        const currencyColors = { CLP: 'text-emerald-400', UF: 'text-blue-400', USD: 'text-amber-400' };
+        const currencyBg = { CLP: 'bg-emerald-500/15 text-emerald-400', UF: 'bg-blue-500/15 text-blue-400', USD: 'bg-amber-500/15 text-amber-400' };
+
+        let draggedCardId = null;
+        let draggedFromCol = null;
+
         function renderKanban() {
             const badges = { Alta: 'badge-critical', Media: 'badge-medium', Baja: 'badge-low' };
+            const dragAttr = canManageKanban ? 'draggable="true"' : '';
+            const cursorClass = canManageKanban ? 'cursor-grab active:cursor-grabbing' : '';
+
             const render = (col) => maintenanceData[col].map(card => `
-                <div class="kanban-card">
-                    <p class="font-semibold text-white text-sm">${card.title}</p>
-                    <p class="text-xs text-slate-400 mt-2">${card.responsable}</p>
-                    <p class="text-sm font-semibold text-emerald-400 mt-2">$${(card.monto / 1000).toFixed(0)}K</p>
-                    <div class="flex gap-2 mt-2">
-                        <span class="${badges[card.priority]} px-2 py-1 rounded text-xs font-medium">${card.priority}</span>
+                <div class="kanban-card ${cursorClass}" ${dragAttr}
+                     ondragstart="onDragStart(event,'${card.id}','${col}')"
+                     ondragend="onDragEnd(event)" data-id="${card.id}">
+                    <div class="flex items-start justify-between gap-2">
+                        <p class="font-semibold text-white text-sm leading-tight">${card.title}</p>
+                        ${canManageKanban ? `<button onclick="openMoveMenu('${card.id}','${col}')" class="text-slate-500 hover:text-slate-300 p-0.5 flex-shrink-0" title="Mover">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/></svg>
+                        </button>` : ''}
+                    </div>
+                    <div class="flex items-center gap-2 mt-2">
+                        <div class="w-5 h-5 rounded-full bg-slate-700 flex items-center justify-center text-[9px] text-slate-300 font-bold">${card.responsable.split(' ').map(n=>n[0]).join('')}</div>
+                        <p class="text-xs text-slate-400">${card.responsable}</p>
+                    </div>
+                    <div class="flex items-center justify-between mt-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm font-bold ${currencyColors[card.currency]}">${formatMonto(card.monto, card.currency)}</span>
+                            <span class="text-[10px] px-1.5 py-0.5 rounded ${currencyBg[card.currency]} font-semibold">${card.currency}</span>
+                        </div>
+                        <span class="${badges[card.priority]} px-2 py-0.5 rounded text-[10px] font-semibold">${card.priority}</span>
                     </div>
                 </div>
             `).join('');
 
-            document.getElementById('kanban-solicitado').innerHTML = render('solicitado');
-            document.getElementById('kanban-desarrollo').innerHTML = render('desarrollo');
-            document.getElementById('kanban-terminado').innerHTML = render('terminado');
+            ['solicitado','desarrollo','terminado'].forEach(col => {
+                const container = document.getElementById('kanban-' + col);
+                container.innerHTML = render(col);
+                if (canManageKanban) {
+                    container.ondragover = (e) => { e.preventDefault(); container.classList.add('bg-blue-500/5','border-blue-500/30'); };
+                    container.ondragleave = () => { container.classList.remove('bg-blue-500/5','border-blue-500/30'); };
+                    container.ondrop = (e) => { e.preventDefault(); container.classList.remove('bg-blue-500/5','border-blue-500/30'); moveCard(draggedCardId, draggedFromCol, col); };
+                }
+            });
+
+            // Update column counts
+            document.querySelectorAll('.kanban-column').forEach((colEl, i) => {
+                const cols = ['solicitado','desarrollo','terminado'];
+                const countEl = colEl.querySelector('span:last-child');
+                if (countEl) countEl.textContent = maintenanceData[cols[i]].length;
+            });
+        }
+
+        function onDragStart(e, cardId, fromCol) {
+            draggedCardId = cardId; draggedFromCol = fromCol;
+            e.target.style.opacity = '0.4';
+        }
+        function onDragEnd(e) { e.target.style.opacity = '1'; }
+
+        function moveCard(cardId, fromCol, toCol) {
+            if (fromCol === toCol || !canManageKanban) return;
+            const idx = maintenanceData[fromCol].findIndex(c => c.id === cardId);
+            if (idx === -1) return;
+            const [card] = maintenanceData[fromCol].splice(idx, 1);
+            maintenanceData[toCol].push(card);
+            renderKanban();
+        }
+
+        function openMoveMenu(cardId, fromCol) {
+            const cols = {solicitado:'Solicitado', desarrollo:'En Desarrollo', terminado:'Terminado'};
+            const options = Object.keys(cols).filter(c => c !== fromCol);
+            const html = `<div class="glass-card p-4 rounded-xl max-w-xs w-full mx-4 space-y-2">
+                <p class="text-sm font-semibold text-white mb-3">Mover a:</p>
+                ${options.map(c => `<button onclick="moveCard('${cardId}','${fromCol}','${c}');closeModal('move-card')" class="w-full text-left p-3 rounded-lg bg-slate-800/40 hover:bg-slate-800/70 text-sm text-slate-200 transition">${cols[c]}</button>`).join('')}
+                <button onclick="closeModal('move-card')" class="w-full text-center p-2 text-xs text-slate-500 hover:text-slate-300">Cancelar</button>
+            </div>`;
+            const overlay = document.createElement('div');
+            overlay.id = 'move-card-modal';
+            overlay.className = 'modal-overlay active justify-center items-center';
+            overlay.onclick = (e) => { if(e.target===overlay) closeModal('move-card'); };
+            overlay.innerHTML = html;
+            document.body.appendChild(overlay);
         }
 
         // Proveedores Functions

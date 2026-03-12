@@ -334,6 +334,75 @@
         .detail-panel.active {
             max-height: 1000px;
         }
+
+        /* SOS Panic Button */
+        .sos-floating {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 40;
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
+            transition: all 0.3s ease;
+            animation: sosPulse 2s ease-in-out infinite;
+        }
+        .sos-floating:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(239, 68, 68, 0.6);
+        }
+        @keyframes sosPulse {
+            0%, 100% { box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4); }
+            50% { box-shadow: 0 4px 30px rgba(239, 68, 68, 0.7), 0 0 60px rgba(239, 68, 68, 0.2); }
+        }
+        .sos-alert-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 60;
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            padding: 1rem 2rem;
+            transform: translateY(-100%);
+            transition: transform 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .sos-alert-banner.active {
+            transform: translateY(0);
+        }
+        .sos-realtime-dot {
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            animation: pulseCritical 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .payment-toast {
+            position: fixed;
+            bottom: 7rem;
+            right: 2rem;
+            z-index: 45;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            transform: translateX(120%);
+            transition: transform 0.4s ease;
+            max-width: 320px;
+        }
+        .payment-toast.active {
+            transform: translateX(0);
+        }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 scrollbar-thin">
@@ -520,7 +589,13 @@
                                 </div>
                                 <h3 class="text-base font-semibold text-white">Ingresos del Mes</h3>
                             </div>
-                            <span class="text-xs text-slate-400">Marzo 2026</span>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs text-slate-400">Marzo 2026</span>
+                                <button onclick="openPaymentModal()" class="gradient-button px-3 py-1.5 rounded-lg text-xs font-medium text-white flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                    Registrar Pago
+                                </button>
+                            </div>
                         </div>
                         <div class="p-5">
                             <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
@@ -1260,6 +1335,122 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SOS Floating Button -->
+    <div class="sos-floating" onclick="triggerSOS()" title="Botón de Pánico - SOS">
+        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.536a5 5 0 010-7.072m-2.828 9.9a9 9 0 010-12.728"/></svg>
+    </div>
+
+    <!-- SOS Alert Banner -->
+    <div id="sos-banner" class="sos-alert-banner">
+        <svg class="w-5 h-5 text-white animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.536a5 5 0 010-7.072m-2.828 9.9a9 9 0 010-12.728"/></svg>
+        <span class="text-white font-semibold text-sm" id="sos-banner-text">ALERTA SOS ACTIVADA</span>
+        <div class="sos-realtime-dot"></div>
+        <span class="text-white/70 text-xs">Supabase Realtime conectado</span>
+        <button onclick="dismissSOS()" class="ml-4 text-white/60 hover:text-white transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+    </div>
+
+    <!-- Payment Toast Notification -->
+    <div id="payment-toast" class="payment-toast">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-emerald-500/15 flex items-center justify-center flex-shrink-0">
+                <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <div>
+                <p class="text-sm font-semibold text-white" id="payment-toast-name">Pago recibido</p>
+                <p class="text-xs text-slate-400" id="payment-toast-detail">Depto 401 - $97.930</p>
+            </div>
+            <div class="sos-realtime-dot ml-2"></div>
+        </div>
+    </div>
+
+    <!-- SOS Confirmation Modal -->
+    <div id="sos-confirm-modal" class="modal-overlay justify-center items-center" onclick="if(event.target===this) closeModal('sos-confirm')">
+        <div class="modal-content glass-card p-8 rounded-lg max-w-md w-full mx-4 text-center">
+            <div class="w-20 h-20 bg-gradient-to-br from-red-500 to-red-700 rounded-full flex items-center justify-center mx-auto mb-5 shadow-lg shadow-red-500/30">
+                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.536a5 5 0 010-7.072m-2.828 9.9a9 9 0 010-12.728"/></svg>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">Activar Alerta SOS</h3>
+            <p class="text-sm text-slate-400 mb-6">Se enviará una alerta de emergencia a la conserjería, administración y servicios de emergencia configurados. Esta acción es inmediata.</p>
+            <div class="glass-card rounded-lg p-4 mb-6 text-left space-y-2">
+                <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-2">Se notificará a:</p>
+                <div class="flex items-center gap-2 text-sm text-slate-300">
+                    <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    Conserjería 24/7
+                </div>
+                <div class="flex items-center gap-2 text-sm text-slate-300">
+                    <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    Administrador del Condominio
+                </div>
+                <div class="flex items-center gap-2 text-sm text-slate-300">
+                    <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    Carabineros del cuadrante
+                </div>
+                <div class="flex items-center gap-2 text-sm text-slate-300">
+                    <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    <span class="text-emerald-400 text-xs font-medium">Supabase Realtime</span> — Notificación instantánea
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="closeModal('sos-confirm')" class="secondary-button flex-1 px-4 py-3 rounded-lg font-medium text-sm">Cancelar</button>
+                <button onclick="confirmSOS()" class="danger-button flex-1 px-4 py-3 rounded-lg text-white font-medium text-sm">ACTIVAR SOS</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Payment Modal -->
+    <div id="register-payment-modal" class="modal-overlay justify-center items-center" onclick="if(event.target===this) closeModal('register-payment')">
+        <div class="modal-content glass-card p-8 rounded-lg max-w-md w-full mx-4">
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">Registrar Pago</h3>
+                    <p class="text-xs text-slate-400">Registra un pago de gasto común recibido</p>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label for="pago-coprop" class="text-sm text-slate-400 mb-2 block font-medium">Copropietario</label>
+                    <select id="pago-coprop" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                    </select>
+                </div>
+                <div>
+                    <label for="pago-monto" class="text-sm text-slate-400 mb-2 block font-medium">Monto (CLP)</label>
+                    <input id="pago-monto" type="number" value="97930" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                </div>
+                <div>
+                    <label for="pago-concepto" class="text-sm text-slate-400 mb-2 block font-medium">Concepto</label>
+                    <select id="pago-concepto" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                        <option value="gasto_comun">Gasto Común Mensual</option>
+                        <option value="fondo_reserva">Fondo de Reserva</option>
+                        <option value="multa">Multa / Interés</option>
+                        <option value="extraordinario">Gasto Extraordinario</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="pago-metodo" class="text-sm text-slate-400 mb-2 block font-medium">Método de Pago</label>
+                    <select id="pago-metodo" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
+                        <option value="transferencia">Transferencia Bancaria</option>
+                        <option value="pago_linea">Pago en Línea</option>
+                        <option value="efectivo">Efectivo</option>
+                        <option value="cheque">Cheque</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 mt-4 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                <div class="sos-realtime-dot"></div>
+                <p class="text-xs text-emerald-400">El dashboard se actualizará en tiempo real vía Supabase Realtime</p>
+            </div>
+            <div class="flex gap-3 mt-5">
+                <button onclick="closeModal('register-payment')" class="secondary-button flex-1 px-4 py-3 rounded-lg font-medium text-sm">Cancelar</button>
+                <button onclick="registerPayment()" class="gradient-button flex-1 px-4 py-3 rounded-lg text-white font-medium text-sm">Registrar Pago</button>
             </div>
         </div>
     </div>
@@ -2220,6 +2411,161 @@
             closeModal('add-asamblea');
             asambleaView = 'proximas';
             switchAsambleaView('proximas');
+        }
+
+        // SOS Panic Button Functions
+        function triggerSOS() {
+            openModal('sos-confirm');
+        }
+
+        function confirmSOS() {
+            closeModal('sos-confirm');
+            const banner = document.getElementById('sos-banner');
+            banner.classList.add('active');
+            document.getElementById('sos-banner-text').textContent = 'ALERTA SOS ACTIVADA — Notificando a conserjería, administración y emergencias...';
+
+            // Simulate Supabase Realtime broadcast
+            setTimeout(() => {
+                document.getElementById('sos-banner-text').textContent = 'SOS ACTIVA — Conserjería notificada ✓ | Administrador notificado ✓ | Carabineros alertados ✓';
+            }, 2000);
+
+            // Auto-dismiss after 15 seconds
+            setTimeout(() => {
+                dismissSOS();
+            }, 15000);
+        }
+
+        function dismissSOS() {
+            document.getElementById('sos-banner').classList.remove('active');
+        }
+
+        // Payment Registration + Real-time Dashboard
+        let totalIngresos = 4200000; // Starting value $4.2M
+        const pagosRecientes = [
+            { nombre: 'Juan Martínez', depto: 'Depto 401', monto: 97930, tiempo: 'hace 2h' },
+            { nombre: 'María García', depto: 'Depto 302', monto: 97930, tiempo: 'hace 1 día' },
+            { nombre: 'Roberto López', depto: 'Depto 105', monto: 97930, tiempo: 'hace 2 días' }
+        ];
+
+        function openPaymentModal() {
+            // Populate copropietarios dropdown
+            const select = document.getElementById('pago-coprop');
+            select.innerHTML = copropietariosData.map(c =>
+                `<option value="${c.id}">${c.nombre} — ${c.depto}</option>`
+            ).join('');
+            openModal('register-payment');
+        }
+
+        function registerPayment() {
+            const copropId = document.getElementById('pago-coprop').value;
+            const monto = parseInt(document.getElementById('pago-monto').value) || 0;
+            const concepto = document.getElementById('pago-concepto').value;
+
+            if (monto <= 0) {
+                alert('Ingrese un monto válido.');
+                return;
+            }
+
+            const coprop = copropietariosData.find(c => c.id === copropId);
+            if (!coprop) return;
+
+            // Update total income (simulate real-time)
+            totalIngresos += monto;
+
+            // Update copropietario status
+            if (coprop.estado === 'moroso') {
+                coprop.estado = 'al_dia';
+                coprop.mesesDeuda = 0;
+            }
+
+            // Add to recent payments (prepend)
+            pagosRecientes.unshift({
+                nombre: coprop.nombre,
+                depto: coprop.depto,
+                monto: monto,
+                tiempo: 'ahora'
+            });
+            if (pagosRecientes.length > 5) pagosRecientes.pop();
+
+            closeModal('register-payment');
+
+            // Animate dashboard update
+            updateDashboardRealtime(coprop, monto);
+
+            // Show payment toast
+            showPaymentToast(coprop.nombre, coprop.depto, monto);
+        }
+
+        function updateDashboardRealtime(coprop, monto) {
+            // Update Ingresos del Mes stat card
+            const ingresoCard = document.querySelector('.stat-card.fade-in.stagger-1 .text-3xl');
+            if (ingresoCard) {
+                const formatted = '$' + (totalIngresos / 1000000).toFixed(1) + 'M';
+                ingresoCard.textContent = formatted;
+                ingresoCard.style.transition = 'color 0.3s ease';
+                ingresoCard.style.color = '#4ade80';
+                setTimeout(() => { ingresoCard.style.color = ''; }, 1500);
+            }
+
+            // Update morosidad count
+            const morosos = copropietariosData.filter(c => c.estado === 'moroso').length;
+            const morosoCard = document.querySelector('.stat-card.fade-in.stagger-3 .text-3xl');
+            if (morosoCard) {
+                morosoCard.textContent = morosos;
+            }
+
+            // Update últimos pagos in detail panel
+            updateRecentPaymentsList();
+
+            // Update chart data if visible
+            if (chartInstance) {
+                const currentMonth = chartInstance.data.datasets[0].data;
+                currentMonth[currentMonth.length - 1] = totalIngresos;
+                chartInstance.update('active');
+            }
+
+            // Flash the stat card
+            const statCards = document.querySelectorAll('.stat-card');
+            if (statCards[0]) {
+                statCards[0].style.boxShadow = '0 0 30px rgba(34, 197, 94, 0.4)';
+                statCards[0].style.borderColor = 'rgba(34, 197, 94, 0.5)';
+                setTimeout(() => {
+                    statCards[0].style.boxShadow = '';
+                    statCards[0].style.borderColor = '';
+                }, 2000);
+            }
+        }
+
+        function updateRecentPaymentsList() {
+            const container = document.querySelector('#detail-panel-0 .lg\\:col-span-2 .space-y-2\\.5');
+            if (!container) return;
+
+            const html = pagosRecientes.slice(0, 3).map(p => {
+                const initials = p.nombre.split(' ').map(n => n[0]).join('').slice(0, 2);
+                const montoStr = '$' + p.monto.toLocaleString('es-CL');
+                const isNew = p.tiempo === 'ahora';
+                return `
+                    <div class="flex items-center gap-3 p-2.5 rounded-lg ${isNew ? 'bg-emerald-500/10 border border-emerald-500/20' : 'bg-slate-800/30'} hover:bg-slate-800/50 transition">
+                        <div class="w-8 h-8 rounded-full ${isNew ? 'bg-emerald-500/25' : 'bg-emerald-500/15'} flex items-center justify-center text-emerald-400 text-xs font-bold flex-shrink-0">${initials}</div>
+                        <div class="min-w-0 flex-1">
+                            <p class="text-sm font-medium text-white truncate">${p.nombre}</p>
+                            <p class="text-xs text-slate-500">${p.depto} • ${p.tiempo}</p>
+                        </div>
+                        <span class="text-xs font-semibold text-emerald-400 flex-shrink-0">${montoStr}</span>
+                        ${isNew ? '<div class="sos-realtime-dot flex-shrink-0"></div>' : ''}
+                    </div>`;
+            }).join('');
+            container.innerHTML = html;
+        }
+
+        function showPaymentToast(nombre, depto, monto) {
+            const toast = document.getElementById('payment-toast');
+            document.getElementById('payment-toast-name').textContent = 'Pago recibido de ' + nombre;
+            document.getElementById('payment-toast-detail').textContent = depto + ' — $' + monto.toLocaleString('es-CL');
+            toast.classList.add('active');
+            setTimeout(() => {
+                toast.classList.remove('active');
+            }, 5000);
         }
 
         // Emergencias Tab Switching

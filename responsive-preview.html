@@ -164,7 +164,7 @@
     <div class="toolbar">
         <h1><span>CondoIA</span> — Vista Multi-Dispositivo</h1>
         <div class="toolbar-actions">
-            <input type="text" id="url-input" class="url-bar" value="https://condo-ia.vercel.app/" placeholder="URL a previsualizar...">
+            <input type="text" id="url-input" class="url-bar" value="/preview.html" placeholder="URL a previsualizar...">
             <button class="btn btn-primary" onclick="loadAll()">Cargar</button>
         </div>
         <div class="presets">
@@ -194,7 +194,7 @@
         const SCALE_FACTOR = 0.45; // Scale down to fit on screen
 
         function getUrl() {
-            return document.getElementById('url-input').value.trim() || 'https://condo-ia.vercel.app/';
+            return document.getElementById('url-input').value.trim() || '/preview.html';
         }
 
         function renderDevices(filter) {

@@ -11,6 +11,28 @@
     <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains; preload">
     <title>CondoIA - Gestión Inteligente de Condominios</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        blue: {
+                            300: '#4d9fd4',
+                            400: '#0d6cb8',
+                            500: '#0154A0',
+                            600: '#014888',
+                            700: '#013c70',
+                        },
+                        orange: {
+                            400: '#ff8534',
+                            500: '#FF6702',
+                            600: '#e55d00',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -34,7 +56,7 @@
         .glass-card:hover {
             background: rgba(30, 41, 59, 0.8);
             border-color: rgba(148, 163, 184, 0.25);
-            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.1);
+            box-shadow: 0 8px 32px rgba(1, 84, 160, 0.1);
         }
 
         .stat-card {
@@ -49,12 +71,12 @@
             transform: scale(1.02);
             background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
             border-color: rgba(148, 163, 184, 0.25);
-            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15);
+            box-shadow: 0 8px 32px rgba(1, 84, 160, 0.15);
         }
 
         .stat-card.active {
-            border: 2px solid #3b82f6;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            border: 2px solid #0154A0;
+            box-shadow: 0 0 20px rgba(1, 84, 160, 0.4);
         }
 
         .sidebar-gradient {
@@ -86,9 +108,9 @@
         }
 
         .sidebar-link.active {
-            background: rgba(59, 130, 246, 0.15);
-            color: #3b82f6;
-            border-left: 3px solid #3b82f6;
+            background: rgba(1, 84, 160, 0.2);
+            color: #FF6702;
+            border-left: 3px solid #FF6702;
             padding-left: calc(1rem - 3px);
             font-weight: 500;
         }
@@ -100,7 +122,7 @@
             top: 0;
             bottom: 0;
             width: 3px;
-            background: linear-gradient(180deg, #3b82f6, rgba(59, 130, 246, 0.5));
+            background: linear-gradient(180deg, #0154A0, rgba(1, 84, 160, 0.5));
             border-radius: 0 3px 3px 0;
         }
 
@@ -122,14 +144,14 @@
         .stagger-5 { animation-delay: 0.25s; }
 
         .gradient-button {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            background: linear-gradient(135deg, #FF6702, #e55d00);
             transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+            box-shadow: 0 4px 12px rgba(255, 103, 2, 0.25);
         }
 
         .gradient-button:hover {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35);
+            background: linear-gradient(135deg, #e55d00, #cc5200);
+            box-shadow: 0 6px 20px rgba(255, 103, 2, 0.35);
             transform: translateY(-1px);
         }
 
@@ -189,7 +211,7 @@
 
         .scrollbar-thin {
             scrollbar-width: thin;
-            scrollbar-color: rgba(59, 130, 246, 0.4) transparent;
+            scrollbar-color: rgba(1, 84, 160, 0.4) transparent;
         }
 
         .scrollbar-thin::-webkit-scrollbar {
@@ -201,7 +223,7 @@
         }
 
         .scrollbar-thin::-webkit-scrollbar-thumb {
-            background: rgba(59, 130, 246, 0.4);
+            background: rgba(1, 84, 160, 0.4);
         }
 
         .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
@@ -209,7 +231,7 @@
         }
 
         .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-            background: rgba(59, 130, 246, 0.6);
+            background: rgba(1, 84, 160, 0.6);
         }
 
         .accordion-button {
@@ -217,8 +239,8 @@
         }
 
         .accordion-button.active {
-            background: rgba(59, 130, 246, 0.1);
-            color: #3b82f6;
+            background: rgba(1, 84, 160, 0.1);
+            color: #0154A0;
         }
 
         .accordion-content {
@@ -238,8 +260,8 @@
         }
 
         .tab-button.active {
-            color: #3b82f6;
-            border-bottom-color: #3b82f6;
+            color: #0154A0;
+            border-bottom-color: #0154A0;
         }
 
         .chart-container {
@@ -307,7 +329,7 @@
         }
 
         .topbar-line {
-            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.5), transparent);
+            background: linear-gradient(90deg, transparent, rgba(1, 84, 160, 0.5), transparent);
             height: 1px;
         }
 
@@ -332,7 +354,7 @@
 
         .kanban-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+            box-shadow: 0 4px 12px rgba(1, 84, 160, 0.15);
         }
 
         .detail-panel {
@@ -438,8 +460,8 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
         }
         body.light-mode .stat-card.active {
-            border-color: #3b82f6;
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+            border-color: #0154A0;
+            box-shadow: 0 0 15px rgba(1, 84, 160, 0.2);
         }
         body.light-mode .sidebar-gradient {
             background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
@@ -450,7 +472,7 @@
             border-bottom-color: rgba(203, 213, 225, 0.5);
         }
         body.light-mode .topbar-line {
-            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(1, 84, 160, 0.2), transparent);
         }
         /* Text colors */
         body.light-mode .text-white { color: #0f172a !important; }
@@ -460,8 +482,8 @@
         body.light-mode .text-slate-600 { color: #334155 !important; }
         /* Sidebar */
         body.light-mode .sidebar-link { color: #475569; }
-        body.light-mode .sidebar-link:hover { background: rgba(59, 130, 246, 0.06); color: #1e293b; }
-        body.light-mode .sidebar-link.active { background: rgba(59, 130, 246, 0.1); color: #2563eb; }
+        body.light-mode .sidebar-link:hover { background: rgba(1, 84, 160, 0.06); color: #1e293b; }
+        body.light-mode .sidebar-link.active { background: rgba(1, 84, 160, 0.1); color: #FF6702; }
         /* Modals */
         body.light-mode .modal-overlay { background: rgba(0, 0, 0, 0.3); }
         body.light-mode .modal-content { background: #ffffff; border-color: rgba(203, 213, 225, 0.5); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12); }
@@ -473,8 +495,8 @@
         }
         body.light-mode input::placeholder, body.light-mode textarea::placeholder { color: #94a3b8 !important; }
         body.light-mode input:focus, body.light-mode select:focus, body.light-mode textarea:focus {
-            border-color: rgba(59, 130, 246, 0.5) !important;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+            border-color: rgba(1, 84, 160, 0.5) !important;
+            box-shadow: 0 0 0 3px rgba(1, 84, 160, 0.1) !important;
         }
         /* Backgrounds that use slate-800 */
         body.light-mode [class*="bg-slate-800"] { background-color: rgba(241, 245, 249, 0.8) !important; }
@@ -6316,8 +6338,8 @@
             // Flash consolidation panel
             const panel = document.getElementById('consolidation-panel');
             if (panel) {
-                panel.style.boxShadow = '0 0 30px rgba(59, 130, 246, 0.3)';
-                panel.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+                panel.style.boxShadow = '0 0 30px rgba(1, 84, 160, 0.3)';
+                panel.style.borderColor = 'rgba(1, 84, 160, 0.4)';
                 setTimeout(() => { panel.style.boxShadow = ''; panel.style.borderColor = ''; }, 2000);
             }
         }
@@ -6619,8 +6641,8 @@
 
             document.getElementById(tabName + '-tab').classList.remove('hidden');
             event.target.classList.add('active');
-            event.target.style.borderBottomColor = '#3b82f6';
-            event.target.style.color = '#3b82f6';
+            event.target.style.borderBottomColor = '#0154A0';
+            event.target.style.color = '#0154A0';
 
             if (tabName === 'alertas_sos') renderSOSAlerts();
         }

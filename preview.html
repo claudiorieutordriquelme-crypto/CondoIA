@@ -341,23 +341,23 @@
         }
 
         .topbar-line {
-            background: linear-gradient(90deg, transparent, rgba(0, 46, 255, 0.5), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
             height: 1px;
         }
 
         .kanban-column {
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px dashed rgba(148, 163, 184, 0.15);
-            border-radius: 0.75rem;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px dashed rgba(255, 255, 255, 0.25);
+            border-radius: 16px;
             padding: 1rem;
             min-height: 500px;
             transition: all 0.2s ease;
         }
 
         .kanban-card {
-            background: rgba(30, 41, 59, 0.8);
-            border: 1px solid rgba(148, 163, 184, 0.2);
-            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 12px;
             padding: 1rem;
             margin-bottom: 1rem;
             cursor: pointer;
@@ -366,7 +366,8 @@
 
         .kanban-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 46, 255, 0.15);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .detail-panel {

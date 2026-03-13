@@ -589,6 +589,17 @@
         body.light-mode .bg-slate-800\/30 { background: rgba(148,163,184,0.12) !important; }
         body.light-mode .text-slate-300 { color: #475569 !important; }
         body.light-mode .text-emerald-300 { color: #059669 !important; }
+        /* Documentos card action borders in light mode */
+        body.light-mode .glass-card .border-t.border-slate-700\/40 {
+            border-color: rgba(226, 232, 240, 0.7) !important;
+        }
+        body.light-mode .glass-card .w-px.bg-slate-700\/40 {
+            background-color: rgba(226, 232, 240, 0.7) !important;
+        }
+        /* Tab switcher background in light mode */
+        body.light-mode .bg-slate-800\/50 {
+            background-color: rgba(241, 245, 249, 0.8) !important;
+        }
 
         /* ============================================ */
         /* MOBILE RESPONSIVE — Award-winning UX        */
@@ -931,6 +942,51 @@
                 max-height: none !important;
                 border-radius: 0 !important;
                 z-index: 210 !important;
+            }
+
+            /* ---- Documentos section — mobile optimized ---- */
+            #documentos-page .glass-card > .border-b:first-child {
+                padding: 0.75rem !important;
+            }
+            #documentos-page .glass-card > .border-b:first-child .space-y-3 {
+                gap: 0.625rem;
+            }
+            #documentos-page #doc-category-tabs {
+                padding: 0.5rem 0.75rem;
+                gap: 0.375rem;
+            }
+            #documentos-page #doc-category-tabs .doc-cat-btn {
+                padding: 0.375rem 0.75rem;
+                font-size: 0.7rem;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+            /* Document card compact padding */
+            #documentos-page #docs-container .glass-card .p-5 {
+                padding: 0.75rem !important;
+            }
+            #documentos-page #docs-container .glass-card .p-5 .w-11 {
+                width: 2.25rem !important;
+                height: 2.25rem !important;
+                border-radius: 0.625rem;
+            }
+            #documentos-page #docs-container .glass-card .p-5 .w-11 svg {
+                width: 1rem !important;
+                height: 1rem !important;
+            }
+            /* Document card action buttons - tighter */
+            #documentos-page #docs-container .glass-card .border-t button {
+                padding-top: 0.5rem;
+                padding-bottom: 0.5rem;
+                font-size: 0.7rem;
+                min-height: 38px;
+            }
+            /* Doc stats grid — 2x2 on mobile */
+            #documentos-page .grid.grid-cols-2 .glass-card {
+                padding: 0.625rem !important;
+            }
+            #documentos-page .grid.grid-cols-2 .glass-card .text-2xl {
+                font-size: 1.25rem !important;
             }
 
             /* ---- Active/pressed states — micro-interaction ---- */
@@ -2044,34 +2100,37 @@
 
                     <div class="glass-card rounded-lg overflow-hidden">
                         <!-- Primary tabs: Actuales / Históricos -->
-                        <div class="flex border-b border-slate-700/50 p-4 gap-2">
-                            <div class="flex gap-1 bg-slate-800/50 rounded-lg p-1">
-                                <button onclick="switchDocView('actuales')" id="doc-view-actuales" class="px-4 py-2 text-sm font-medium rounded-md bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg transition-all">
-                                    <span class="flex items-center gap-1.5">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                        Documentos Actuales
-                                    </span>
-                                </button>
-                                <button onclick="switchDocView('historicos')" id="doc-view-historicos" class="px-4 py-2 text-sm font-medium rounded-md text-slate-400 hover:text-white hover:bg-slate-700/50 transition-all">
-                                    <span class="flex items-center gap-1.5">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                        Históricos
-                                    </span>
+                        <div class="border-b border-slate-700/50 p-4 space-y-3">
+                            <!-- Row 1: Tabs + Upload button (desktop) -->
+                            <div class="flex flex-wrap items-center gap-2">
+                                <div class="flex gap-1 bg-slate-800/50 rounded-lg p-1 flex-shrink-0">
+                                    <button onclick="switchDocView('actuales')" id="doc-view-actuales" class="px-3 md:px-4 py-2 text-xs md:text-sm font-medium rounded-md bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg transition-all">
+                                        <span class="flex items-center gap-1.5">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                            <span class="hidden sm:inline">Documentos </span>Actuales
+                                        </span>
+                                    </button>
+                                    <button onclick="switchDocView('historicos')" id="doc-view-historicos" class="px-3 md:px-4 py-2 text-xs md:text-sm font-medium rounded-md text-slate-400 hover:text-white hover:bg-slate-700/50 transition-all">
+                                        <span class="flex items-center gap-1.5">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                            Históricos
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="flex-1"></div>
+                                <button onclick="openModal('upload-doc')" class="gradient-button px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium text-white flex items-center gap-1.5 whitespace-nowrap">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                                    Subir
                                 </button>
                             </div>
-                            <div class="flex-1"></div>
-                            <!-- Search -->
+                            <!-- Row 2: Search full-width -->
                             <div class="relative">
                                 <svg class="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                                <input id="doc-search" type="text" placeholder="Buscar documento..." oninput="renderDocuments()" class="bg-slate-800/40 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-white text-sm focus:border-blue-500/50 focus:outline-none transition w-48 placeholder-slate-600">
+                                <input id="doc-search" type="text" placeholder="Buscar documento por nombre, autor, categoría..." oninput="renderDocuments()" class="w-full bg-slate-800/40 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition placeholder-slate-500">
                             </div>
-                            <button onclick="openModal('upload-doc')" class="gradient-button px-4 py-2 rounded-lg text-sm font-medium text-white flex items-center gap-1.5">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-                                Subir Documento
-                            </button>
                         </div>
-                        <!-- Category filter tabs -->
-                        <div class="flex border-b border-slate-700/30 px-4 py-2 gap-1 overflow-x-auto" id="doc-category-tabs">
+                        <!-- Category filter tabs — horizontal scroll -->
+                        <div class="flex border-b border-slate-700/30 px-4 py-2.5 gap-2 overflow-x-auto scrollbar-none" id="doc-category-tabs" style="-webkit-overflow-scrolling:touch;scrollbar-width:none;">
                             <button onclick="switchDocTab('todos')" class="doc-cat-btn active px-3 py-1.5 text-xs font-medium rounded-full bg-blue-500/15 text-blue-400 transition-all">Todos</button>
                             <button onclick="switchDocTab('certificaciones')" class="doc-cat-btn px-3 py-1.5 text-xs font-medium rounded-full text-slate-400 hover:bg-slate-700/50 transition-all">Certificaciones</button>
                             <button onclick="switchDocTab('reglamentos')" class="doc-cat-btn px-3 py-1.5 text-xs font-medium rounded-full text-slate-400 hover:bg-slate-700/50 transition-all">Reglamentos</button>
@@ -2080,7 +2139,7 @@
                             <button onclick="switchDocTab('financieros')" class="doc-cat-btn px-3 py-1.5 text-xs font-medium rounded-full text-slate-400 hover:bg-slate-700/50 transition-all">Financieros</button>
                         </div>
                         <!-- Documents grid -->
-                        <div id="docs-container" class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div id="docs-container" class="p-3 md:p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
                             <!-- Documents will be rendered here -->
                         </div>
                         <!-- Empty state -->

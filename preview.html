@@ -1268,13 +1268,30 @@
                             class="w-full px-4 py-3 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-400/60 focus:border-blue-400/60 transition" style="background:rgba(15,23,42,0.6);border:1px solid rgba(100,116,139,0.4);">
                     </div>
                     <!-- Campos usuario existente -->
-                    <div id="reg-fields-usuario">
+                    <div id="reg-fields-usuario" class="space-y-4">
                         <div>
-                            <label class="block text-sm font-semibold text-slate-200 mb-2">Rol</label>
-                            <select id="register-role" class="w-full px-4 py-3 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-400/60 transition" style="background:rgba(15,23,42,0.6);border:1px solid rgba(100,116,139,0.4);">
-                                <option value="copropietario">Copropietario</option>
-                                <option value="arrendatario">Arrendatario</option>
+                            <label class="block text-sm font-semibold text-slate-200 mb-2">Condominio al que deseas unirte *</label>
+                            <select id="register-condo-select" class="w-full px-4 py-3 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-400/60 transition" style="background:rgba(15,23,42,0.6);border:1px solid rgba(100,116,139,0.4);" onchange="onRegCondoChange()">
+                                <option value="">Cargando condominios...</option>
                             </select>
+                            <p id="reg-condo-hint" class="text-[10px] text-slate-500 mt-1">Selecciona el condominio donde resides</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-200 mb-2">Rol</label>
+                                <select id="register-role" class="w-full px-4 py-3 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-400/60 transition" style="background:rgba(15,23,42,0.6);border:1px solid rgba(100,116,139,0.4);">
+                                    <option value="copropietario">Copropietario</option>
+                                    <option value="arrendatario">Arrendatario</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-200 mb-2">N° Unidad / Depto</label>
+                                <input type="text" id="register-unidad" placeholder="Ej: 402, Casa 12" class="w-full px-4 py-3 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-400/60 transition" style="background:rgba(15,23,42,0.6);border:1px solid rgba(100,116,139,0.4);">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-200 mb-2">Teléfono (opcional)</label>
+                            <input type="tel" id="register-telefono" placeholder="+56 9 1234 5678" class="w-full px-4 py-3 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-400/60 transition" style="background:rgba(15,23,42,0.6);border:1px solid rgba(100,116,139,0.4);">
                         </div>
                     </div>
                     <!-- Campos nuevo condominio -->
@@ -3437,11 +3454,16 @@
                     <div>
                         <label class="text-sm text-slate-400 mb-2 block font-medium">Responsable</label>
                         <select id="comp-modal-resp" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none transition">
-                            <option value="Administrador">Administrador</option>
-                            <option value="Tesorero">Tesorero</option>
-                            <option value="Comité">Comité</option>
-                            <option value="Secretario">Secretario</option>
-                            <option value="Conserje">Conserje</option>
+                            <optgroup label="Roles">
+                                <option value="Administrador">Administrador</option>
+                                <option value="Tesorero">Tesorero</option>
+                                <option value="Comité">Comité</option>
+                                <option value="Secretario">Secretario</option>
+                                <option value="Conserje">Conserje</option>
+                            </optgroup>
+                            <optgroup label="Copropietarios" id="comp-resp-copropietarios">
+                                <!-- Dynamically populated -->
+                            </optgroup>
                         </select>
                     </div>
                     <div>
@@ -3944,11 +3966,50 @@
             registerType = type;
             document.getElementById('reg-fields-usuario').classList.toggle('hidden', type !== 'usuario');
             document.getElementById('reg-fields-condo').classList.toggle('hidden', type !== 'condo');
-            document.getElementById('reg-type-usuario').className = 'flex-1 py-1.5 px-3 rounded-md text-xs font-medium transition-all ' +
-                (type === 'usuario' ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-white');
-            document.getElementById('reg-type-condo').className = 'flex-1 py-1.5 px-3 rounded-md text-xs font-medium transition-all ' +
-                (type === 'condo' ? 'bg-amber-600 text-white' : 'text-slate-400 hover:text-white');
+            document.getElementById('reg-type-usuario').className = 'flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all ' +
+                (type === 'usuario' ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-700/50');
+            document.getElementById('reg-type-condo').className = 'flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all ' +
+                (type === 'condo' ? 'bg-amber-500 text-white shadow-md shadow-amber-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-700/50');
+            if (type === 'usuario') loadRegCondominios();
         }
+
+        // Load active condominios into the register dropdown
+        let regCondominiosList = [];
+        async function loadRegCondominios() {
+            const sel = document.getElementById('register-condo-select');
+            if (!sel) return;
+            sel.innerHTML = '<option value="">Cargando...</option>';
+            try {
+                const { data, error } = await _sb.from('condominios')
+                    .select('id, nombre, comuna, region')
+                    .eq('estado_cuenta', 'activo')
+                    .order('nombre');
+                if (error) throw error;
+                regCondominiosList = data || [];
+                if (regCondominiosList.length === 0) {
+                    sel.innerHTML = '<option value="">No hay condominios disponibles</option>';
+                    document.getElementById('reg-condo-hint').textContent = 'Aún no hay condominios activos. Puedes registrar uno nuevo.';
+                } else {
+                    sel.innerHTML = '<option value="">— Selecciona tu condominio —</option>' +
+                        regCondominiosList.map(c =>
+                            `<option value="${c.id}">${sanitizeInput(c.nombre)}${c.comuna ? ' — ' + sanitizeInput(c.comuna) : ''}</option>`
+                        ).join('');
+                    document.getElementById('reg-condo-hint').textContent = regCondominiosList.length + ' condominio(s) disponible(s)';
+                }
+            } catch (e) {
+                console.error('Error loading condominios for register:', e);
+                sel.innerHTML = '<option value="">Error cargando condominios</option>';
+            }
+        }
+        function onRegCondoChange() {
+            const val = document.getElementById('register-condo-select').value;
+            if (val) {
+                const c = regCondominiosList.find(x => x.id === val);
+                document.getElementById('reg-condo-hint').textContent = c ? 'Seleccionado: ' + c.nombre : '';
+            }
+        }
+        // Load condominios when register tab opens
+        document.addEventListener('DOMContentLoaded', () => { setTimeout(loadRegCondominios, 1000); });
 
         async function handleRegister(e) {
             e.preventDefault();
@@ -4006,6 +4067,20 @@
                 return;
             }
 
+            // Validate condo selection for "Unirme a condominio"
+            let selectedCondoId = null;
+            let selectedUnidad = '';
+            let selectedTelefono = '';
+            if (registerType === 'usuario') {
+                selectedCondoId = document.getElementById('register-condo-select').value;
+                if (!selectedCondoId) {
+                    showAuthMessage('Debes seleccionar un condominio para unirte.', 'error');
+                    return;
+                }
+                selectedUnidad = sanitizeInput((document.getElementById('register-unidad')?.value || '').trim());
+                selectedTelefono = sanitizeInput((document.getElementById('register-telefono')?.value || '').trim());
+            }
+
             spinner.classList.remove('hidden');
             btn.disabled = true;
             hideAuthMessage();
@@ -4025,13 +4100,26 @@
                     if (registerType === 'condo') {
                         await createSelfServiceCondo(data.user.id, name);
                     }
-                    showAuthMessage('Cuenta creada. Revisa tu email para confirmar.' + (registerType === 'condo' ? ' Tu condominio está pendiente de aprobación.' : ''), 'success');
+                    // If joining existing condo, link profile (will be set after email confirm via trigger or next login)
+                    if (registerType === 'usuario' && selectedCondoId) {
+                        // Store condo selection in user metadata for linking after confirmation
+                        await _sb.auth.updateUser({
+                            data: { pending_condominio_id: selectedCondoId, unidad: selectedUnidad, telefono: selectedTelefono }
+                        });
+                    }
+                    showAuthMessage('Cuenta creada. Revisa tu email para confirmar.' + (registerType === 'condo' ? ' Tu condominio está pendiente de aprobación.' : ' Serás asociado a tu condominio al confirmar.'), 'success');
                 } else if (data.user) {
-                    // Auto-confirmed
-                    await _sb.from('perfiles').update({
+                    // Auto-confirmed — update profile immediately
+                    const profileUpdate = {
                         nombre_completo: name,
                         rol: role
-                    }).eq('id', data.user.id);
+                    };
+                    if (registerType === 'usuario' && selectedCondoId) {
+                        profileUpdate.condominio_id = selectedCondoId;
+                        if (selectedUnidad) profileUpdate.unidad = selectedUnidad;
+                        if (selectedTelefono) profileUpdate.telefono = selectedTelefono;
+                    }
+                    await _sb.from('perfiles').update(profileUpdate).eq('id', data.user.id);
 
                     if (registerType === 'condo') {
                         await createSelfServiceCondo(data.user.id, name);
@@ -4143,6 +4231,20 @@
                     .eq('id', user.id)
                     .single();
                 currentProfile = profile;
+
+                // Check if user has a pending condo association from registration
+                const meta = user.user_metadata || {};
+                if (meta.pending_condominio_id && (!profile.condominio_id || profile.condominio_id !== meta.pending_condominio_id)) {
+                    const updateData = { condominio_id: meta.pending_condominio_id };
+                    if (meta.unidad) updateData.unidad = meta.unidad;
+                    if (meta.telefono) updateData.telefono = meta.telefono;
+                    if (meta.rol) updateData.rol = meta.rol;
+                    await _sb.from('perfiles').update(updateData).eq('id', user.id);
+                    currentProfile = { ...currentProfile, ...updateData };
+                    // Clear pending metadata
+                    await _sb.auth.updateUser({ data: { pending_condominio_id: null, unidad: null, telefono: null } });
+                    console.log('CondoIA: Usuario asociado a condominio:', meta.pending_condominio_id);
+                }
             } catch (e) {
                 console.warn('CondoIA: No se pudo cargar perfil:', e);
                 currentProfile = {
@@ -6120,7 +6222,7 @@
             renderCompromisos();
         }
 
-        function openCompromisoModal(asambleaId, index) {
+        async function openCompromisoModal(asambleaId, index) {
             editingCompromiso = (asambleaId !== undefined && index !== undefined) ? { asambleaId, index } : null;
 
             // Populate asamblea dropdown with realized asambleas
@@ -6129,6 +6231,30 @@
                 .filter(a => a.estado === 'realizada')
                 .map(a => '<option value="' + a.id + '">' + a.titulo + ' (' + a.fecha + ')</option>')
                 .join('');
+
+            // Load copropietarios into responsable dropdown
+            const copropGroup = document.getElementById('comp-resp-copropietarios');
+            if (copropGroup) {
+                copropGroup.innerHTML = '<option value="" disabled>Cargando...</option>';
+                try {
+                    const { data: copros, error } = await _sb.from('perfiles')
+                        .select('id, nombre_completo, unidad, rol')
+                        .eq('condominio_id', condominioId)
+                        .in('rol', ['copropietario', 'arrendatario'])
+                        .order('nombre_completo');
+                    if (!error && copros && copros.length > 0) {
+                        copropGroup.innerHTML = copros.map(u => {
+                            const label = (u.nombre_completo || 'Sin nombre') + (u.unidad ? ' (Unidad ' + u.unidad + ')' : '');
+                            return '<option value="' + sanitizeInput(u.nombre_completo || 'Copropietario') + '">' + sanitizeInput(label) + '</option>';
+                        }).join('');
+                    } else {
+                        copropGroup.innerHTML = '<option value="" disabled>No hay copropietarios registrados</option>';
+                    }
+                } catch (e) {
+                    console.warn('Error loading copropietarios for compromisos:', e);
+                    copropGroup.innerHTML = '<option value="" disabled>Error cargando</option>';
+                }
+            }
 
             const estadoContainer = document.getElementById('comp-modal-estado-container');
 

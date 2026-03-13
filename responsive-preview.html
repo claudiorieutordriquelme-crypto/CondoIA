@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CondoIA - Vista Multi-Dispositivo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+        .toolbar {
+            background: #1e293b;
+            border-bottom: 2px solid #002EFF;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .toolbar h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .toolbar h1 span { color: #002EFF; }
+        .toolbar-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .toolbar-actions label {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+        .toolbar-actions select, .toolbar-actions input {
+            background: #334155;
+            border: 1px solid #475569;
+            color: #e2e8f0;
+            padding: 6px 12px;
+            border-radius: 100px;
+            font-size: 13px;
+            outline: none;
+        }
+        .toolbar-actions select:focus, .toolbar-actions input:focus {
+            border-color: #002EFF;
+        }
+        .btn {
+            padding: 6px 16px;
+            border-radius: 100px;
+            border: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: #002EFF; color: white; }
+        .btn-primary:hover { background: #0025CC; }
+        .btn-secondary { background: #334155; color: #e2e8f0; border: 1px solid #475569; }
+        .btn-secondary:hover { background: #475569; }
+        .btn-orange { background: #FF6702; color: white; }
+        .btn-orange:hover { background: #e55d00; }
+
+        .preview-container {
+            padding: 24px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .device-frame {
+            background: #1e293b;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .device-header {
+            background: #334155;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #475569;
+        }
+        .device-header .device-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: #94a3b8;
+        }
+        .device-header .device-size {
+            font-size: 11px;
+            color: #64748b;
+            font-family: monospace;
+        }
+        .device-dots {
+            display: flex;
+            gap: 4px;
+        }
+        .device-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .device-dots span:nth-child(1) { background: #ef4444; }
+        .device-dots span:nth-child(2) { background: #eab308; }
+        .device-dots span:nth-child(3) { background: #22c55e; }
+
+        .device-frame iframe {
+            border: none;
+            background: white;
+        }
+
+        .presets {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .preset-btn {
+            padding: 4px 12px;
+            border-radius: 100px;
+            border: 1px solid #475569;
+            background: transparent;
+            color: #94a3b8;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .preset-btn:hover, .preset-btn.active {
+            border-color: #002EFF;
+            color: #002EFF;
+            background: rgba(0, 46, 255, 0.1);
+        }
+
+        .url-bar {
+            background: #334155;
+            border: 1px solid #475569;
+            color: #e2e8f0;
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-size: 13px;
+            width: 300px;
+            outline: none;
+        }
+        .url-bar:focus { border-color: #002EFF; }
+
+        @media (max-width: 768px) {
+            .preview-container { padding: 12px; gap: 16px; }
+            .toolbar { flex-wrap: wrap; gap: 8px; padding: 8px 12px; }
+            .url-bar { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <h1><span>CondoIA</span> — Vista Multi-Dispositivo</h1>
+        <div class="toolbar-actions">
+            <input type="text" id="url-input" class="url-bar" value="https://condo-ia.vercel.app/" placeholder="URL a previsualizar...">
+            <button class="btn btn-primary" onclick="loadAll()">Cargar</button>
+        </div>
+        <div class="presets">
+            <button class="preset-btn active" onclick="showPreset('all')">Todos</button>
+            <button class="preset-btn" onclick="showPreset('mobile')">Mobile</button>
+            <button class="preset-btn" onclick="showPreset('tablet')">Tablet</button>
+            <button class="preset-btn" onclick="showPreset('desktop')">Desktop</button>
+        </div>
+    </div>
+
+    <div class="preview-container" id="preview-container">
+        <!-- Devices will be injected here -->
+    </div>
+
+    <script>
+        const devices = [
+            { name: 'iPhone SE', w: 375, h: 667, type: 'mobile' },
+            { name: 'iPhone 14 Pro', w: 393, h: 852, type: 'mobile' },
+            { name: 'Samsung Galaxy S21', w: 360, h: 800, type: 'mobile' },
+            { name: 'iPad Mini', w: 768, h: 1024, type: 'tablet' },
+            { name: 'iPad Pro 11"', w: 834, h: 1194, type: 'tablet' },
+            { name: 'Laptop 13"', w: 1280, h: 800, type: 'desktop' },
+            { name: 'Desktop 1080p', w: 1920, h: 1080, type: 'desktop' },
+        ];
+
+        let currentFilter = 'all';
+        const SCALE_FACTOR = 0.45; // Scale down to fit on screen
+
+        function getUrl() {
+            return document.getElementById('url-input').value.trim() || 'https://condo-ia.vercel.app/';
+        }
+
+        function renderDevices(filter) {
+            const container = document.getElementById('preview-container');
+            container.innerHTML = '';
+            const filtered = filter === 'all' ? devices : devices.filter(d => d.type === filter);
+
+            filtered.forEach(device => {
+                const scaledW = device.w * SCALE_FACTOR;
+                const scaledH = Math.min(device.h * SCALE_FACTOR, 500);
+
+                const frame = document.createElement('div');
+                frame.className = 'device-frame';
+                frame.style.width = scaledW + 'px';
+
+                frame.innerHTML = `
+                    <div class="device-header">
+                        <div class="device-dots"><span></span><span></span><span></span></div>
+                        <span class="device-name">${device.name}</span>
+                        <span class="device-size">${device.w}×${device.h}</span>
+                    </div>
+                    <div style="width:${scaledW}px; height:${scaledH}px; overflow:hidden;">
+                        <iframe
+                            src="${getUrl()}"
+                            width="${device.w}"
+                            height="${device.h}"
+                            style="transform: scale(${SCALE_FACTOR}); transform-origin: 0 0;"
+                            loading="lazy"
+                        ></iframe>
+                    </div>
+                `;
+                container.appendChild(frame);
+            });
+        }
+
+        function showPreset(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            renderDevices(filter);
+        }
+
+        function loadAll() {
+            renderDevices(currentFilter);
+        }
+
+        // Initial load
+        renderDevices('all');
+    </script>
+</body>
+</html>

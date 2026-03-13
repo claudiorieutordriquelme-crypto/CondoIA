@@ -7130,9 +7130,13 @@
             };
 
             grid.innerHTML = saPlanes.map(p => {
-                const color = planColors[p.slug] || planColors.comunidad;
-                const icon = planIcons[p.slug] || planIcons.comunidad;
+                const slug = (p.nombre || '').toLowerCase();
+                const color = planColors[slug] || planColors.comunidad;
+                const icon = planIcons[slug] || planIcons.comunidad;
                 const activeSubs = saSuscripciones.filter(s => s.plan_id === p.id && ['activa','trial'].includes(s.estado)).length;
+                const maxUni = p.max_unidades === null || p.max_unidades === -1 ? 'Ilimitado' : p.max_unidades;
+                const tieneIA = p.funciones_ia === true;
+                const soporte = p.soporte_prioritario ? (p.white_labeling ? 'Dedicado' : 'Prioritario') : 'Comunidad';
                 return `
                 <div class="glass-card rounded-xl overflow-hidden">
                     <div class="bg-gradient-to-br ${color} p-5">
@@ -7140,25 +7144,25 @@
                             <svg class="w-8 h-8 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">${icon}</svg>
                             <span class="px-2 py-0.5 rounded-full text-xs font-medium ${p.activo ? 'bg-white/20 text-white' : 'bg-red-500/30 text-red-200'}">${p.activo ? 'Activo' : 'Inactivo'}</span>
                         </div>
-                        <h4 class="text-xl font-bold text-white">${saEsc(p.nombre)}</h4>
+                        <h4 class="text-xl font-bold text-white capitalize">${saEsc(p.nombre)}</h4>
                         <p class="text-white/70 text-sm mt-1">${p.precio_mensual > 0 ? '$' + p.precio_mensual.toLocaleString('es-CL') + '/mes' : 'Gratis'}</p>
                     </div>
                     <div class="p-5 space-y-3">
                         <div class="flex justify-between text-sm">
                             <span class="text-slate-400">Máx. unidades</span>
-                            <span class="text-white font-medium">${p.max_unidades === -1 ? 'Ilimitado' : p.max_unidades}</span>
+                            <span class="text-white font-medium">${maxUni}</span>
                         </div>
                         <div class="flex justify-between text-sm">
                             <span class="text-slate-400">IA incluida</span>
-                            <span class="text-white font-medium">${p.incluye_ia ? 'Sí' : 'No'}</span>
+                            <span class="text-white font-medium">${tieneIA ? 'Sí' : 'No'}</span>
                         </div>
                         <div class="flex justify-between text-sm">
                             <span class="text-slate-400">Soporte</span>
-                            <span class="text-white font-medium capitalize">${saEsc(p.soporte || 'comunidad')}</span>
+                            <span class="text-white font-medium">${soporte}</span>
                         </div>
                         <div class="flex justify-between text-sm">
-                            <span class="text-slate-400">Trial</span>
-                            <span class="text-white font-medium">${p.trial_dias || 0} días</span>
+                            <span class="text-slate-400">Reportes avanzados</span>
+                            <span class="text-white font-medium">${p.reportes_avanzados ? 'Sí' : 'No'}</span>
                         </div>
                         <div class="pt-3 border-t border-slate-700/50 flex justify-between items-center">
                             <span class="text-xs text-slate-500">Suscripciones activas</span>

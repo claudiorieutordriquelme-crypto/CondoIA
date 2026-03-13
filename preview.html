@@ -586,6 +586,11 @@
 
                 <!-- Register Form (Hidden by default) -->
                 <form id="register-form" onsubmit="handleRegister(event)" class="space-y-4 hidden">
+                    <!-- Tipo de registro -->
+                    <div class="flex gap-1 bg-slate-800/50 rounded-lg p-1 mb-2">
+                        <button type="button" id="reg-type-usuario" onclick="toggleRegType('usuario')" class="flex-1 py-1.5 px-3 rounded-md text-xs font-medium bg-emerald-600 text-white transition-all">Unirme a condominio</button>
+                        <button type="button" id="reg-type-condo" onclick="toggleRegType('condo')" class="flex-1 py-1.5 px-3 rounded-md text-xs font-medium text-slate-400 hover:text-white transition-all">Registrar condominio</button>
+                    </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-300 mb-1.5">Nombre completo</label>
                         <input type="text" id="register-name" required placeholder="Juan Martínez"
@@ -598,18 +603,75 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-300 mb-1.5">Contraseña</label>
-                        <input type="password" id="register-password" required placeholder="Mínimo 6 caracteres" minlength="6"
+                        <input type="password" id="register-password" required placeholder="Mínimo 8 caracteres" minlength="8"
                             class="w-full px-4 py-2.5 bg-slate-800/50 border border-slate-600/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition">
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-300 mb-1.5">Rol</label>
-                        <select id="register-role" class="w-full px-4 py-2.5 bg-slate-800/50 border border-slate-600/50 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition">
-                            <option value="copropietario">Copropietario</option>
-                            <option value="arrendatario">Arrendatario</option>
-                            <option value="administrador">Administrador</option>
-                            <option value="tesorero">Tesorero</option>
-                            <option value="secretario">Secretario</option>
-                        </select>
+                    <!-- Campos usuario existente -->
+                    <div id="reg-fields-usuario">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1.5">Rol</label>
+                            <select id="register-role" class="w-full px-4 py-2.5 bg-slate-800/50 border border-slate-600/50 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition">
+                                <option value="copropietario">Copropietario</option>
+                                <option value="arrendatario">Arrendatario</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Campos nuevo condominio -->
+                    <div id="reg-fields-condo" class="hidden space-y-4">
+                        <div class="pt-2 border-t border-slate-700/50">
+                            <p class="text-xs text-amber-400/80 font-medium mb-3">Datos del Condominio</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1.5">Nombre del condominio</label>
+                            <input type="text" id="reg-condo-nombre" placeholder="Edificio Los Pinos"
+                                class="w-full px-4 py-2.5 bg-slate-800/50 border border-slate-600/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-1.5">RUT Comunidad</label>
+                                <input type="text" id="reg-condo-rut" placeholder="77.123.456-7"
+                                    class="w-full px-4 py-2.5 bg-slate-800/50 border border-slate-600/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-1.5">Total unidades</label>
+                                <input type="number" id="reg-condo-unidades" placeholder="42" min="1" max="9999"
+                                    class="w-full px-4 py-2.5 bg-slate-800/50 border border-slate-600/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1.5">Dirección</label>
+                            <input type="text" id="reg-condo-direccion" placeholder="Av. Providencia 1234"
+                                class="w-full px-4 py-2.5 bg-slate-800/50 border border-slate-600/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-1.5">Comuna</label>
+                                <input type="text" id="reg-condo-comuna" placeholder="Providencia"
+                                    class="w-full px-4 py-2.5 bg-slate-800/50 border border-slate-600/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-1.5">Región</label>
+                                <select id="reg-condo-region" class="w-full px-4 py-2.5 bg-slate-800/50 border border-slate-600/50 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition">
+                                    <option value="Metropolitana">Metropolitana</option>
+                                    <option value="Valparaíso">Valparaíso</option>
+                                    <option value="Biobío">Biobío</option>
+                                    <option value="Araucanía">Araucanía</option>
+                                    <option value="Maule">Maule</option>
+                                    <option value="O'Higgins">O'Higgins</option>
+                                    <option value="Los Lagos">Los Lagos</option>
+                                    <option value="Coquimbo">Coquimbo</option>
+                                    <option value="Antofagasta">Antofagasta</option>
+                                    <option value="Tarapacá">Tarapacá</option>
+                                    <option value="Atacama">Atacama</option>
+                                    <option value="Los Ríos">Los Ríos</option>
+                                    <option value="Arica y Parinacota">Arica y Parinacota</option>
+                                    <option value="Ñuble">Ñuble</option>
+                                    <option value="Aysén">Aysén</option>
+                                    <option value="Magallanes">Magallanes</option>
+                                </select>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-500">Tu condominio quedará <span class="text-amber-400">pendiente de aprobación</span> por el administrador de la plataforma.</p>
                     </div>
                     <div class="flex items-start gap-2">
                         <input type="checkbox" id="register-consent" required
@@ -681,6 +743,10 @@
                 <button onclick="showPage('copropietarios')" data-page="copropietarios" class="sidebar-link w-full text-left">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 12H9m4 5H9m6 0h.01M9 12a4 4 0 110-5.292m6 0a4 4 0 100 5.292"></path></svg>
                     <span>Copropietarios</span>
+                </button>
+                <button onclick="showPage('gestion-usuarios')" data-page="gestion-usuarios" class="sidebar-link w-full text-left">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    <span>Usuarios</span>
                 </button>
                 <button onclick="showPage('asambleas')" data-page="asambleas" class="sidebar-link w-full text-left">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 0 0-5.856-1.487M15 10h.01M11 20h5v-2a3 3 0 0 0-5.856-1.487M15 10h.01M7 20v-2a4 4 0 0 0-4-4H3v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2h-1a4 4 0 0 0-4 4v2H7z"></path></svg>
@@ -1977,6 +2043,113 @@
                     </div>
                 </div>
 
+                <!-- ==================== GESTIÓN DE USUARIOS (por admin del condo) ==================== -->
+                <div id="gestion-usuarios-page" class="page-content p-8 space-y-6 hidden">
+                    <!-- Metrics -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="stat-card p-4 rounded-xl">
+                            <p class="text-xs text-slate-400 font-medium">Total Usuarios</p>
+                            <p class="text-2xl font-bold text-white mt-1" id="gu-m-total">0</p>
+                        </div>
+                        <div class="stat-card p-4 rounded-xl">
+                            <p class="text-xs text-slate-400 font-medium">Activos</p>
+                            <p class="text-2xl font-bold text-emerald-400 mt-1" id="gu-m-activos">0</p>
+                        </div>
+                        <div class="stat-card p-4 rounded-xl">
+                            <p class="text-xs text-slate-400 font-medium">Suspendidos</p>
+                            <p class="text-2xl font-bold text-red-400 mt-1" id="gu-m-suspendidos">0</p>
+                        </div>
+                        <div class="stat-card p-4 rounded-xl">
+                            <p class="text-xs text-slate-400 font-medium">Roles</p>
+                            <p class="text-2xl font-bold text-blue-400 mt-1" id="gu-m-roles">-</p>
+                        </div>
+                    </div>
+
+                    <!-- Users Table -->
+                    <div class="glass-card p-6 rounded-xl">
+                        <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+                            <h3 class="text-lg font-semibold text-white">Usuarios del Condominio</h3>
+                            <div class="flex items-center gap-2">
+                                <select id="gu-filter-rol" onchange="guFilterUsers()" class="bg-slate-800/60 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-300 focus:border-blue-500/50 focus:outline-none">
+                                    <option value="todos">Todos los roles</option>
+                                    <option value="administrador">Administrador</option>
+                                    <option value="tesorero">Tesorero</option>
+                                    <option value="secretario">Secretario</option>
+                                    <option value="copropietario">Copropietario</option>
+                                    <option value="arrendatario">Arrendatario</option>
+                                </select>
+                                <input id="gu-search" type="text" placeholder="Buscar..." oninput="guFilterUsers()" class="bg-slate-800/60 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-blue-500/50 focus:outline-none w-44">
+                                <button onclick="guOpenInvite()" class="gradient-button px-3 py-2 rounded-lg text-xs text-white font-medium role-create">+ Invitar</button>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="text-left text-slate-400 border-b border-slate-700/50">
+                                        <th class="pb-3 font-medium">Usuario</th>
+                                        <th class="pb-3 font-medium">Rol</th>
+                                        <th class="pb-3 font-medium">Estado</th>
+                                        <th class="pb-3 font-medium">Último acceso</th>
+                                        <th class="pb-3 font-medium text-right">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="gu-users-tbody" class="divide-y divide-slate-700/30"></tbody>
+                            </table>
+                        </div>
+                        <div id="gu-empty" class="text-center py-12 text-slate-500 hidden">
+                            <svg class="w-12 h-12 mx-auto mb-3 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            <p>No hay usuarios registrados</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Edit Modal -->
+                <div id="gu-edit-modal" class="modal-overlay justify-center items-center" onclick="if(event.target===this) closeModal('gu-edit')">
+                    <div class="modal-content glass-card p-8 rounded-xl max-w-md w-full mx-4">
+                        <div class="flex items-center justify-between mb-5">
+                            <h3 class="text-lg font-bold text-white" id="gu-edit-title">Editar Usuario</h3>
+                            <button onclick="closeModal('gu-edit')" class="text-slate-400 hover:text-white transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            </button>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="text-xs text-slate-500 mb-1.5 block font-medium">Nombre</label>
+                                <input id="gu-edit-nombre" type="text" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="text-xs text-slate-500 mb-1.5 block font-medium">Email</label>
+                                <input id="gu-edit-email" type="email" disabled class="w-full bg-slate-800/60 border border-slate-700 rounded-lg px-4 py-2.5 text-slate-400 text-sm cursor-not-allowed">
+                            </div>
+                            <div>
+                                <label class="text-xs text-slate-500 mb-1.5 block font-medium">Rol</label>
+                                <select id="gu-edit-rol" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none">
+                                    <option value="administrador">Administrador</option>
+                                    <option value="tesorero">Tesorero</option>
+                                    <option value="secretario">Secretario</option>
+                                    <option value="copropietario">Copropietario</option>
+                                    <option value="arrendatario">Arrendatario</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs text-slate-500 mb-1.5 block font-medium">Estado</label>
+                                <div class="flex gap-3">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="gu-edit-activo" value="true" class="text-blue-500"> <span class="text-sm text-slate-300">Activo</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="gu-edit-activo" value="false" class="text-red-500"> <span class="text-sm text-slate-300">Suspendido</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 mt-6 pt-4 border-t border-slate-700/50">
+                            <button onclick="guSaveUser()" class="gradient-button px-4 py-2 rounded-lg text-sm text-white font-medium">Guardar</button>
+                            <button onclick="closeModal('gu-edit')" class="secondary-button px-4 py-2 rounded-lg text-sm text-slate-300 ml-auto">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- ==================== SUPERADMIN: CONDOMINIOS ==================== -->
                 <div id="superadmin-page" class="page-content p-8 space-y-6 hidden">
                     <!-- Metrics Row -->
@@ -3043,12 +3216,23 @@
             }
         }
 
+        let registerType = 'usuario'; // 'usuario' or 'condo'
+
+        function toggleRegType(type) {
+            registerType = type;
+            document.getElementById('reg-fields-usuario').classList.toggle('hidden', type !== 'usuario');
+            document.getElementById('reg-fields-condo').classList.toggle('hidden', type !== 'condo');
+            document.getElementById('reg-type-usuario').className = 'flex-1 py-1.5 px-3 rounded-md text-xs font-medium transition-all ' +
+                (type === 'usuario' ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-white');
+            document.getElementById('reg-type-condo').className = 'flex-1 py-1.5 px-3 rounded-md text-xs font-medium transition-all ' +
+                (type === 'condo' ? 'bg-amber-600 text-white' : 'text-slate-400 hover:text-white');
+        }
+
         async function handleRegister(e) {
             e.preventDefault();
             const name = sanitizeInput(document.getElementById('register-name').value.trim());
             const email = document.getElementById('register-email').value.trim();
             const password = document.getElementById('register-password').value;
-            const role = document.getElementById('register-role').value;
             const spinner = document.getElementById('register-spinner');
             const btn = document.getElementById('register-btn');
 
@@ -3059,13 +3243,13 @@
                 return;
             }
 
-            // Rate limiting: max 3 registrations per 10 minutes
+            // Rate limiting
             if (!rateLimiter('register', 3, 600000)) {
                 showAuthMessage('Demasiados intentos de registro. Espera unos minutos.', 'error');
                 return;
             }
 
-            // Validate inputs
+            // Validate common inputs
             if (!name || name.length < 2 || name.length > 100) {
                 showAuthMessage('El nombre debe tener entre 2 y 100 caracteres.', 'error');
                 return;
@@ -3079,7 +3263,22 @@
                 return;
             }
 
-            const allowedRoles = ['copropietario', 'arrendatario'];
+            // Validate condo fields if registering a condominium
+            if (registerType === 'condo') {
+                const condoNombre = document.getElementById('reg-condo-nombre').value.trim();
+                const condoUnidades = document.getElementById('reg-condo-unidades').value;
+                if (!condoNombre || condoNombre.length < 3) {
+                    showAuthMessage('Ingresa el nombre del condominio (mín. 3 caracteres).', 'error');
+                    return;
+                }
+                if (!condoUnidades || condoUnidades < 1) {
+                    showAuthMessage('Ingresa el número de unidades.', 'error');
+                    return;
+                }
+            }
+
+            const role = registerType === 'condo' ? 'administrador' : document.getElementById('register-role').value;
+            const allowedRoles = ['copropietario', 'arrendatario', 'administrador'];
             if (!allowedRoles.includes(role)) {
                 showAuthMessage('Rol no válido.', 'error');
                 return;
@@ -3100,14 +3299,21 @@
                 if (error) throw error;
 
                 if (data.user && !data.user.confirmed_at) {
-                    showAuthMessage('Cuenta creada. Revisa tu email para confirmar, o usa el botón de demo para acceder.', 'success');
+                    // If registering a condo, create it now (will be pending)
+                    if (registerType === 'condo') {
+                        await createSelfServiceCondo(data.user.id, name);
+                    }
+                    showAuthMessage('Cuenta creada. Revisa tu email para confirmar.' + (registerType === 'condo' ? ' Tu condominio está pendiente de aprobación.' : ''), 'success');
                 } else if (data.user) {
-                    // Auto-confirmed (e.g., email confirmations disabled)
-                    // Update profile with the selected role
+                    // Auto-confirmed
                     await _sb.from('perfiles').update({
                         nombre_completo: name,
                         rol: role
                     }).eq('id', data.user.id);
+
+                    if (registerType === 'condo') {
+                        await createSelfServiceCondo(data.user.id, name);
+                    }
                     await onAuthSuccess(data.user);
                 }
             } catch (err) {
@@ -3120,6 +3326,38 @@
             } finally {
                 spinner.classList.add('hidden');
                 btn.disabled = false;
+            }
+        }
+
+        async function createSelfServiceCondo(userId, adminName) {
+            try {
+                const condoData = {
+                    nombre: sanitizeInput(document.getElementById('reg-condo-nombre').value.trim()),
+                    rut_comunidad: sanitizeInput(document.getElementById('reg-condo-rut').value.trim()) || null,
+                    total_unidades: parseInt(document.getElementById('reg-condo-unidades').value) || 1,
+                    direccion: sanitizeInput(document.getElementById('reg-condo-direccion').value.trim()) || null,
+                    comuna: sanitizeInput(document.getElementById('reg-condo-comuna').value.trim()) || null,
+                    region: document.getElementById('reg-condo-region').value || null,
+                    estado_cuenta: 'pendiente_aprobacion',
+                    plan_tipo: 'comunidad',
+                    administrador_nombre: adminName,
+                    creado_por: userId,
+                    activo: false
+                };
+
+                const { data, error } = await _sb.from('condominios').insert(condoData).select().single();
+                if (error) throw error;
+
+                // Link user profile to this condominium
+                await _sb.from('perfiles').update({
+                    condominio_id: data.id,
+                    rol: 'administrador'
+                }).eq('id', userId);
+
+                console.log('CondoIA: Condominio self-service creado:', data.id);
+                return data;
+            } catch (err) {
+                console.error('CondoIA: Error creando condominio:', err);
             }
         }
 
@@ -3191,8 +3429,12 @@
                 };
             }
 
+            // Set role from profile for RBAC
+            currentUserRole = currentProfile?.rol || 'copropietario';
+
             // Update UI with user info
             updateUserUI();
+            applyRoleRestrictions();
 
             // Hide login, show app
             document.getElementById('login-screen').classList.add('hidden');
@@ -3592,6 +3834,7 @@
             if (pageName === 'proveedores') renderProviders();
             if (pageName === 'asambleas') renderAsambleas();
             if (pageName === 'compromisos') renderCompromisos();
+            if (pageName === 'gestion-usuarios') guLoadUsuarios();
             if (pageName === 'superadmin') saLoadCondominios();
             if (pageName === 'sa-planes') saLoadPlanes();
             if (pageName === 'sa-audit') saLoadAuditLog();
@@ -3610,6 +3853,7 @@
                 'agentes': 'Agentes IA',
                 'reglamento': 'Reglamento',
                 'perfil': 'Perfil',
+                'gestion-usuarios': 'Gestión de Usuarios',
                 'configuracion': 'Configuración',
                 'superadmin': 'Consola Superadmin',
                 'sa-planes': 'Planes y Suscripciones',
@@ -3868,12 +4112,12 @@
         const rolePermissions = {
             superadmin: {
                 label: 'Super Admin',
-                pages: ['dashboard','copropietarios','asambleas','compromisos','documentos','mantenimiento','proveedores','emergencias','agentes','reglamento','perfil','configuracion','superadmin','sa-planes','sa-audit'],
+                pages: ['dashboard','copropietarios','gestion-usuarios','asambleas','compromisos','documentos','mantenimiento','proveedores','emergencias','agentes','reglamento','perfil','configuracion','superadmin','sa-planes','sa-audit'],
                 canEdit: true, canCreate: true, canDelete: true
             },
             administrador: {
                 label: 'Administrador',
-                pages: ['dashboard','copropietarios','asambleas','compromisos','documentos','mantenimiento','proveedores','emergencias','agentes','reglamento','perfil','configuracion'],
+                pages: ['dashboard','copropietarios','gestion-usuarios','asambleas','compromisos','documentos','mantenimiento','proveedores','emergencias','agentes','reglamento','perfil','configuracion'],
                 canEdit: true, canCreate: true, canDelete: false
             },
             tesorero: {
@@ -6828,6 +7072,167 @@
         // Generate on load
         generateNotifications();
         initConfigPage();
+
+        // ============================================================
+        // GESTIÓN DE USUARIOS — Admin de cada condominio
+        // ============================================================
+        let guUsuarios = [];
+        let guEditingUserId = null;
+
+        async function guLoadUsuarios() {
+            if (!condominioId) {
+                document.getElementById('gu-empty').classList.remove('hidden');
+                return;
+            }
+            try {
+                const { data, error } = await _sb.from('perfiles')
+                    .select('*')
+                    .eq('condominio_id', condominioId)
+                    .order('nombre_completo');
+                if (error) throw error;
+                guUsuarios = data || [];
+                guRenderMetrics();
+                guRenderTable();
+            } catch (err) {
+                console.error('GU load:', err);
+            }
+        }
+
+        function guRenderMetrics() {
+            const total = guUsuarios.length;
+            const activos = guUsuarios.filter(u => u.activo !== false).length;
+            const suspendidos = total - activos;
+            const roles = [...new Set(guUsuarios.map(u => u.rol))].length;
+            document.getElementById('gu-m-total').textContent = total;
+            document.getElementById('gu-m-activos').textContent = activos;
+            document.getElementById('gu-m-suspendidos').textContent = suspendidos;
+            document.getElementById('gu-m-roles').textContent = roles;
+        }
+
+        function guFilterUsers() { guRenderTable(); }
+
+        function guRenderTable() {
+            const tbody = document.getElementById('gu-users-tbody');
+            const emptyEl = document.getElementById('gu-empty');
+            const filterRol = document.getElementById('gu-filter-rol').value;
+            const search = document.getElementById('gu-search').value.toLowerCase();
+
+            let filtered = guUsuarios;
+            if (filterRol !== 'todos') filtered = filtered.filter(u => u.rol === filterRol);
+            if (search) filtered = filtered.filter(u =>
+                (u.nombre_completo || '').toLowerCase().includes(search) ||
+                (u.email || '').toLowerCase().includes(search)
+            );
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '';
+                emptyEl.classList.remove('hidden');
+                return;
+            }
+            emptyEl.classList.add('hidden');
+
+            const rolBadge = {
+                administrador: 'bg-blue-500/15 text-blue-400',
+                tesorero: 'bg-amber-500/15 text-amber-400',
+                secretario: 'bg-cyan-500/15 text-cyan-400',
+                copropietario: 'bg-emerald-500/15 text-emerald-400',
+                arrendatario: 'bg-slate-500/15 text-slate-400'
+            };
+            const rolLabel = {
+                administrador: 'Admin', tesorero: 'Tesorero', secretario: 'Secretario',
+                copropietario: 'Copropietario', arrendatario: 'Arrendatario'
+            };
+
+            tbody.innerHTML = filtered.map(u => {
+                const activo = u.activo !== false;
+                const ultimoLogin = u.ultimo_login ? new Date(u.ultimo_login).toLocaleDateString('es-CL', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Nunca';
+                const badge = rolBadge[u.rol] || rolBadge.copropietario;
+                const initials = (u.nombre_completo || 'U').split(' ').map(p => p[0]).join('').substring(0,2).toUpperCase();
+                return `
+                <tr class="hover:bg-slate-800/30 transition">
+                    <td class="py-3 pr-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-xs font-bold text-white">${initials}</div>
+                            <div>
+                                <p class="font-medium text-white text-sm">${saEsc(u.nombre_completo || 'Sin nombre')}</p>
+                                <p class="text-xs text-slate-500">${saEsc(u.email || '')}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-3 pr-4"><span class="px-2 py-1 rounded-full text-xs font-medium ${badge}">${rolLabel[u.rol] || u.rol}</span></td>
+                    <td class="py-3 pr-4">
+                        <span class="flex items-center gap-1.5 text-xs ${activo ? 'text-emerald-400' : 'text-red-400'}">
+                            <span class="w-1.5 h-1.5 rounded-full ${activo ? 'bg-emerald-400' : 'bg-red-400'}"></span>
+                            ${activo ? 'Activo' : 'Suspendido'}
+                        </span>
+                    </td>
+                    <td class="py-3 pr-4 text-slate-400 text-xs">${ultimoLogin}</td>
+                    <td class="py-3 text-right">
+                        <div class="flex gap-1 justify-end">
+                            <button onclick="guEditUser('${u.id}')" class="px-2 py-1 rounded text-xs bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition">Editar</button>
+                            <button onclick="guToggleActive('${u.id}', ${!activo})" class="px-2 py-1 rounded text-xs ${activo ? 'bg-red-500/10 text-red-400 hover:bg-red-500/20' : 'bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20'} transition">${activo ? 'Suspender' : 'Activar'}</button>
+                        </div>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function guEditUser(userId) {
+            const u = guUsuarios.find(x => x.id === userId);
+            if (!u) return;
+            guEditingUserId = userId;
+            document.getElementById('gu-edit-title').textContent = 'Editar: ' + (u.nombre_completo || 'Usuario');
+            document.getElementById('gu-edit-nombre').value = u.nombre_completo || '';
+            document.getElementById('gu-edit-email').value = u.email || '';
+            document.getElementById('gu-edit-rol').value = u.rol || 'copropietario';
+            const radios = document.querySelectorAll('input[name="gu-edit-activo"]');
+            radios.forEach(r => r.checked = (r.value === String(u.activo !== false)));
+            openModal('gu-edit');
+        }
+
+        async function guSaveUser() {
+            if (!guEditingUserId) return;
+            const nombre = sanitizeInput(document.getElementById('gu-edit-nombre').value.trim());
+            const rol = document.getElementById('gu-edit-rol').value;
+            const activo = document.querySelector('input[name="gu-edit-activo"]:checked')?.value === 'true';
+
+            try {
+                const { error } = await _sb.from('perfiles').update({
+                    nombre_completo: nombre,
+                    rol: rol,
+                    activo: activo
+                }).eq('id', guEditingUserId).eq('condominio_id', condominioId);
+                if (error) throw error;
+                closeModal('gu-edit');
+                saShowToast('Usuario actualizado', 'success');
+                await guLoadUsuarios();
+            } catch (err) {
+                saShowToast('Error: ' + err.message, 'error');
+            }
+        }
+
+        async function guToggleActive(userId, newState) {
+            try {
+                const { error } = await _sb.from('perfiles').update({
+                    activo: newState
+                }).eq('id', userId).eq('condominio_id', condominioId);
+                if (error) throw error;
+                saShowToast(newState ? 'Usuario activado' : 'Usuario suspendido', 'success');
+                await guLoadUsuarios();
+            } catch (err) {
+                saShowToast('Error: ' + err.message, 'error');
+            }
+        }
+
+        function guOpenInvite() {
+            // Simple invite: copy link with condominio_id
+            const url = window.location.origin + '?invite=' + (condominioId || '');
+            navigator.clipboard.writeText(url).then(() => {
+                saShowToast('Link de invitación copiado al portapapeles', 'success');
+            }).catch(() => {
+                prompt('Comparte este link de invitación:', url);
+            });
+        }
 
         // ============================================================
         // SUPERADMIN CONSOLE — Gestión de Condominios, Planes, Auditoría

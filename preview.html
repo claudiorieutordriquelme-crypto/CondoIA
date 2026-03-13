@@ -8193,11 +8193,115 @@
             }).join('');
         }
 
-        function saShowDetail(condoId) {
+        async function saShowDetail(condoId) {
             const c = saCondominios.find(x => x.id === condoId);
             if (!c) return;
             document.getElementById('sa-detail-nombre').textContent = c.nombre || 'Sin nombre';
             const estado = c.estado_cuenta || 'activo';
+
+            // Load associated users (copropietarios) for this condo
+            let condoUsers = [];
+            try {
+                const { data: users, error: usersErr } = await _sb
+                    .from('perfiles')
+                    .select('id, nombre_completo, email, rol, telefono, estado, unidad, creado_en')
+                    .eq('condominio_id', condoId)
+                    .order('nombre_completo');
+                if (!usersErr && users) condoUsers = users;
+            } catch(e) { console.error('SA load condo users:', e); }
+
+            // Also load unidades for this condo
+            let condoUnidades = [];
+            try {
+                const { data: unidades, error: uniErr } = await _sb
+                    .from('unidades')
+                    .select('id, numero, tipo, piso, propietario_id')
+                    .eq('condominio_id', condoId)
+                    .order('numero');
+                if (!uniErr && unidades) condoUnidades = unidades;
+            } catch(e) { console.error('SA load condo unidades:', e); }
+
+            // Build users HTML
+            const rolColors = {
+                administrador: 'bg-purple-500/15 text-purple-400',
+                copropietario: 'bg-blue-500/15 text-blue-400',
+                arrendatario: 'bg-cyan-500/15 text-cyan-400',
+                conserje: 'bg-amber-500/15 text-amber-400',
+                tesorero: 'bg-emerald-500/15 text-emerald-400',
+                secretario: 'bg-pink-500/15 text-pink-400',
+                superadmin: 'bg-red-500/15 text-red-400'
+            };
+
+            let usersHtml = '';
+            if (condoUsers.length > 0) {
+                usersHtml = `
+                <div class="mt-5 pt-4 border-t border-slate-700/50">
+                    <div class="flex items-center justify-between mb-3">
+                        <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                            <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                            Usuarios Asociados (${condoUsers.length})
+                        </h4>
+                    </div>
+                    <div class="space-y-2 max-h-60 overflow-y-auto" style="scrollbar-width:thin;">
+                        ${condoUsers.map(u => {
+                            const initials = (u.nombre_completo || 'U').split(' ').map(p => p[0]).join('').substring(0,2).toUpperCase();
+                            const rolClass = rolColors[u.rol] || 'bg-slate-500/15 text-slate-400';
+                            const rolLabel = u.rol ? u.rol.charAt(0).toUpperCase() + u.rol.slice(1) : 'Sin rol';
+                            return `
+                            <div class="flex items-center gap-3 p-2.5 rounded-lg bg-slate-800/30 hover:bg-slate-800/50 transition">
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500/30 to-blue-700/30 flex items-center justify-center text-xs font-bold text-blue-300 flex-shrink-0">${initials}</div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <p class="text-sm font-medium text-white truncate">${saEsc(u.nombre_completo || 'Sin nombre')}</p>
+                                        <span class="px-1.5 py-0.5 rounded text-[10px] font-semibold ${rolClass}">${rolLabel}</span>
+                                    </div>
+                                    <p class="text-xs text-slate-500 truncate">${saEsc(u.email || '')}${u.unidad ? ' • Unidad ' + saEsc(u.unidad) : ''}${u.telefono ? ' • ' + saEsc(u.telefono) : ''}</p>
+                                </div>
+                                <div class="flex-shrink-0">
+                                    ${u.estado === 'activo' ? '<span class="w-2 h-2 rounded-full bg-emerald-400 inline-block" title="Activo"></span>' : '<span class="w-2 h-2 rounded-full bg-slate-500 inline-block" title="Inactivo"></span>'}
+                                </div>
+                            </div>`;
+                        }).join('')}
+                    </div>
+                </div>`;
+            } else {
+                usersHtml = `
+                <div class="mt-5 pt-4 border-t border-slate-700/50">
+                    <h4 class="text-sm font-bold text-white flex items-center gap-2 mb-3">
+                        <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                        Usuarios Asociados (0)
+                    </h4>
+                    <div class="text-center py-6">
+                        <svg class="w-8 h-8 mx-auto mb-2 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+                        <p class="text-xs text-slate-500">No hay usuarios registrados en este condominio</p>
+                        <p class="text-[10px] text-slate-600 mt-1">Los usuarios se asocian al registrarse e ingresar el código del condominio</p>
+                    </div>
+                </div>`;
+            }
+
+            // Build unidades HTML
+            let unidadesHtml = '';
+            if (condoUnidades.length > 0) {
+                unidadesHtml = `
+                <div class="mt-4 pt-3 border-t border-slate-700/50">
+                    <h4 class="text-sm font-bold text-white flex items-center gap-2 mb-3">
+                        <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                        Unidades Registradas (${condoUnidades.length}/${c.total_unidades || 0})
+                    </h4>
+                    <div class="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto" style="scrollbar-width:thin;">
+                        ${condoUnidades.map(u => {
+                            const hasOwner = u.propietario_id ? true : false;
+                            const ownerUser = hasOwner ? condoUsers.find(cu => cu.id === u.propietario_id) : null;
+                            const tooltip = ownerUser ? saEsc(ownerUser.nombre_completo || 'Propietario') : 'Sin asignar';
+                            return `<span class="px-2 py-1 rounded-md text-xs font-medium ${hasOwner ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20' : 'bg-slate-700/50 text-slate-400 border border-slate-600/30'}" title="${tooltip}">
+                                ${saEsc(u.numero || u.id.substring(0,4))}${u.piso ? ' (P' + u.piso + ')' : ''}
+                                ${hasOwner ? '✓' : ''}
+                            </span>`;
+                        }).join('')}
+                    </div>
+                    <p class="text-[10px] text-slate-600 mt-2">Verde = unidad con propietario asignado • Gris = sin asignar</p>
+                </div>`;
+            }
 
             document.getElementById('sa-detail-body').innerHTML = `
                 <div class="grid grid-cols-2 gap-4">
@@ -8250,6 +8354,8 @@
                     <p class="text-xs text-red-400 mb-1">Motivo Suspensión</p>
                     <p class="text-sm text-red-300">${saEsc(c.motivo_suspension)}</p>
                 </div>` : ''}
+                ${usersHtml}
+                ${unidadesHtml}
             `;
 
             // Actions

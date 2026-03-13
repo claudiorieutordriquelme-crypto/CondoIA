@@ -448,6 +448,36 @@
             transform: translateX(0);
         }
 
+        /* Blue theme overrides for default mode */
+        [class*="bg-slate-800"] { background-color: rgba(255, 255, 255, 0.12) !important; }
+        [class*="bg-slate-900"] { background-color: rgba(255, 255, 255, 0.08) !important; }
+        [class*="bg-slate-700"] { background-color: rgba(255, 255, 255, 0.15) !important; }
+        [class*="border-slate-700"] { border-color: rgba(255, 255, 255, 0.2) !important; }
+        [class*="border-slate-600"] { border-color: rgba(255, 255, 255, 0.25) !important; }
+        [class*="divide-slate-700"] > * + * { border-color: rgba(255, 255, 255, 0.2) !important; }
+        .text-slate-300 { color: rgba(255, 255, 255, 0.85) !important; }
+        .text-slate-400 { color: rgba(255, 255, 255, 0.7) !important; }
+        .text-slate-500 { color: rgba(255, 255, 255, 0.6) !important; }
+        [class*="hover:bg-slate-800"]:hover { background-color: rgba(255, 255, 255, 0.18) !important; }
+        [class*="hover:bg-slate-700"]:hover { background-color: rgba(255, 255, 255, 0.22) !important; }
+        .bg-slate-800\/30 { background: rgba(255, 255, 255, 0.1) !important; }
+        .bg-slate-800\/50 { background: rgba(255, 255, 255, 0.12) !important; }
+        .bg-slate-800\/40 { background: rgba(255, 255, 255, 0.1) !important; }
+        .kanban-column { background: rgba(255, 255, 255, 0.1) !important; border-radius: 16px; }
+        input, select, textarea {
+            background: rgba(255, 255, 255, 0.15) !important;
+            border-color: rgba(255, 255, 255, 0.25) !important;
+            color: #ffffff !important;
+        }
+        input::placeholder, textarea::placeholder { color: rgba(255, 255, 255, 0.5) !important; }
+        input:focus, select:focus, textarea:focus {
+            border-color: rgba(255, 255, 255, 0.5) !important;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15) !important;
+        }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); }
+        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); }
+        .detail-panel { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); }
+
         /* Light Mode */
         body.light-mode {
             background: #F5F7FA;

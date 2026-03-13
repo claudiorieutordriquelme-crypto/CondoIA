@@ -726,10 +726,22 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
                     <span>Configuración</span>
                 </button>
-                <button onclick="showPage('admin')" data-page="admin" class="sidebar-link w-full text-left">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
-                    <span>Admin</span>
-                </button>
+                <!-- Superadmin Section -->
+                <div id="superadmin-nav-section" class="mt-4 pt-4 border-t border-slate-700/50">
+                    <p class="px-3 mb-2 text-[10px] font-semibold tracking-widest uppercase text-amber-400/70">Superadmin</p>
+                    <button onclick="showPage('superadmin')" data-page="superadmin" class="sidebar-link w-full text-left">
+                        <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                        <span>Condominios</span>
+                    </button>
+                    <button onclick="showPage('sa-planes')" data-page="sa-planes" class="sidebar-link w-full text-left">
+                        <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                        <span>Planes</span>
+                    </button>
+                    <button onclick="showPage('sa-audit')" data-page="sa-audit" class="sidebar-link w-full text-left">
+                        <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+                        <span>Auditoría</span>
+                    </button>
+                </div>
             </nav>
 
             <!-- User Profile -->
@@ -1965,25 +1977,158 @@
                     </div>
                 </div>
 
-                <!-- ADMIN PAGE -->
-                <div id="admin-page" class="page-content p-8 space-y-8 hidden">
-                    <div class="glass-card p-6 rounded-lg">
-                        <h3 class="text-lg font-semibold text-white mb-4">Panel de Administración</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="glass-card p-4 rounded-lg flex items-center justify-between">
-                                <div>
-                                    <p class="font-semibold text-white">Usuarios Activos</p>
-                                    <p class="text-2xl font-bold text-blue-400 mt-1">127</p>
-                                </div>
-                                <svg class="w-12 h-12 text-blue-500/20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 4.354a4 4 0 110 5.292M15 12H9m4 5H9m6 0h.01M9 12a4 4 0 110-5.292m6 0a4 4 0 100 5.292"></path></svg>
+                <!-- ==================== SUPERADMIN: CONDOMINIOS ==================== -->
+                <div id="superadmin-page" class="page-content p-8 space-y-6 hidden">
+                    <!-- Metrics Row -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="sa-metrics-row">
+                        <div class="stat-card p-4 rounded-xl">
+                            <p class="text-xs text-slate-400 font-medium">Total Condominios</p>
+                            <p class="text-2xl font-bold text-white mt-1" id="sa-m-total">0</p>
+                            <p class="text-xs text-emerald-400 mt-1">Plataforma</p>
+                        </div>
+                        <div class="stat-card p-4 rounded-xl">
+                            <p class="text-xs text-slate-400 font-medium">Pendientes Aprobación</p>
+                            <p class="text-2xl font-bold text-amber-400 mt-1" id="sa-m-pendientes">0</p>
+                            <p class="text-xs text-amber-400/70 mt-1">Requieren acción</p>
+                        </div>
+                        <div class="stat-card p-4 rounded-xl">
+                            <p class="text-xs text-slate-400 font-medium">Activos</p>
+                            <p class="text-2xl font-bold text-emerald-400 mt-1" id="sa-m-activos">0</p>
+                            <p class="text-xs text-slate-500 mt-1">Operando</p>
+                        </div>
+                        <div class="stat-card p-4 rounded-xl">
+                            <p class="text-xs text-slate-400 font-medium">MRR Estimado</p>
+                            <p class="text-2xl font-bold text-blue-400 mt-1" id="sa-m-mrr">$0</p>
+                            <p class="text-xs text-slate-500 mt-1">Ingreso mensual</p>
+                        </div>
+                    </div>
+
+                    <!-- Pending Approvals -->
+                    <div id="sa-pending-section" class="glass-card p-6 rounded-xl hidden">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-amber-400 flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                Pendientes de Aprobación
+                            </h3>
+                        </div>
+                        <div id="sa-pending-list" class="space-y-3"></div>
+                    </div>
+
+                    <!-- Condominios Table -->
+                    <div class="glass-card p-6 rounded-xl">
+                        <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+                            <h3 class="text-lg font-semibold text-white">Todos los Condominios</h3>
+                            <div class="flex items-center gap-2">
+                                <select id="sa-filter-estado" onchange="saFilterCondos()" class="bg-slate-800/60 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-300 focus:border-blue-500/50 focus:outline-none">
+                                    <option value="todos">Todos</option>
+                                    <option value="activo">Activos</option>
+                                    <option value="pendiente_aprobacion">Pendientes</option>
+                                    <option value="suspendido">Suspendidos</option>
+                                    <option value="cancelado">Cancelados</option>
+                                </select>
+                                <input id="sa-search-condo" type="text" placeholder="Buscar..." oninput="saFilterCondos()" class="bg-slate-800/60 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-blue-500/50 focus:outline-none w-48">
                             </div>
-                            <div class="glass-card p-4 rounded-lg flex items-center justify-between">
-                                <div>
-                                    <p class="font-semibold text-white">Versión del Sistema</p>
-                                    <p class="text-2xl font-bold text-emerald-400 mt-1">3.2.1</p>
-                                </div>
-                                <svg class="w-12 h-12 text-emerald-500/20" fill="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="text-left text-slate-400 border-b border-slate-700/50">
+                                        <th class="pb-3 font-medium">Condominio</th>
+                                        <th class="pb-3 font-medium">Estado</th>
+                                        <th class="pb-3 font-medium">Plan</th>
+                                        <th class="pb-3 font-medium">Unidades</th>
+                                        <th class="pb-3 font-medium">Usuarios</th>
+                                        <th class="pb-3 font-medium">Creado</th>
+                                        <th class="pb-3 font-medium text-right">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sa-condos-tbody" class="divide-y divide-slate-700/30"></tbody>
+                            </table>
+                        </div>
+                        <div id="sa-condos-empty" class="text-center py-12 text-slate-500 hidden">
+                            <svg class="w-12 h-12 mx-auto mb-3 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                            <p>No hay condominios registrados aún</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== SUPERADMIN: PLANES ==================== -->
+                <div id="sa-planes-page" class="page-content p-8 space-y-6 hidden">
+                    <div class="glass-card p-6 rounded-xl">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-semibold text-white">Planes y Suscripciones</h3>
+                        </div>
+                        <div id="sa-planes-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+                    </div>
+                    <!-- Suscripciones activas -->
+                    <div class="glass-card p-6 rounded-xl">
+                        <h3 class="text-lg font-semibold text-white mb-4">Suscripciones Activas</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="text-left text-slate-400 border-b border-slate-700/50">
+                                        <th class="pb-3 font-medium">Condominio</th>
+                                        <th class="pb-3 font-medium">Plan</th>
+                                        <th class="pb-3 font-medium">Estado</th>
+                                        <th class="pb-3 font-medium">Trial hasta</th>
+                                        <th class="pb-3 font-medium">Próximo cobro</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sa-subs-tbody" class="divide-y divide-slate-700/30"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== SUPERADMIN: AUDITORÍA ==================== -->
+                <div id="sa-audit-page" class="page-content p-8 space-y-6 hidden">
+                    <div class="glass-card p-6 rounded-xl">
+                        <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+                            <h3 class="text-lg font-semibold text-white">Log de Auditoría</h3>
+                            <div class="flex items-center gap-2">
+                                <select id="sa-audit-filter" onchange="saLoadAuditLog()" class="bg-slate-800/60 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-300 focus:border-blue-500/50 focus:outline-none">
+                                    <option value="todas">Todas las acciones</option>
+                                    <option value="condominio_aprobado">Aprobaciones</option>
+                                    <option value="condominio_suspendido">Suspensiones</option>
+                                    <option value="condominio_reactivado">Reactivaciones</option>
+                                    <option value="login">Logins</option>
+                                </select>
                             </div>
+                        </div>
+                        <div id="sa-audit-list" class="space-y-2 max-h-[600px] overflow-y-auto"></div>
+                        <div id="sa-audit-empty" class="text-center py-12 text-slate-500 hidden">
+                            <svg class="w-12 h-12 mx-auto mb-3 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                            <p>No hay registros de auditoría</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Superadmin Condo Detail Modal -->
+                <div id="sa-condo-detail-modal" class="modal-overlay justify-center items-center" onclick="if(event.target===this) closeModal('sa-condo-detail')">
+                    <div class="modal-content glass-card p-8 rounded-xl max-w-2xl w-full mx-4 max-h-[85vh] overflow-y-auto">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-bold text-white" id="sa-detail-nombre">Condominio</h3>
+                            <button onclick="closeModal('sa-condo-detail')" class="text-slate-400 hover:text-white transition">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            </button>
+                        </div>
+                        <div id="sa-detail-body" class="space-y-5"></div>
+                        <div id="sa-detail-actions" class="flex gap-3 mt-6 pt-4 border-t border-slate-700/50"></div>
+                    </div>
+                </div>
+
+                <!-- Superadmin Confirm Action Modal -->
+                <div id="sa-confirm-modal" class="modal-overlay justify-center items-center" onclick="if(event.target===this) closeModal('sa-confirm')">
+                    <div class="modal-content glass-card p-8 rounded-xl max-w-md w-full mx-4">
+                        <h3 class="text-lg font-bold text-white mb-3" id="sa-confirm-title">Confirmar Acción</h3>
+                        <p class="text-sm text-slate-400 mb-4" id="sa-confirm-msg"></p>
+                        <div id="sa-confirm-reason" class="mb-4 hidden">
+                            <label class="text-xs text-slate-500 mb-1.5 block font-medium">Motivo</label>
+                            <textarea id="sa-confirm-reason-input" rows="2" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none" placeholder="Ingresa el motivo..."></textarea>
+                        </div>
+                        <div class="flex gap-3 justify-end">
+                            <button onclick="closeModal('sa-confirm')" class="secondary-button px-4 py-2 rounded-lg text-sm text-slate-300">Cancelar</button>
+                            <button id="sa-confirm-btn" class="gradient-button px-4 py-2 rounded-lg text-sm text-white font-medium">Confirmar</button>
                         </div>
                     </div>
                 </div>
@@ -3447,6 +3592,9 @@
             if (pageName === 'proveedores') renderProviders();
             if (pageName === 'asambleas') renderAsambleas();
             if (pageName === 'compromisos') renderCompromisos();
+            if (pageName === 'superadmin') saLoadCondominios();
+            if (pageName === 'sa-planes') saLoadPlanes();
+            if (pageName === 'sa-audit') saLoadAuditLog();
         }
 
         function getPageTitle(pageName) {
@@ -3463,7 +3611,9 @@
                 'reglamento': 'Reglamento',
                 'perfil': 'Perfil',
                 'configuracion': 'Configuración',
-                'admin': 'Admin'
+                'superadmin': 'Consola Superadmin',
+                'sa-planes': 'Planes y Suscripciones',
+                'sa-audit': 'Auditoría'
             };
             return titles[pageName] || 'Dashboard';
         }
@@ -3718,7 +3868,7 @@
         const rolePermissions = {
             superadmin: {
                 label: 'Super Admin',
-                pages: ['dashboard','copropietarios','asambleas','compromisos','documentos','mantenimiento','proveedores','emergencias','agentes','reglamento','perfil','configuracion','admin'],
+                pages: ['dashboard','copropietarios','asambleas','compromisos','documentos','mantenimiento','proveedores','emergencias','agentes','reglamento','perfil','configuracion','superadmin','sa-planes','sa-audit'],
                 canEdit: true, canCreate: true, canDelete: true
             },
             administrador: {
@@ -3768,6 +3918,9 @@
                 const page = link.getAttribute('data-page');
                 link.style.display = perms.pages.includes(page) ? '' : 'none';
             });
+            // Show/hide superadmin nav section
+            const saNav = document.getElementById('superadmin-nav-section');
+            if (saNav) saNav.style.display = currentUserRole === 'superadmin' ? '' : 'none';
             // Hide/show create buttons based on canCreate
             document.querySelectorAll('.role-create').forEach(el => {
                 el.style.display = perms.canCreate ? '' : 'none';
@@ -6675,6 +6828,438 @@
         // Generate on load
         generateNotifications();
         initConfigPage();
+
+        // ============================================================
+        // SUPERADMIN CONSOLE — Gestión de Condominios, Planes, Auditoría
+        // ============================================================
+        let saCondominios = [];
+        let saPlanes = [];
+        let saSuscripciones = [];
+        let saAuditData = [];
+
+        const estadoBadge = {
+            activo: 'bg-emerald-500/15 text-emerald-400',
+            pendiente_aprobacion: 'bg-amber-500/15 text-amber-400',
+            suspendido: 'bg-red-500/15 text-red-400',
+            cancelado: 'bg-slate-500/15 text-slate-400'
+        };
+        const estadoLabel = {
+            activo: 'Activo',
+            pendiente_aprobacion: 'Pendiente',
+            suspendido: 'Suspendido',
+            cancelado: 'Cancelado'
+        };
+
+        async function saLoadCondominios() {
+            try {
+                const { data, error } = await _sb.from('condominios').select('*').order('creado_en', { ascending: false });
+                if (error) throw error;
+                saCondominios = data || [];
+
+                // Load related counts
+                for (let c of saCondominios) {
+                    const { count: uCount } = await _sb.from('perfiles').select('*', { count: 'exact', head: true }).eq('condominio_id', c.id);
+                    c._usuarios = uCount || 0;
+                    const { count: uniCount } = await _sb.from('unidades').select('*', { count: 'exact', head: true }).eq('condominio_id', c.id);
+                    c._unidades_reg = uniCount || 0;
+                }
+
+                saRenderMetrics();
+                saRenderPending();
+                saRenderCondosTable();
+            } catch (err) {
+                console.error('SA load condos:', err);
+                // Show with whatever data we have
+                saRenderCondosTable();
+            }
+        }
+
+        function saRenderMetrics() {
+            const total = saCondominios.length;
+            const pendientes = saCondominios.filter(c => c.estado_cuenta === 'pendiente_aprobacion').length;
+            const activos = saCondominios.filter(c => c.estado_cuenta === 'activo').length;
+
+            document.getElementById('sa-m-total').textContent = total;
+            document.getElementById('sa-m-pendientes').textContent = pendientes;
+            document.getElementById('sa-m-activos').textContent = activos;
+
+            // Estimate MRR from plans
+            let mrr = 0;
+            saCondominios.forEach(c => {
+                if (c.estado_cuenta === 'activo') {
+                    if (c.plan_tipo === 'profesional') mrr += 29990;
+                    else if (c.plan_tipo === 'enterprise') mrr += 79990;
+                }
+            });
+            document.getElementById('sa-m-mrr').textContent = '$' + mrr.toLocaleString('es-CL');
+        }
+
+        function saRenderPending() {
+            const pending = saCondominios.filter(c => c.estado_cuenta === 'pendiente_aprobacion');
+            const section = document.getElementById('sa-pending-section');
+            const list = document.getElementById('sa-pending-list');
+
+            if (pending.length === 0) { section.classList.add('hidden'); return; }
+            section.classList.remove('hidden');
+
+            list.innerHTML = pending.map(c => `
+                <div class="flex items-center justify-between p-4 bg-amber-500/5 border border-amber-500/20 rounded-lg">
+                    <div>
+                        <p class="font-semibold text-white">${saEsc(c.nombre)}</p>
+                        <p class="text-xs text-slate-400">${saEsc(c.direccion || '')} • ${saEsc(c.comuna || '')} • RUT: ${saEsc(c.rut_comunidad || 'N/A')}</p>
+                        <p class="text-xs text-slate-500 mt-1">${c.total_unidades || 0} unidades • Admin: ${saEsc(c.administrador_nombre || 'Sin asignar')}</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="saAprobarCondo('${c.id}')" class="gradient-button px-3 py-1.5 rounded-lg text-xs text-white font-medium">Aprobar</button>
+                        <button onclick="saShowDetail('${c.id}')" class="secondary-button px-3 py-1.5 rounded-lg text-xs text-slate-300">Ver Detalle</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function saFilterCondos() {
+            saRenderCondosTable();
+        }
+
+        function saRenderCondosTable() {
+            const tbody = document.getElementById('sa-condos-tbody');
+            const emptyEl = document.getElementById('sa-condos-empty');
+            const filterEstado = document.getElementById('sa-filter-estado').value;
+            const searchTerm = document.getElementById('sa-search-condo').value.toLowerCase();
+
+            let filtered = saCondominios;
+            if (filterEstado !== 'todos') filtered = filtered.filter(c => c.estado_cuenta === filterEstado);
+            if (searchTerm) filtered = filtered.filter(c =>
+                (c.nombre || '').toLowerCase().includes(searchTerm) ||
+                (c.comuna || '').toLowerCase().includes(searchTerm) ||
+                (c.rut_comunidad || '').toLowerCase().includes(searchTerm)
+            );
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '';
+                emptyEl.classList.remove('hidden');
+                return;
+            }
+            emptyEl.classList.add('hidden');
+
+            tbody.innerHTML = filtered.map(c => {
+                const estado = c.estado_cuenta || 'activo';
+                const badge = estadoBadge[estado] || estadoBadge.activo;
+                const label = estadoLabel[estado] || estado;
+                const fecha = c.creado_en ? new Date(c.creado_en).toLocaleDateString('es-CL') : '-';
+                return `
+                <tr class="hover:bg-slate-800/30 transition cursor-pointer" onclick="saShowDetail('${c.id}')">
+                    <td class="py-3 pr-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold ${c.color_primario ? '' : 'bg-gradient-to-br from-blue-500 to-blue-700'}" ${c.color_primario ? `style="background:${c.color_primario}"` : ''}>
+                                ${(c.nombre || 'C')[0].toUpperCase()}
+                            </div>
+                            <div>
+                                <p class="font-medium text-white text-sm">${saEsc(c.nombre)}</p>
+                                <p class="text-xs text-slate-500">${saEsc(c.comuna || '')}${c.region ? ', ' + saEsc(c.region) : ''}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-3 pr-4"><span class="px-2 py-1 rounded-full text-xs font-medium ${badge}">${label}</span></td>
+                    <td class="py-3 pr-4 text-slate-300 text-xs">${saEsc(c.plan_tipo || 'comunidad')}</td>
+                    <td class="py-3 pr-4 text-slate-300">${c._unidades_reg || 0}/${c.total_unidades || 0}</td>
+                    <td class="py-3 pr-4 text-slate-300">${c._usuarios || 0}</td>
+                    <td class="py-3 pr-4 text-slate-400 text-xs">${fecha}</td>
+                    <td class="py-3 text-right">
+                        <div class="flex gap-1 justify-end" onclick="event.stopPropagation()">
+                            ${estado === 'pendiente_aprobacion' ? `<button onclick="saAprobarCondo('${c.id}')" class="px-2 py-1 rounded text-xs bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25 transition" title="Aprobar">Aprobar</button>` : ''}
+                            ${estado === 'activo' ? `<button onclick="saConfirmSuspender('${c.id}')" class="px-2 py-1 rounded text-xs bg-red-500/10 text-red-400 hover:bg-red-500/20 transition" title="Suspender">Suspender</button>` : ''}
+                            ${estado === 'suspendido' ? `<button onclick="saReactivarCondo('${c.id}')" class="px-2 py-1 rounded text-xs bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25 transition" title="Reactivar">Reactivar</button>` : ''}
+                        </div>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function saShowDetail(condoId) {
+            const c = saCondominios.find(x => x.id === condoId);
+            if (!c) return;
+            document.getElementById('sa-detail-nombre').textContent = c.nombre || 'Sin nombre';
+            const estado = c.estado_cuenta || 'activo';
+
+            document.getElementById('sa-detail-body').innerHTML = `
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-xs text-slate-500 mb-1">RUT Comunidad</p>
+                        <p class="text-sm text-white font-medium">${saEsc(c.rut_comunidad || 'N/A')}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 mb-1">Estado</p>
+                        <span class="px-2 py-1 rounded-full text-xs font-medium ${estadoBadge[estado] || ''}">${estadoLabel[estado] || estado}</span>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 mb-1">Dirección</p>
+                        <p class="text-sm text-white">${saEsc(c.direccion || 'N/A')}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 mb-1">Comuna / Región</p>
+                        <p class="text-sm text-white">${saEsc(c.comuna || '')} ${c.region ? '/ ' + saEsc(c.region) : ''}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 mb-1">Administrador</p>
+                        <p class="text-sm text-white">${saEsc(c.administrador_nombre || 'Sin asignar')}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 mb-1">Plan</p>
+                        <p class="text-sm text-white capitalize">${saEsc(c.plan_tipo || 'comunidad')}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 mb-1">Unidades</p>
+                        <p class="text-sm text-white">${c._unidades_reg || 0} registradas de ${c.total_unidades || 0}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 mb-1">Usuarios</p>
+                        <p class="text-sm text-white">${c._usuarios || 0}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 mb-1">Creado</p>
+                        <p class="text-sm text-white">${c.creado_en ? new Date(c.creado_en).toLocaleDateString('es-CL', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A'}</p>
+                    </div>
+                    ${c.aprobado_en ? `<div>
+                        <p class="text-xs text-slate-500 mb-1">Aprobado</p>
+                        <p class="text-sm text-white">${new Date(c.aprobado_en).toLocaleDateString('es-CL', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                    </div>` : ''}
+                </div>
+                ${c.notas_internas ? `<div class="mt-4 p-3 bg-slate-800/40 rounded-lg">
+                    <p class="text-xs text-slate-500 mb-1">Notas Internas</p>
+                    <p class="text-sm text-slate-300">${saEsc(c.notas_internas)}</p>
+                </div>` : ''}
+                ${c.motivo_suspension ? `<div class="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                    <p class="text-xs text-red-400 mb-1">Motivo Suspensión</p>
+                    <p class="text-sm text-red-300">${saEsc(c.motivo_suspension)}</p>
+                </div>` : ''}
+            `;
+
+            // Actions
+            const actionsEl = document.getElementById('sa-detail-actions');
+            let actions = '';
+            if (estado === 'pendiente_aprobacion') {
+                actions += `<button onclick="saAprobarCondo('${c.id}');closeModal('sa-condo-detail')" class="gradient-button px-4 py-2 rounded-lg text-sm text-white font-medium">Aprobar Condominio</button>`;
+            }
+            if (estado === 'activo') {
+                actions += `<button onclick="saConfirmSuspender('${c.id}')" class="danger-button px-4 py-2 rounded-lg text-sm text-white font-medium">Suspender</button>`;
+            }
+            if (estado === 'suspendido') {
+                actions += `<button onclick="saReactivarCondo('${c.id}');closeModal('sa-condo-detail')" class="gradient-button px-4 py-2 rounded-lg text-sm text-white font-medium">Reactivar</button>`;
+            }
+            actions += `<button onclick="closeModal('sa-condo-detail')" class="secondary-button px-4 py-2 rounded-lg text-sm text-slate-300 ml-auto">Cerrar</button>`;
+            actionsEl.innerHTML = actions;
+
+            openModal('sa-condo-detail');
+        }
+
+        async function saAprobarCondo(condoId) {
+            try {
+                const { error } = await _sb.rpc('aprobar_condominio', { p_condominio_id: condoId });
+                if (error) throw error;
+                saShowToast('Condominio aprobado exitosamente', 'success');
+                await saLoadCondominios();
+            } catch (err) {
+                console.error('Aprobar:', err);
+                saShowToast('Error al aprobar: ' + err.message, 'error');
+            }
+        }
+
+        function saConfirmSuspender(condoId) {
+            const c = saCondominios.find(x => x.id === condoId);
+            document.getElementById('sa-confirm-title').textContent = 'Suspender Condominio';
+            document.getElementById('sa-confirm-msg').textContent = `¿Confirmas la suspensión de "${c ? c.nombre : ''}"? Los usuarios no podrán acceder al sistema.`;
+            document.getElementById('sa-confirm-reason').classList.remove('hidden');
+            document.getElementById('sa-confirm-reason-input').value = '';
+            document.getElementById('sa-confirm-btn').className = 'danger-button px-4 py-2 rounded-lg text-sm text-white font-medium';
+            document.getElementById('sa-confirm-btn').textContent = 'Suspender';
+            document.getElementById('sa-confirm-btn').onclick = async function() {
+                const motivo = document.getElementById('sa-confirm-reason-input').value.trim();
+                if (!motivo) { saShowToast('Debes ingresar un motivo', 'error'); return; }
+                try {
+                    const { error } = await _sb.rpc('suspender_condominio', { p_condominio_id: condoId, p_motivo: motivo });
+                    if (error) throw error;
+                    closeModal('sa-confirm');
+                    closeModal('sa-condo-detail');
+                    saShowToast('Condominio suspendido', 'success');
+                    await saLoadCondominios();
+                } catch (err) {
+                    console.error('Suspender:', err);
+                    saShowToast('Error: ' + err.message, 'error');
+                }
+            };
+            openModal('sa-confirm');
+        }
+
+        async function saReactivarCondo(condoId) {
+            try {
+                const { error } = await _sb.rpc('reactivar_condominio', { p_condominio_id: condoId });
+                if (error) throw error;
+                saShowToast('Condominio reactivado exitosamente', 'success');
+                await saLoadCondominios();
+            } catch (err) {
+                console.error('Reactivar:', err);
+                saShowToast('Error: ' + err.message, 'error');
+            }
+        }
+
+        // ============ PLANES ============
+        async function saLoadPlanes() {
+            try {
+                const { data: planes, error } = await _sb.from('planes').select('*').order('precio_mensual', { ascending: true });
+                if (error) throw error;
+                saPlanes = planes || [];
+
+                const { data: subs, error: subErr } = await _sb.from('suscripciones').select('*, condominios(nombre), planes(nombre)').order('creado_en', { ascending: false });
+                if (!subErr) saSuscripciones = subs || [];
+
+                saRenderPlanes();
+                saRenderSuscripciones();
+            } catch (err) {
+                console.error('SA planes:', err);
+            }
+        }
+
+        function saRenderPlanes() {
+            const grid = document.getElementById('sa-planes-grid');
+            const planColors = { comunidad: 'from-slate-500 to-slate-700', profesional: 'from-blue-500 to-blue-700', enterprise: 'from-amber-500 to-amber-700' };
+            const planIcons = {
+                comunidad: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-4 7 4M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>',
+                profesional: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>',
+                enterprise: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>'
+            };
+
+            grid.innerHTML = saPlanes.map(p => {
+                const color = planColors[p.slug] || planColors.comunidad;
+                const icon = planIcons[p.slug] || planIcons.comunidad;
+                const activeSubs = saSuscripciones.filter(s => s.plan_id === p.id && ['activa','trial'].includes(s.estado)).length;
+                return `
+                <div class="glass-card rounded-xl overflow-hidden">
+                    <div class="bg-gradient-to-br ${color} p-5">
+                        <div class="flex items-center justify-between mb-3">
+                            <svg class="w-8 h-8 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">${icon}</svg>
+                            <span class="px-2 py-0.5 rounded-full text-xs font-medium ${p.activo ? 'bg-white/20 text-white' : 'bg-red-500/30 text-red-200'}">${p.activo ? 'Activo' : 'Inactivo'}</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-white">${saEsc(p.nombre)}</h4>
+                        <p class="text-white/70 text-sm mt-1">${p.precio_mensual > 0 ? '$' + p.precio_mensual.toLocaleString('es-CL') + '/mes' : 'Gratis'}</p>
+                    </div>
+                    <div class="p-5 space-y-3">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-400">Máx. unidades</span>
+                            <span class="text-white font-medium">${p.max_unidades === -1 ? 'Ilimitado' : p.max_unidades}</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-400">IA incluida</span>
+                            <span class="text-white font-medium">${p.incluye_ia ? 'Sí' : 'No'}</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-400">Soporte</span>
+                            <span class="text-white font-medium capitalize">${saEsc(p.soporte || 'comunidad')}</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-400">Trial</span>
+                            <span class="text-white font-medium">${p.trial_dias || 0} días</span>
+                        </div>
+                        <div class="pt-3 border-t border-slate-700/50 flex justify-between items-center">
+                            <span class="text-xs text-slate-500">Suscripciones activas</span>
+                            <span class="text-lg font-bold text-white">${activeSubs}</span>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function saRenderSuscripciones() {
+            const tbody = document.getElementById('sa-subs-tbody');
+            const subEstadoBadge = {
+                trial: 'bg-blue-500/15 text-blue-400',
+                activa: 'bg-emerald-500/15 text-emerald-400',
+                suspendida: 'bg-red-500/15 text-red-400',
+                cancelada: 'bg-slate-500/15 text-slate-400',
+                vencida: 'bg-amber-500/15 text-amber-400'
+            };
+
+            tbody.innerHTML = saSuscripciones.map(s => {
+                const badge = subEstadoBadge[s.estado] || subEstadoBadge.activa;
+                return `
+                <tr class="hover:bg-slate-800/30 transition">
+                    <td class="py-3 pr-4 text-white text-sm">${saEsc(s.condominios?.nombre || 'N/A')}</td>
+                    <td class="py-3 pr-4 text-slate-300 text-sm capitalize">${saEsc(s.planes?.nombre || 'N/A')}</td>
+                    <td class="py-3 pr-4"><span class="px-2 py-1 rounded-full text-xs font-medium ${badge}">${s.estado}</span></td>
+                    <td class="py-3 pr-4 text-slate-400 text-xs">${s.trial_hasta ? new Date(s.trial_hasta).toLocaleDateString('es-CL') : '-'}</td>
+                    <td class="py-3 pr-4 text-slate-400 text-xs">${s.proximo_cobro ? new Date(s.proximo_cobro).toLocaleDateString('es-CL') : '-'}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        // ============ AUDITORÍA ============
+        async function saLoadAuditLog() {
+            try {
+                const filter = document.getElementById('sa-audit-filter').value;
+                let query = _sb.from('audit_log').select('*').order('creado_en', { ascending: false }).limit(100);
+                if (filter !== 'todas') query = query.eq('accion', filter);
+
+                const { data, error } = await query;
+                if (error) throw error;
+                saAuditData = data || [];
+                saRenderAuditLog();
+            } catch (err) {
+                console.error('SA audit:', err);
+            }
+        }
+
+        function saRenderAuditLog() {
+            const list = document.getElementById('sa-audit-list');
+            const emptyEl = document.getElementById('sa-audit-empty');
+
+            if (saAuditData.length === 0) {
+                list.innerHTML = '';
+                emptyEl.classList.remove('hidden');
+                return;
+            }
+            emptyEl.classList.add('hidden');
+
+            const actionIcons = {
+                condominio_aprobado: { icon: '✓', color: 'bg-emerald-500/15 text-emerald-400' },
+                condominio_suspendido: { icon: '⏸', color: 'bg-red-500/15 text-red-400' },
+                condominio_reactivado: { icon: '▶', color: 'bg-blue-500/15 text-blue-400' },
+                login: { icon: '→', color: 'bg-slate-500/15 text-slate-400' },
+                registro: { icon: '+', color: 'bg-amber-500/15 text-amber-400' }
+            };
+
+            list.innerHTML = saAuditData.map(a => {
+                const ai = actionIcons[a.accion] || actionIcons.login;
+                const fecha = a.creado_en ? new Date(a.creado_en).toLocaleString('es-CL', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+                const detalles = a.detalles ? (typeof a.detalles === 'string' ? a.detalles : JSON.stringify(a.detalles)) : '';
+                return `
+                <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-800/30 transition">
+                    <div class="w-8 h-8 rounded-lg ${ai.color} flex items-center justify-center text-sm font-bold flex-shrink-0">${ai.icon}</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm text-white font-medium">${saEsc(a.accion.replace(/_/g, ' '))}</p>
+                        ${detalles ? `<p class="text-xs text-slate-400 mt-0.5 truncate">${saEsc(detalles.substring(0, 150))}</p>` : ''}
+                    </div>
+                    <p class="text-xs text-slate-500 whitespace-nowrap flex-shrink-0">${fecha}</p>
+                </div>`;
+            }).join('');
+        }
+
+        // ============ UTILIDADES SA ============
+        function saEsc(str) {
+            if (!str) return '';
+            const d = document.createElement('div');
+            d.textContent = str;
+            return d.innerHTML;
+        }
+
+        function saShowToast(msg, type) {
+            const toast = document.getElementById('payment-toast');
+            const nameEl = document.getElementById('payment-toast-name');
+            const detailEl = document.getElementById('payment-toast-detail');
+            nameEl.textContent = type === 'success' ? 'Operación exitosa' : 'Error';
+            detailEl.textContent = msg;
+            toast.classList.add('active');
+            setTimeout(() => toast.classList.remove('active'), 3500);
+        }
 
         // Lucide Icons
         lucide.createIcons();

@@ -4321,6 +4321,7 @@
             if (!condoId) return;
 
             const unidad = sanitizeInput((document.getElementById('ww-unidad')?.value || '').trim());
+            const piso = sanitizeInput((document.getElementById('ww-piso')?.value || '').trim());
             const telefono = sanitizeInput((document.getElementById('ww-telefono')?.value || '').trim());
 
             // Show loading
@@ -4328,11 +4329,15 @@
             document.getElementById('ww-loading').classList.remove('hidden');
 
             try {
+                // Check if user has a profile to update
+                if (!currentUser?.id) throw new Error('No hay sesión activa');
+
                 const updateData = { condominio_id: condoId };
                 if (unidad) updateData.unidad = unidad;
+                if (piso) updateData.piso = piso;
                 if (telefono) updateData.telefono = telefono;
 
-                const { error } = await _sb.from('perfiles').update(updateData).eq('id', currentUser.id);
+                const { error, count } = await _sb.from('perfiles').update(updateData).eq('id', currentUser.id);
                 if (error) throw error;
 
                 // Update local profile
@@ -4359,7 +4364,14 @@
                 console.error('WW: Error saving profile:', err);
                 document.getElementById('ww-loading').classList.add('hidden');
                 document.getElementById('ww-step-2').classList.remove('hidden');
-                alert('Error al guardar: ' + (err.message || 'Intenta nuevamente'));
+                // Show error as toast instead of blocking alert
+                const eToast = document.getElementById('payment-toast');
+                if (eToast) {
+                    document.getElementById('payment-toast-name').textContent = 'Error al guardar';
+                    document.getElementById('payment-toast-detail').textContent = err.message || 'Intenta nuevamente';
+                    eToast.classList.add('active');
+                    setTimeout(() => eToast.classList.remove('active'), 5000);
+                }
             }
         }
 

@@ -7,6 +7,8 @@
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()">
+    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains; preload">
     <title>CondoIA - Gestión Inteligente de Condominios</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -608,6 +610,15 @@
                             <option value="tesorero">Tesorero</option>
                             <option value="secretario">Secretario</option>
                         </select>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <input type="checkbox" id="register-consent" required
+                            class="mt-1 w-4 h-4 rounded border-slate-600 bg-slate-800/50 text-blue-500 focus:ring-blue-500/50 focus:ring-offset-0">
+                        <label for="register-consent" class="text-xs text-slate-400 leading-relaxed">
+                            Acepto el tratamiento de mis datos personales conforme a la
+                            <a href="#" onclick="event.preventDefault(); alert('Pol\u00edtica de Privacidad: Sus datos ser\u00e1n tratados conforme a la Ley 19.628 y Ley 21.719 sobre Protecci\u00f3n de Datos Personales. Solo recopilamos datos necesarios para la gesti\u00f3n del condominio. Puede ejercer sus derechos ARCO (acceso, rectificaci\u00f3n, cancelaci\u00f3n y oposici\u00f3n) contactando al administrador.');" class="text-blue-400 hover:text-blue-300 underline">Pol&iacute;tica de Privacidad</a>
+                            y la Ley 19.628 de Protecci&oacute;n de Datos Personales.
+                        </label>
                     </div>
                     <button type="submit" id="register-btn"
                         class="w-full py-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-medium rounded-lg transition-all shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2">
@@ -2895,6 +2906,13 @@
             const role = document.getElementById('register-role').value;
             const spinner = document.getElementById('register-spinner');
             const btn = document.getElementById('register-btn');
+
+            // Consent validation
+            const consent = document.getElementById('register-consent');
+            if (!consent.checked) {
+                showAuthMessage('Debes aceptar la Política de Privacidad para registrarte.', 'error');
+                return;
+            }
 
             // Rate limiting: max 3 registrations per 10 minutes
             if (!rateLimiter('register', 3, 600000)) {

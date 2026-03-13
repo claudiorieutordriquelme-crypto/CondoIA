@@ -562,8 +562,17 @@
         body.light-mode .detail-panel { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); }
         /* Hover states */
         body.light-mode [class*="hover:bg-slate-800"]:hover { background-color: rgba(241, 245, 249, 0.9) !important; }
-        /* Kanban columns */
+        /* Kanban columns and cards */
         body.light-mode .kanban-column { background: rgba(248, 250, 252, 0.9) !important; }
+        body.light-mode .kanban-card {
+            background: #ffffff !important;
+            border-color: rgba(226, 232, 240, 0.8) !important;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+        }
+        body.light-mode .kanban-card:hover {
+            background: #f8fafc !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
         /* Scrollbar */
         body.light-mode ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.4); }
         body.light-mode ::-webkit-scrollbar-track { background: rgba(241, 245, 249, 0.5); }
@@ -661,6 +670,23 @@
             /* Assembly cards */
             .page-content .glass-card .p-6 {
                 padding: 0.75rem !important;
+            }
+
+            /* Assembly card title + date: stack on mobile */
+            .glass-card .flex.items-start.justify-between.gap-4 {
+                flex-direction: column;
+                gap: 0.25rem !important;
+            }
+            .glass-card .flex.items-start.justify-between.gap-4 > .text-right {
+                display: flex;
+                gap: 0.5rem;
+                align-items: center;
+            }
+
+            /* Mantenimiento header layout fix */
+            .page-content > .flex.items-start.justify-between {
+                flex-direction: column;
+                gap: 0.75rem;
             }
 
             /* Tables - horizontal scroll */

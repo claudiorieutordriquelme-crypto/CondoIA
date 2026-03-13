@@ -80,15 +80,15 @@
         }
 
         .sidebar-gradient {
-            background: linear-gradient(180deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+            background: linear-gradient(180deg, #4d9fd4 0%, #0d6cb8 100%);
             backdrop-filter: blur(10px);
-            border-right: 1px solid rgba(148, 163, 184, 0.1);
+            border-right: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         .topbar-blur {
             background: rgba(15, 23, 42, 0.8);
             backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            border-bottom: 2px solid #FF6702;
         }
 
         .sidebar-link {
@@ -99,20 +99,20 @@
             align-items: center;
             gap: 0.75rem;
             padding: 0.75rem 1rem;
-            color: rgba(203, 213, 225, 0.7);
+            color: rgba(255, 255, 255, 0.75);
         }
 
         .sidebar-link:hover {
-            background: rgba(148, 163, 184, 0.1);
-            color: rgba(203, 213, 225, 0.9);
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
         }
 
         .sidebar-link.active {
-            background: rgba(1, 84, 160, 0.2);
+            background: rgba(255, 255, 255, 0.2);
             color: #FF6702;
             border-left: 3px solid #FF6702;
             padding-left: calc(1rem - 3px);
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .sidebar-link.active::before {
@@ -122,7 +122,7 @@
             top: 0;
             bottom: 0;
             width: 3px;
-            background: linear-gradient(180deg, #0154A0, rgba(1, 84, 160, 0.5));
+            background: linear-gradient(180deg, #FF6702, #e55d00);
             border-radius: 0 3px 3px 0;
         }
 
@@ -464,12 +464,12 @@
             box-shadow: 0 0 15px rgba(1, 84, 160, 0.2);
         }
         body.light-mode .sidebar-gradient {
-            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-            border-right: 1px solid rgba(203, 213, 225, 0.6);
+            background: linear-gradient(180deg, #4d9fd4 0%, #0d6cb8 100%);
+            border-right: 1px solid rgba(255, 255, 255, 0.15);
         }
         body.light-mode .topbar-blur {
-            background: rgba(255, 255, 255, 0.92);
-            border-bottom-color: rgba(203, 213, 225, 0.5);
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 2px solid #FF6702;
         }
         body.light-mode .topbar-line {
             background: linear-gradient(90deg, transparent, rgba(1, 84, 160, 0.2), transparent);
@@ -481,9 +481,9 @@
         body.light-mode .text-slate-500 { color: #475569 !important; }
         body.light-mode .text-slate-600 { color: #334155 !important; }
         /* Sidebar */
-        body.light-mode .sidebar-link { color: #475569; }
-        body.light-mode .sidebar-link:hover { background: rgba(1, 84, 160, 0.06); color: #1e293b; }
-        body.light-mode .sidebar-link.active { background: rgba(1, 84, 160, 0.1); color: #FF6702; }
+        body.light-mode .sidebar-link { color: rgba(255, 255, 255, 0.8); }
+        body.light-mode .sidebar-link:hover { background: rgba(255, 255, 255, 0.15); color: #ffffff; }
+        body.light-mode .sidebar-link.active { background: rgba(255, 255, 255, 0.2); color: #FF6702; }
         /* Modals */
         body.light-mode .modal-overlay { background: rgba(0, 0, 0, 0.3); }
         body.light-mode .modal-content { background: #ffffff; border-color: rgba(203, 213, 225, 0.5); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12); }
@@ -519,7 +519,10 @@
         body.light-mode .secondary-button:hover { background: rgba(226, 232, 240, 0.9); }
         /* SOS and notification badges retain their colors */
         /* Profile card at sidebar bottom */
-        body.light-mode .sidebar-gradient .glass-card { background: rgba(241, 245, 249, 0.8); }
+        body.light-mode .sidebar-gradient .glass-card { background: rgba(255, 255, 255, 0.15); }
+        body.light-mode .sidebar-gradient .border-slate-700\/50 { border-color: rgba(255, 255, 255, 0.2) !important; }
+        body.light-mode .sidebar-gradient .text-white { color: #ffffff !important; }
+        body.light-mode .sidebar-gradient .text-slate-400 { color: rgba(255, 255, 255, 0.7) !important; }
         body.light-mode .bg-slate-800\/30 { background: rgba(148,163,184,0.12) !important; }
         body.light-mode .text-slate-300 { color: #475569 !important; }
         body.light-mode .text-emerald-300 { color: #059669 !important; }
@@ -554,11 +557,11 @@
     <!-- ============================================================ -->
     <!-- PANTALLA DE LOGIN -->
     <!-- ============================================================ -->
-    <div id="login-screen" class="fixed inset-0 z-[9999] flex items-center justify-center overflow-y-auto py-8" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);">
+    <div id="login-screen" class="fixed inset-0 z-[9999] flex items-center justify-center overflow-y-auto py-8" style="background: linear-gradient(135deg, #0154A0 0%, #0d6cb8 50%, #013c70 100%);">
         <div class="w-full max-w-md px-6 my-auto">
             <!-- Logo -->
             <div class="text-center mb-8">
-                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-500/30 relative overflow-hidden">
+                <div class="w-16 h-16 bg-gradient-to-br from-orange-400 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-orange-500/30 relative overflow-hidden">
                     <div class="absolute inset-0 opacity-20" style="background:radial-gradient(circle at 70% 30%, rgba(255,255,255,0.4), transparent 60%)"></div>
                     <svg class="w-9 h-9 text-white relative z-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M3 21h18"/>
@@ -568,7 +571,7 @@
                         <rect x="13" y="9" width="2" height="2" rx="0.5" fill="currentColor" stroke="none"/>
                         <rect x="9" y="13" width="2" height="2" rx="0.5" fill="currentColor" stroke="none"/>
                         <rect x="13" y="13" width="2" height="2" rx="0.5" fill="currentColor" stroke="none"/>
-                        <circle cx="19" cy="5" r="3" fill="rgba(129,140,248,0.6)" stroke="none"/>
+                        <circle cx="19" cy="5" r="3" fill="rgba(255,103,2,0.5)" stroke="none"/>
                         <path d="M18 5h2M19 4v2" stroke="white" stroke-width="1"/>
                     </svg>
                 </div>
@@ -760,7 +763,7 @@
             <!-- Logo -->
             <div class="p-6 border-b border-slate-700/50">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-600 rounded-lg flex items-center justify-center relative overflow-hidden">
+                    <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center relative overflow-hidden">
                         <div class="absolute inset-0 opacity-20" style="background:radial-gradient(circle at 70% 30%, rgba(255,255,255,0.4), transparent 60%)"></div>
                         <svg class="w-6 h-6 text-white relative z-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M3 21h18"/>
@@ -770,7 +773,7 @@
                             <rect x="13" y="9" width="2" height="2" rx="0.5" fill="currentColor" stroke="none"/>
                             <rect x="9" y="13" width="2" height="2" rx="0.5" fill="currentColor" stroke="none"/>
                             <rect x="13" y="13" width="2" height="2" rx="0.5" fill="currentColor" stroke="none"/>
-                            <circle cx="19" cy="5" r="3" fill="rgba(129,140,248,0.6)" stroke="none"/>
+                            <circle cx="19" cy="5" r="3" fill="rgba(255,103,2,0.5)" stroke="none"/>
                             <path d="M18 5h2M19 4v2" stroke="white" stroke-width="1"/>
                         </svg>
                     </div>

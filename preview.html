@@ -590,14 +590,179 @@
         body.light-mode .text-slate-300 { color: #475569 !important; }
         body.light-mode .text-emerald-300 { color: #059669 !important; }
 
-        /* Mobile Responsive */
+        /* ============================================ */
+        /* MOBILE RESPONSIVE — Award-winning UX        */
+        /* ============================================ */
+
+        /* Fluid typography */
         @media (max-width: 768px) {
-            /* Sidebar mobile overlay */
+            html {
+                font-size: clamp(0.875rem, 0.8rem + 0.5vw, 1rem);
+            }
+        }
+
+        /* Mobile Bottom Navigation */
+        .mobile-bottom-nav {
+            display: none;
+        }
+        .mobile-more-menu {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            /* ---- Bottom Navigation Bar ---- */
+            .mobile-bottom-nav {
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: 200;
+                background: rgba(255, 255, 255, 0.97);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border-top: 1px solid rgba(226, 232, 240, 0.8);
+                padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+                justify-content: space-around;
+                box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+            }
+            body:not(.light-mode) .mobile-bottom-nav {
+                background: rgba(15, 23, 42, 0.97);
+                border-top-color: rgba(51, 65, 85, 0.5);
+                box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+            }
+            .mobile-nav-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 2px;
+                padding: 4px 8px;
+                border-radius: 12px;
+                background: none;
+                border: none;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                min-width: 56px;
+                color: #94a3b8;
+            }
+            .mobile-nav-item span {
+                font-size: 0.625rem;
+                font-weight: 500;
+                letter-spacing: 0.01em;
+                line-height: 1.2;
+            }
+            .mobile-nav-icon {
+                width: 22px;
+                height: 22px;
+                stroke-width: 1.8;
+            }
+            .mobile-nav-item.active {
+                color: #3B82F6;
+            }
+            .mobile-nav-item.active .mobile-nav-icon {
+                stroke-width: 2.2;
+            }
+            body.light-mode .mobile-nav-item {
+                color: #94a3b8;
+            }
+            body.light-mode .mobile-nav-item.active {
+                color: #002EFF;
+            }
+
+            /* ---- More Menu Bottom Sheet ---- */
+            .mobile-more-menu {
+                display: flex;
+                position: fixed;
+                inset: 0;
+                z-index: 250;
+            }
+            .mobile-more-menu.hidden {
+                display: none !important;
+            }
+            .mobile-more-overlay {
+                position: absolute;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.5);
+                animation: fadeIn 0.2s ease;
+            }
+            .mobile-more-sheet {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: #ffffff;
+                border-radius: 20px 20px 0 0;
+                padding: 12px 20px calc(20px + env(safe-area-inset-bottom));
+                animation: slideUp 0.3s ease;
+                max-height: 70vh;
+                overflow-y: auto;
+            }
+            body:not(.light-mode) .mobile-more-sheet {
+                background: #1e293b;
+            }
+            .mobile-more-handle {
+                width: 36px;
+                height: 4px;
+                background: #cbd5e1;
+                border-radius: 2px;
+                margin: 0 auto 16px;
+            }
+            body:not(.light-mode) .mobile-more-handle {
+                background: #475569;
+            }
+            .mobile-more-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 16px;
+            }
+            .mobile-more-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+                padding: 12px 8px;
+                border-radius: 16px;
+                background: none;
+                border: none;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                color: #334155;
+            }
+            body:not(.light-mode) .mobile-more-item {
+                color: #e2e8f0;
+            }
+            .mobile-more-item:active {
+                transform: scale(0.95);
+                background: rgba(59, 130, 246, 0.08);
+            }
+            .mobile-more-icon {
+                width: 52px;
+                height: 52px;
+                border-radius: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .mobile-more-item span {
+                font-size: 0.75rem;
+                font-weight: 500;
+                text-align: center;
+            }
+
+            @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+            @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+            /* ---- Add bottom padding for bottom nav ---- */
+            .flex-1.flex.flex-col.overflow-hidden {
+                padding-bottom: 72px;
+            }
+
+            /* ---- Sidebar mobile overlay ---- */
             .sidebar-gradient {
                 position: fixed;
                 z-index: 100;
                 transform: translateX(-100%);
-                transition: transform 0.3s ease;
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 width: 280px;
                 height: 100vh;
                 top: 0;
@@ -609,161 +774,271 @@
                 display: none;
                 position: fixed;
                 inset: 0;
-                background: rgba(0,0,0,0.6);
+                background: rgba(0, 0, 0, 0.5);
                 z-index: 99;
             }
             .sidebar-overlay.active {
                 display: block;
             }
 
-            /* Page content padding */
+            /* ---- Topbar — compact & modern ---- */
+            .topbar-blur {
+                height: auto !important;
+                min-height: 52px;
+                padding-left: 12px !important;
+                padding-right: 12px !important;
+            }
+            .topbar-blur .text-xl,
+            .topbar-blur .text-lg {
+                font-size: 1.05rem !important;
+                font-weight: 700;
+            }
+
+            /* ---- Page Content — breathing room ---- */
             .page-content {
                 padding: 1rem !important;
+                padding-bottom: 2rem !important;
             }
 
-            /* Typography - larger for readability */
+            /* ---- Headings ---- */
             .page-content h3 {
-                font-size: 1.125rem !important;
+                font-size: 1.1rem !important;
+                font-weight: 700;
             }
 
-            /* Stat cards - compact 2-column grid */
+            /* ---- Stat cards — modern compact ---- */
             .stat-card {
-                padding: 0.75rem !important;
-                border-radius: 12px !important;
+                padding: 0.875rem !important;
+                border-radius: 14px !important;
+                min-height: 0;
             }
             .stat-card p.text-2xl,
             .stat-card p.text-3xl {
-                font-size: 1.25rem !important;
+                font-size: 1.35rem !important;
+                font-weight: 800;
+                letter-spacing: -0.02em;
             }
             .stat-card p.text-xs {
-                font-size: 0.65rem !important;
+                font-size: 0.7rem !important;
+                font-weight: 500;
+                opacity: 0.85;
+            }
+            .stat-card .w-12 {
+                width: 2.25rem !important;
+                height: 2.25rem !important;
+                border-radius: 10px !important;
+            }
+            .stat-card .w-12 svg {
+                width: 1.1rem !important;
+                height: 1.1rem !important;
             }
 
-            /* Glass cards - reduce padding */
+            /* ---- Glass cards — clean and padded ---- */
             .glass-card {
-                padding: 0.75rem;
-                border-radius: 12px !important;
+                padding: 0.875rem;
+                border-radius: 14px !important;
             }
 
-            /* Buttons - touch-friendly minimum */
+            /* ---- Buttons — touch-friendly 48px ---- */
             button, .gradient-button, .secondary-button, .danger-button {
                 min-height: 44px;
+                border-radius: 12px;
+            }
+            .gradient-button, .secondary-button {
+                font-size: 0.85rem;
+                font-weight: 600;
+                padding: 10px 16px;
             }
 
-            /* Kanban - stack vertically */
+            /* ---- Kanban — vertical stack with compact cards ---- */
             .kanban-column {
                 min-height: auto !important;
                 padding: 0.75rem !important;
+                border-radius: 14px !important;
             }
-
-            /* Kanban cards - compact */
             .kanban-card {
-                padding: 0.75rem !important;
+                padding: 0.875rem !important;
+                border-radius: 12px !important;
+                margin-bottom: 0.625rem !important;
+            }
+            .kanban-card:active {
+                transform: scale(0.98);
             }
 
-            /* Topbar - compact */
-            .topbar-blur {
-                height: auto !important;
-                min-height: 48px;
-            }
-
-            /* Assembly cards */
-            .page-content .glass-card .p-6 {
-                padding: 0.75rem !important;
-            }
-
-            /* Assembly card title + date: stack on mobile */
+            /* ---- Assembly cards — stack title + date ---- */
             .glass-card .flex.items-start.justify-between.gap-4 {
                 flex-direction: column;
-                gap: 0.25rem !important;
+                gap: 0.5rem !important;
             }
             .glass-card .flex.items-start.justify-between.gap-4 > .text-right {
                 display: flex;
                 gap: 0.5rem;
                 align-items: center;
             }
+            .glass-card .p-6,
+            .page-content .glass-card .p-6 {
+                padding: 0.875rem !important;
+            }
 
-            /* Mantenimiento header layout fix */
+            /* ---- Mantenimiento header layout ---- */
             .page-content > .flex.items-start.justify-between {
                 flex-direction: column;
                 gap: 0.75rem;
             }
 
-            /* Tables - horizontal scroll */
+            /* ---- Tables — horizontal scroll ---- */
             table {
                 display: block;
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
+                border-radius: 12px;
             }
 
-            /* Filters - stack on mobile */
+            /* ---- Filters — improved mobile layout ---- */
             .flex.flex-wrap.items-center.gap-3 {
                 flex-direction: column;
                 align-items: stretch !important;
             }
 
-            /* Modal improvements */
+            /* ---- Modal improvements ---- */
             .modal-content {
                 margin: 0.5rem !important;
                 max-width: calc(100vw - 1rem) !important;
-                max-height: 95vh !important;
+                max-height: 90vh !important;
+                border-radius: 20px !important;
             }
 
-            /* Hide sidebar text labels on very small screens for the topbar */
-            .topbar-blur .text-lg {
-                font-size: 1rem !important;
-            }
-
-            /* Make grids single-column */
+            /* ---- 2-column grid for stats ---- */
             .grid.grid-cols-2 {
                 grid-template-columns: repeat(2, 1fr) !important;
+                gap: 0.625rem !important;
             }
 
-            /* Consolidation monthly card */
+            /* ---- Consolidation card flex wrap ---- */
             .glass-card .flex.items-center.justify-between {
                 flex-wrap: wrap;
                 gap: 0.5rem;
             }
+
+            /* ---- Notification panel — fullscreen on mobile ---- */
+            #notif-panel {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                bottom: 72px !important;
+                width: 100% !important;
+                max-height: none !important;
+                border-radius: 0 !important;
+                z-index: 210 !important;
+            }
+
+            /* ---- Active/pressed states — micro-interaction ---- */
+            .stat-card:active, .glass-card:active, .kanban-card:active {
+                transform: scale(0.98);
+                transition: transform 0.1s ease;
+            }
+
+            /* ---- Input focus improvements ---- */
+            input, select, textarea {
+                font-size: 16px !important; /* Prevent iOS zoom */
+                border-radius: 10px !important;
+            }
+
+            /* ---- Page header + action button ---- */
+            .page-content > .flex.justify-between.items-start,
+            .page-content > .flex.justify-between.items-center {
+                flex-direction: column;
+                gap: 0.75rem;
+                align-items: stretch !important;
+            }
+            .page-content > .flex.justify-between.items-start > .gradient-button,
+            .page-content > .flex.justify-between.items-center > .gradient-button,
+            .page-content > .flex.justify-between.items-start > button,
+            .page-content > .flex.justify-between.items-center > button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            /* ---- Scrollable tab bars (pills) ---- */
+            .page-content .flex.gap-2 {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                padding-bottom: 4px;
+                flex-wrap: nowrap !important;
+            }
+            .page-content .flex.gap-2::-webkit-scrollbar {
+                display: none;
+            }
+            .page-content .flex.gap-2 > button {
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+
+            /* ---- Info badge pill spacing ---- */
+            .px-2\\.5 { padding-left: 0.5rem; padding-right: 0.5rem; }
         }
 
-        /* Extra small screens */
+        /* ---- Extra small screens (≤ 480px) ---- */
         @media (max-width: 480px) {
             .page-content {
                 padding: 0.75rem !important;
             }
 
-            /* Stat card icons - smaller */
-            .stat-card .w-12 {
-                width: 2rem !important;
-                height: 2rem !important;
+            /* Stat numbers */
+            .stat-card p.text-2xl,
+            .stat-card p.text-3xl {
+                font-size: 1.2rem !important;
+            }
+            .stat-card p.text-xs {
+                font-size: 0.625rem !important;
             }
 
-            /* Font sizes - even more compact */
-            .text-3xl { font-size: 1.25rem !important; }
-            .text-2xl { font-size: 1.125rem !important; }
+            /* Text scaling */
+            .text-3xl { font-size: 1.2rem !important; }
+            .text-2xl { font-size: 1.1rem !important; }
             .text-xl { font-size: 1rem !important; }
 
-            /* Kanban cards - even more compact */
+            /* Kanban extra compact */
             .kanban-card {
-                padding: 0.5rem !important;
+                padding: 0.625rem !important;
             }
             .kanban-card .text-sm {
-                font-size: 0.75rem !important;
+                font-size: 0.8rem !important;
             }
 
-            /* Assembly event cards - compact layout */
+            /* Assembly icons smaller */
             .glass-card .w-12.h-12 {
-                width: 2rem !important;
-                height: 2rem !important;
+                width: 2.25rem !important;
+                height: 2.25rem !important;
             }
             .glass-card .w-12.h-12 svg {
-                width: 1rem !important;
-                height: 1rem !important;
+                width: 1.1rem !important;
+                height: 1.1rem !important;
             }
 
-            /* Filter selects - full width */
+            /* Filter selects */
             .page-content select {
                 width: 100% !important;
+            }
+
+            /* More menu 3-col smaller */
+            .mobile-more-icon {
+                width: 46px;
+                height: 46px;
+                border-radius: 14px;
+            }
+            .mobile-more-item span {
+                font-size: 0.68rem;
+            }
+        }
+
+        /* ---- Reduced motion ---- */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.05ms !important;
             }
         }
     </style>
@@ -4145,6 +4420,8 @@
             }
 
             document.getElementById('page-title').textContent = getPageTitle(pageName);
+            // Update mobile bottom nav
+            if (window.innerWidth <= 768) updateMobileNav(pageName);
 
             if (pageName === 'copropietarios') renderCopropietarios();
             if (pageName === 'documentos') renderDocuments();
@@ -4510,6 +4787,38 @@
             const overlay = document.getElementById('sidebar-overlay');
             sidebar.classList.toggle('mobile-open');
             overlay.classList.toggle('active');
+        }
+
+        // Mobile Bottom Navigation
+        function mobileNav(page) {
+            if (page === 'more') {
+                document.getElementById('mobile-more-menu').classList.remove('hidden');
+                return;
+            }
+            showPage(page);
+            updateMobileNav(page);
+            closeMobileMore();
+        }
+
+        function mobileNavTo(page) {
+            closeMobileMore();
+            showPage(page);
+            updateMobileNav(page);
+        }
+
+        function closeMobileMore() {
+            document.getElementById('mobile-more-menu').classList.add('hidden');
+        }
+
+        function updateMobileNav(page) {
+            document.querySelectorAll('.mobile-nav-item').forEach(el => el.classList.remove('active'));
+            const navBtn = document.querySelector(`.mobile-nav-item[data-nav="${page}"]`);
+            if (navBtn) {
+                navBtn.classList.add('active');
+            } else {
+                // If the page is in "more" menu, highlight "more" button
+                document.querySelector('.mobile-nav-item[data-nav="more"]').classList.add('active');
+            }
         }
 
         const maintenanceData = {
@@ -8052,5 +8361,63 @@
         renderMorososDetail();
         showPage('dashboard');
     </script>
+
+    <!-- MOBILE BOTTOM NAV -->
+    <nav id="mobile-bottom-nav" class="mobile-bottom-nav" aria-label="Navegación principal móvil">
+        <button onclick="mobileNav('dashboard')" data-nav="dashboard" class="mobile-nav-item active">
+            <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            <span>Inicio</span>
+        </button>
+        <button onclick="mobileNav('mantenimiento')" data-nav="mantenimiento" class="mobile-nav-item">
+            <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+            <span>Mantención</span>
+        </button>
+        <button onclick="mobileNav('asambleas')" data-nav="asambleas" class="mobile-nav-item">
+            <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            <span>Asambleas</span>
+        </button>
+        <button onclick="mobileNav('documentos')" data-nav="documentos" class="mobile-nav-item">
+            <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            <span>Docs</span>
+        </button>
+        <button onclick="mobileNav('more')" data-nav="more" class="mobile-nav-item">
+            <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+            <span>Más</span>
+        </button>
+    </nav>
+
+    <!-- MOBILE MORE MENU -->
+    <div id="mobile-more-menu" class="mobile-more-menu hidden">
+        <div class="mobile-more-overlay" onclick="closeMobileMore()"></div>
+        <div class="mobile-more-sheet">
+            <div class="mobile-more-handle"></div>
+            <div class="mobile-more-grid">
+                <button onclick="mobileNavTo('copropietarios')" class="mobile-more-item">
+                    <div class="mobile-more-icon bg-blue-500/15"><svg class="w-6 h-6 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                    <span>Copropietarios</span>
+                </button>
+                <button onclick="mobileNavTo('compromisos')" class="mobile-more-item">
+                    <div class="mobile-more-icon bg-amber-500/15"><svg class="w-6 h-6 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+                    <span>Compromisos</span>
+                </button>
+                <button onclick="mobileNavTo('proveedores')" class="mobile-more-item">
+                    <div class="mobile-more-icon bg-emerald-500/15"><svg class="w-6 h-6 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg></div>
+                    <span>Proveedores</span>
+                </button>
+                <button onclick="mobileNavTo('emergencias')" class="mobile-more-item">
+                    <div class="mobile-more-icon bg-red-500/15"><svg class="w-6 h-6 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+                    <span>Emergencias</span>
+                </button>
+                <button onclick="mobileNavTo('reglamento')" class="mobile-more-item">
+                    <div class="mobile-more-icon bg-purple-500/15"><svg class="w-6 h-6 text-purple-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></div>
+                    <span>Reglamento</span>
+                </button>
+                <button onclick="mobileNavTo('perfil')" class="mobile-more-item">
+                    <div class="mobile-more-icon bg-slate-500/15"><svg class="w-6 h-6 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                    <span>Mi Perfil</span>
+                </button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

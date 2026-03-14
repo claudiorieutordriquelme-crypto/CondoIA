@@ -164,6 +164,16 @@
             transform: translateY(-1px);
         }
 
+        body.light-mode .gradient-button {
+            background: #002EFF !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 12px rgba(0, 46, 255, 0.3);
+        }
+        body.light-mode .gradient-button:hover {
+            background: #0025CC !important;
+            box-shadow: 0 6px 20px rgba(0, 46, 255, 0.4);
+        }
+
         .danger-button {
             background: #ef4444;
             border-radius: 100px;
@@ -532,10 +542,36 @@
         body.light-mode .text-slate-500 { color: #475569 !important; }
         body.light-mode .text-slate-600 { color: #334155 !important; }
         body.light-mode .text-slate-700 { color: #1e293b !important; }
-        /* Preserve white text on solid colored background elements */
+        /* Override blue buttons to sidebar blue (#002EFF) in light mode */
+        body.light-mode .bg-blue-500 { background-color: #002EFF !important; }
+        body.light-mode .bg-blue-600 { background-color: #0025CC !important; }
+        body.light-mode .hover\:bg-blue-600:hover { background-color: #0025CC !important; }
+        body.light-mode [class*="from-blue-500"][class*="to-blue-600"] {
+            background: linear-gradient(to right, #002EFF, #0025CC) !important;
+        }
+        body.light-mode [class*="from-blue-500"][class*="to-blue-600"]:hover,
+        body.light-mode [class*="hover\\:from-blue-400"]:hover {
+            background: linear-gradient(to right, #1a47ff, #002EFF) !important;
+        }
+        body.light-mode [class*="from-blue-500"][class*="to-blue-400"] {
+            background: linear-gradient(to right, #002EFF, #1a47ff) !important;
+        }
+        body.light-mode [class*="from-blue-600"][class*="to-blue-400"] {
+            background: linear-gradient(to right, #0025CC, #1a47ff) !important;
+        }
+        body.light-mode [class*="from-blue-500"][class*="to-indigo-600"] {
+            background: linear-gradient(to bottom right, #002EFF, #3730a3) !important;
+        }
+        body.light-mode [class*="from-blue-500"][class*="to-cyan-600"] {
+            background: linear-gradient(to bottom right, #002EFF, #0891b2) !important;
+        }
+        body.light-mode [class*="from-blue-500"][class*="to-violet-500"] {
+            background: linear-gradient(to right, #002EFF, #8b5cf6) !important;
+        }
+        /* Force white text on all solid/gradient colored backgrounds */
         body.light-mode .bg-blue-500.text-white,
-        body.light-mode .bg-blue-600.text-white,
         body.light-mode .bg-blue-500 .text-white,
+        body.light-mode .bg-blue-600.text-white,
         body.light-mode .bg-emerald-500.text-white,
         body.light-mode .bg-emerald-500 .text-white,
         body.light-mode [class*="bg-gradient-to"].text-white,

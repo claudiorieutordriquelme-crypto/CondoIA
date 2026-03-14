@@ -532,30 +532,26 @@
         body.light-mode .text-slate-500 { color: #475569 !important; }
         body.light-mode .text-slate-600 { color: #334155 !important; }
         body.light-mode .text-slate-700 { color: #1e293b !important; }
-        /* Preserve white text on colored background buttons */
-        body.light-mode [class*="bg-blue-"].text-white,
-        body.light-mode [class*="bg-blue-"] .text-white,
-        body.light-mode [class*="bg-emerald-"].text-white,
-        body.light-mode [class*="bg-emerald-"] .text-white,
+        /* Preserve white text on solid colored background elements */
+        body.light-mode .bg-blue-500.text-white,
+        body.light-mode .bg-blue-600.text-white,
+        body.light-mode .bg-blue-500 .text-white,
+        body.light-mode .bg-emerald-500.text-white,
+        body.light-mode .bg-emerald-500 .text-white,
         body.light-mode [class*="bg-gradient-to"].text-white,
         body.light-mode [class*="bg-gradient-to"] .text-white,
-        body.light-mode button[class*="bg-blue-"],
-        body.light-mode button[class*="bg-emerald-"],
-        body.light-mode a[class*="bg-blue-"],
-        body.light-mode [class*="bg-rose-"].text-white,
-        body.light-mode [class*="bg-rose-"] .text-white,
-        body.light-mode [class*="bg-red-"].text-white,
-        body.light-mode [class*="bg-red-"] .text-white,
-        body.light-mode [class*="bg-amber-"].text-white,
-        body.light-mode [class*="bg-amber-"] .text-white,
-        body.light-mode [class*="bg-violet-"].text-white,
-        body.light-mode [class*="bg-violet-"] .text-white,
-        body.light-mode [class*="bg-purple-"].text-white,
-        body.light-mode [class*="bg-purple-"] .text-white,
-        body.light-mode [class*="bg-orange-"].text-white,
-        body.light-mode [class*="bg-orange-"] .text-white,
-        body.light-mode .stat-card [class*="bg-gradient-to"] .text-white,
-        body.light-mode .stat-card [class*="bg-gradient-to"] svg { color: #ffffff !important; }
+        body.light-mode [class*="bg-gradient-to"] svg,
+        body.light-mode .bg-rose-500.text-white,
+        body.light-mode .bg-red-500.text-white,
+        body.light-mode .bg-amber-500.text-white,
+        body.light-mode .bg-violet-500.text-white,
+        body.light-mode .bg-purple-500.text-white,
+        body.light-mode .bg-orange-500.text-white,
+        body.light-mode [class*="from-emerald-"].text-white,
+        body.light-mode [class*="from-rose-"].text-white,
+        body.light-mode [class*="from-red-"].text-white,
+        body.light-mode [class*="from-violet-"].text-white,
+        body.light-mode [class*="from-amber-"].text-white { color: #ffffff !important; }
         body.light-mode [class*="bg-gray-700"] { background-color: #374151 !important; }
         body.light-mode [class*="bg-gray-600"] { background-color: #4b5563 !important; }
         /* Sidebar */

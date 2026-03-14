@@ -1249,8 +1249,8 @@
                 <form id="register-form" onsubmit="handleRegister(event)" class="space-y-4 hidden">
                     <!-- Tipo de registro -->
                     <div class="flex gap-1 rounded-xl p-1 mb-2" style="background:rgba(15,23,42,0.6);">
-                        <button type="button" id="reg-type-usuario" onclick="toggleRegType('usuario')" class="flex-1 py-2 px-3 rounded-lg text-xs font-bold bg-emerald-500 text-white transition-all shadow-md shadow-emerald-500/20">Unirme a condominio</button>
-                        <button type="button" id="reg-type-condo" onclick="toggleRegType('condo')" class="flex-1 py-2 px-3 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all">Registrar condominio</button>
+                        <button type="button" id="reg-type-condo" onclick="toggleRegType('condo')" class="flex-1 py-2 px-3 rounded-lg text-xs font-bold bg-emerald-500 text-white transition-all shadow-md shadow-emerald-500/20">Soy Administrador</button>
+                        <button type="button" id="reg-type-usuario" onclick="toggleRegType('usuario')" class="flex-1 py-2 px-3 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all">Soy Copropietario</button>
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-slate-200 mb-2">Nombre completo</label>
@@ -1267,8 +1267,8 @@
                         <input type="password" id="register-password" required placeholder="Mínimo 8 caracteres" minlength="8"
                             class="w-full px-4 py-3 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-400/60 focus:border-blue-400/60 transition" style="background:rgba(15,23,42,0.6);border:1px solid rgba(100,116,139,0.4);">
                     </div>
-                    <!-- Campos usuario existente -->
-                    <div id="reg-fields-usuario" class="space-y-4">
+                    <!-- Campos usuario existente (copropietario) -->
+                    <div id="reg-fields-usuario" class="hidden space-y-4">
                         <div>
                             <label class="block text-sm font-semibold text-slate-200 mb-2">Rol</label>
                             <select id="register-role" class="w-full px-4 py-3 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-400/60 transition" style="background:rgba(15,23,42,0.6);border:1px solid rgba(100,116,139,0.4);">
@@ -1279,12 +1279,12 @@
                         <div class="p-3 rounded-xl" style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);">
                             <p class="text-xs text-blue-300 font-medium flex items-center gap-1.5">
                                 <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                Después de crear tu cuenta, podrás seleccionar tu condominio y completar tu perfil.
+                                Después de crear tu cuenta, el administrador de tu condominio te asociará al edificio.
                             </p>
                         </div>
                     </div>
                     <!-- Campos nuevo condominio -->
-                    <div id="reg-fields-condo" class="hidden space-y-4">
+                    <div id="reg-fields-condo" class="space-y-4">
                         <div class="pt-2 border-t border-slate-600/40">
                             <p class="text-xs text-amber-400 font-bold mb-3 tracking-wide uppercase">Datos del Condominio</p>
                         </div>
@@ -2754,7 +2754,10 @@
                                     <option value="arrendatario">Arrendatario</option>
                                 </select>
                                 <input id="gu-search" type="text" placeholder="Buscar..." oninput="guFilterUsers()" class="bg-slate-800/60 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-blue-500/50 focus:outline-none w-44">
-                                <button onclick="guOpenInvite()" class="gradient-button px-3 py-2 rounded-lg text-xs text-white font-medium role-create">+ Invitar</button>
+                                <button onclick="guOpenAddUser()" class="gradient-button px-3 py-2 rounded-lg text-xs text-white font-medium role-create">+ Agregar</button>
+                                <button onclick="guOpenImport()" class="px-3 py-2 rounded-lg text-xs font-medium role-create border border-blue-500/40 text-blue-300 hover:bg-blue-500/10 transition">
+                                    <svg class="w-3.5 h-3.5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>Importar
+                                </button>
                             </div>
                         </div>
                         <div class="overflow-x-auto">
@@ -2821,6 +2824,100 @@
                         <div class="flex gap-3 mt-6 pt-4 border-t border-slate-700/50">
                             <button onclick="guSaveUser()" class="gradient-button px-4 py-2 rounded-lg text-sm text-white font-medium">Guardar</button>
                             <button onclick="closeModal('gu-edit')" class="secondary-button px-4 py-2 rounded-lg text-sm text-slate-300 ml-auto">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add User Modal -->
+                <div id="gu-add-modal" class="modal-overlay justify-center items-center" onclick="if(event.target===this) closeModal('gu-add')">
+                    <div class="modal-content glass-card p-8 rounded-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+                        <div class="flex items-center justify-between mb-5">
+                            <h3 class="text-lg font-bold text-white">Agregar Copropietario</h3>
+                            <button onclick="closeModal('gu-add')" class="text-slate-400 hover:text-white transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            </button>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="text-xs text-slate-400 mb-1.5 block font-medium">Nombre completo *</label>
+                                <input id="gu-add-nombre" type="text" placeholder="Juan Martínez" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="text-xs text-slate-400 mb-1.5 block font-medium">Email *</label>
+                                <input id="gu-add-email" type="email" placeholder="juan@email.com" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none">
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="text-xs text-slate-400 mb-1.5 block font-medium">Rol</label>
+                                    <select id="gu-add-rol" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none">
+                                        <option value="copropietario">Copropietario</option>
+                                        <option value="arrendatario">Arrendatario</option>
+                                        <option value="tesorero">Tesorero</option>
+                                        <option value="secretario">Secretario</option>
+                                        <option value="conserje">Conserje</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-slate-400 mb-1.5 block font-medium">N° Unidad</label>
+                                    <input id="gu-add-unidad" type="text" placeholder="Ej: 402" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-xs text-slate-400 mb-1.5 block font-medium">Teléfono</label>
+                                <input id="gu-add-telefono" type="tel" placeholder="+56 9 1234 5678" class="w-full bg-slate-800/40 border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500/50 focus:outline-none">
+                            </div>
+                        </div>
+                        <div id="gu-add-msg" class="hidden mt-3 p-2.5 rounded-lg text-xs"></div>
+                        <div class="flex gap-3 mt-6 pt-4 border-t border-slate-700/50">
+                            <button onclick="guSaveNewUser()" class="gradient-button px-4 py-2 rounded-lg text-sm text-white font-medium">Crear Usuario</button>
+                            <button onclick="closeModal('gu-add')" class="secondary-button px-4 py-2 rounded-lg text-sm text-slate-300 ml-auto">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Import Users Modal -->
+                <div id="gu-import-modal" class="modal-overlay justify-center items-center" onclick="if(event.target===this) closeModal('gu-import')">
+                    <div class="modal-content glass-card p-8 rounded-xl max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
+                        <div class="flex items-center justify-between mb-5">
+                            <h3 class="text-lg font-bold text-white">Importar Copropietarios</h3>
+                            <button onclick="closeModal('gu-import')" class="text-slate-400 hover:text-white transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            </button>
+                        </div>
+                        <!-- Step 1: Download template -->
+                        <div class="p-4 rounded-xl mb-4" style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);">
+                            <p class="text-sm text-blue-300 font-semibold mb-2">Paso 1: Descarga la plantilla</p>
+                            <p class="text-xs text-slate-400 mb-3">Completa el archivo CSV con los datos de los copropietarios y luego súbelo aquí.</p>
+                            <button onclick="guDownloadTemplate()" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-500/20 text-blue-300 border border-blue-500/30 hover:bg-blue-500/30 transition">
+                                <svg class="w-3.5 h-3.5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                Descargar plantilla CSV
+                            </button>
+                        </div>
+                        <!-- Step 2: Upload file -->
+                        <div class="p-4 rounded-xl mb-4" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);">
+                            <p class="text-sm text-emerald-300 font-semibold mb-2">Paso 2: Sube el archivo completado</p>
+                            <p class="text-xs text-slate-400 mb-3">Formatos aceptados: CSV (.csv). Máximo 200 registros por importación.</p>
+                            <label class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 border-dashed border-slate-600 hover:border-emerald-500/50 cursor-pointer transition group">
+                                <svg class="w-5 h-5 text-slate-500 group-hover:text-emerald-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                                <span class="text-sm text-slate-400 group-hover:text-emerald-300 transition" id="gu-import-filename">Seleccionar archivo CSV...</span>
+                                <input type="file" id="gu-import-file" accept=".csv" onchange="guPreviewImport(this)" class="hidden">
+                            </label>
+                        </div>
+                        <!-- Preview -->
+                        <div id="gu-import-preview" class="hidden">
+                            <p class="text-sm text-white font-semibold mb-2">Vista previa (<span id="gu-import-count">0</span> registros)</p>
+                            <div class="max-h-48 overflow-y-auto rounded-lg border border-slate-700/50">
+                                <table class="w-full text-xs">
+                                    <thead><tr class="text-slate-400 bg-slate-800/50"><th class="p-2 text-left">Nombre</th><th class="p-2 text-left">Email</th><th class="p-2 text-left">Unidad</th><th class="p-2 text-left">Rol</th></tr></thead>
+                                    <tbody id="gu-import-tbody" class="divide-y divide-slate-700/30"></tbody>
+                                </table>
+                            </div>
+                            <div id="gu-import-errors" class="hidden mt-2 p-2 rounded-lg bg-red-500/10 border border-red-500/20 text-xs text-red-300"></div>
+                        </div>
+                        <div id="gu-import-result" class="hidden mt-3 p-3 rounded-lg text-sm"></div>
+                        <div class="flex gap-3 mt-6 pt-4 border-t border-slate-700/50">
+                            <button id="gu-import-btn" onclick="guExecuteImport()" disabled class="gradient-button px-4 py-2 rounded-lg text-sm text-white font-medium opacity-50 cursor-not-allowed">Importar Usuarios</button>
+                            <button onclick="closeModal('gu-import')" class="secondary-button px-4 py-2 rounded-lg text-sm text-slate-300 ml-auto">Cerrar</button>
                         </div>
                     </div>
                 </div>
@@ -4014,16 +4111,16 @@
             }
         }
 
-        let registerType = 'usuario'; // 'usuario' or 'condo'
+        let registerType = 'condo'; // 'condo' (admin) or 'usuario' (copropietario)
 
         function toggleRegType(type) {
             registerType = type;
             document.getElementById('reg-fields-usuario').classList.toggle('hidden', type !== 'usuario');
             document.getElementById('reg-fields-condo').classList.toggle('hidden', type !== 'condo');
-            document.getElementById('reg-type-usuario').className = 'flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all ' +
-                (type === 'usuario' ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-700/50');
             document.getElementById('reg-type-condo').className = 'flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all ' +
-                (type === 'condo' ? 'bg-amber-500 text-white shadow-md shadow-amber-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-700/50');
+                (type === 'condo' ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-700/50');
+            document.getElementById('reg-type-usuario').className = 'flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all ' +
+                (type === 'usuario' ? 'bg-blue-500 text-white shadow-md shadow-blue-500/20' : 'text-slate-300 hover:text-white hover:bg-slate-700/50');
         }
 
         async function handleRegister(e) {
@@ -8268,13 +8365,192 @@
         }
 
         function guOpenInvite() {
-            // Simple invite: copy link with condominio_id
             const url = window.location.origin + '?invite=' + (condominioId || '');
             navigator.clipboard.writeText(url).then(() => {
                 saShowToast('Link de invitación copiado al portapapeles', 'success');
             }).catch(() => {
                 prompt('Comparte este link de invitación:', url);
             });
+        }
+
+        // === ADD SINGLE USER ===
+        function guOpenAddUser() {
+            document.getElementById('gu-add-nombre').value = '';
+            document.getElementById('gu-add-email').value = '';
+            document.getElementById('gu-add-unidad').value = '';
+            document.getElementById('gu-add-telefono').value = '';
+            document.getElementById('gu-add-rol').value = 'copropietario';
+            document.getElementById('gu-add-msg').classList.add('hidden');
+            openModal('gu-add');
+        }
+
+        async function guSaveNewUser() {
+            const nombre = sanitizeInput(document.getElementById('gu-add-nombre').value.trim());
+            const email = document.getElementById('gu-add-email').value.trim().toLowerCase();
+            const rol = document.getElementById('gu-add-rol').value;
+            const unidad = sanitizeInput(document.getElementById('gu-add-unidad').value.trim());
+            const telefono = sanitizeInput(document.getElementById('gu-add-telefono').value.trim());
+            const msgEl = document.getElementById('gu-add-msg');
+
+            if (!nombre || nombre.length < 2) { msgEl.className = 'mt-3 p-2.5 rounded-lg text-xs bg-red-500/10 text-red-300 border border-red-500/20'; msgEl.textContent = 'Ingresa un nombre válido.'; msgEl.classList.remove('hidden'); return; }
+            if (!validateEmail(email)) { msgEl.className = 'mt-3 p-2.5 rounded-lg text-xs bg-red-500/10 text-red-300 border border-red-500/20'; msgEl.textContent = 'Ingresa un email válido.'; msgEl.classList.remove('hidden'); return; }
+
+            try {
+                // Create user profile directly (admin creates the account)
+                const { data, error } = await _sb.from('perfiles').insert({
+                    nombre_completo: nombre,
+                    email: email,
+                    rol: rol,
+                    unidad: unidad || null,
+                    telefono: telefono || null,
+                    condominio_id: condominioId,
+                    estado: 'activo'
+                }).select().single();
+
+                if (error) throw error;
+                msgEl.className = 'mt-3 p-2.5 rounded-lg text-xs bg-emerald-500/10 text-emerald-300 border border-emerald-500/20';
+                msgEl.textContent = 'Usuario "' + nombre + '" creado exitosamente.';
+                msgEl.classList.remove('hidden');
+                saShowToast(nombre + ' agregado como ' + rol, 'success');
+                await guLoadUsers();
+                setTimeout(() => closeModal('gu-add'), 1500);
+            } catch (err) {
+                console.error('Error creating user:', err);
+                msgEl.className = 'mt-3 p-2.5 rounded-lg text-xs bg-red-500/10 text-red-300 border border-red-500/20';
+                msgEl.textContent = 'Error: ' + (err.message || 'No se pudo crear el usuario');
+                msgEl.classList.remove('hidden');
+            }
+        }
+
+        // === IMPORT USERS ===
+        function guOpenImport() {
+            document.getElementById('gu-import-preview').classList.add('hidden');
+            document.getElementById('gu-import-result').classList.add('hidden');
+            document.getElementById('gu-import-filename').textContent = 'Seleccionar archivo CSV...';
+            document.getElementById('gu-import-file').value = '';
+            document.getElementById('gu-import-btn').disabled = true;
+            document.getElementById('gu-import-btn').classList.add('opacity-50', 'cursor-not-allowed');
+            openModal('gu-import');
+        }
+
+        function guDownloadTemplate() {
+            const header = 'nombre_completo,email,rol,unidad,piso,telefono';
+            const example1 = 'Juan Pérez,juan@email.com,copropietario,101,1,+56912345678';
+            const example2 = 'María González,maria@email.com,copropietario,202,2,+56987654321';
+            const example3 = 'Pedro Arrendatario,pedro@email.com,arrendatario,303,3,';
+            const csv = [header, example1, example2, example3].join('\n');
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'plantilla_copropietarios.csv'; a.click();
+            URL.revokeObjectURL(url);
+            saShowToast('Plantilla descargada', 'success');
+        }
+
+        let guImportData = [];
+
+        function guPreviewImport(input) {
+            const file = input.files[0];
+            if (!file) return;
+            document.getElementById('gu-import-filename').textContent = file.name;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const lines = text.split(/\r?\n/).filter(l => l.trim());
+                if (lines.length < 2) {
+                    document.getElementById('gu-import-errors').textContent = 'El archivo está vacío o solo tiene encabezados.';
+                    document.getElementById('gu-import-errors').classList.remove('hidden');
+                    return;
+                }
+
+                const headers = lines[0].toLowerCase().split(',').map(h => h.trim());
+                const nameIdx = headers.findIndex(h => h.includes('nombre'));
+                const emailIdx = headers.findIndex(h => h.includes('email') || h.includes('correo'));
+                const rolIdx = headers.findIndex(h => h.includes('rol'));
+                const unidadIdx = headers.findIndex(h => h.includes('unidad') || h.includes('depto'));
+                const pisoIdx = headers.findIndex(h => h.includes('piso'));
+                const telIdx = headers.findIndex(h => h.includes('telef') || h.includes('phone') || h.includes('celular'));
+
+                if (nameIdx === -1 || emailIdx === -1) {
+                    document.getElementById('gu-import-errors').textContent = 'Columnas requeridas no encontradas: nombre_completo, email';
+                    document.getElementById('gu-import-errors').classList.remove('hidden');
+                    return;
+                }
+
+                guImportData = [];
+                const errors = [];
+                const tbody = document.getElementById('gu-import-tbody');
+                tbody.innerHTML = '';
+
+                for (let i = 1; i < lines.length && i <= 200; i++) {
+                    const cols = lines[i].split(',').map(c => c.trim());
+                    const nombre = cols[nameIdx] || '';
+                    const email = cols[emailIdx] || '';
+                    const rol = (cols[rolIdx] || 'copropietario').toLowerCase();
+                    const unidad = cols[unidadIdx] || '';
+                    const piso = pisoIdx >= 0 ? (cols[pisoIdx] || '') : '';
+                    const telefono = telIdx >= 0 ? (cols[telIdx] || '') : '';
+
+                    if (!nombre || nombre.length < 2) { errors.push('Fila ' + (i+1) + ': nombre inválido'); continue; }
+                    if (!validateEmail(email)) { errors.push('Fila ' + (i+1) + ': email inválido (' + email + ')'); continue; }
+
+                    const validRoles = ['copropietario','arrendatario','tesorero','secretario','conserje'];
+                    const finalRol = validRoles.includes(rol) ? rol : 'copropietario';
+
+                    guImportData.push({ nombre_completo: nombre, email, rol: finalRol, unidad: unidad || null, piso: piso || null, telefono: telefono || null });
+
+                    tbody.innerHTML += '<tr class="text-slate-300"><td class="p-2">' + nombre + '</td><td class="p-2">' + email + '</td><td class="p-2">' + (unidad || '-') + '</td><td class="p-2"><span class="px-1.5 py-0.5 rounded text-xs bg-emerald-500/15 text-emerald-400">' + finalRol + '</span></td></tr>';
+                }
+
+                document.getElementById('gu-import-count').textContent = guImportData.length;
+                document.getElementById('gu-import-preview').classList.remove('hidden');
+
+                const errEl = document.getElementById('gu-import-errors');
+                if (errors.length > 0) {
+                    errEl.innerHTML = '<strong>Advertencias:</strong><br>' + errors.slice(0, 5).join('<br>') + (errors.length > 5 ? '<br>... y ' + (errors.length - 5) + ' más' : '');
+                    errEl.classList.remove('hidden');
+                } else {
+                    errEl.classList.add('hidden');
+                }
+
+                if (guImportData.length > 0) {
+                    document.getElementById('gu-import-btn').disabled = false;
+                    document.getElementById('gu-import-btn').classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            };
+            reader.readAsText(file, 'UTF-8');
+        }
+
+        async function guExecuteImport() {
+            if (!guImportData.length || !condominioId) return;
+            const btn = document.getElementById('gu-import-btn');
+            const resultEl = document.getElementById('gu-import-result');
+            btn.disabled = true;
+            btn.textContent = 'Importando...';
+
+            let success = 0, failed = 0;
+            for (const user of guImportData) {
+                try {
+                    const { error } = await _sb.from('perfiles').insert({
+                        ...user,
+                        condominio_id: condominioId,
+                        estado: 'activo'
+                    });
+                    if (error) throw error;
+                    success++;
+                } catch (err) {
+                    console.warn('Import failed for', user.email, err.message);
+                    failed++;
+                }
+            }
+
+            resultEl.className = 'mt-3 p-3 rounded-lg text-sm ' + (failed === 0 ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-300 border border-amber-500/20');
+            resultEl.innerHTML = '<strong>' + success + '</strong> usuarios importados exitosamente.' + (failed > 0 ? ' <strong>' + failed + '</strong> fallaron.' : '');
+            resultEl.classList.remove('hidden');
+            btn.textContent = 'Importación completada';
+            saShowToast(success + ' copropietarios importados', 'success');
+            await guLoadUsers();
         }
 
         // ============================================================

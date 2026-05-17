@@ -959,8 +959,14 @@
                 transform: translateX(-100%);
                 transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 width: 280px;
-                height: 100vh;
                 top: 0;
+                bottom: 0;
+                height: auto;
+                /* Reservar espacio para mobile-bottom-nav (~64px) + safe area iOS */
+                padding-bottom: calc(72px + env(safe-area-inset-bottom));
+                box-sizing: border-box;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
             }
             .sidebar-gradient.mobile-open {
                 transform: translateX(0);
@@ -1698,6 +1704,14 @@
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
                     <span>Configuración</span>
                 </button>
+
+                <!-- Salir / Cambiar usuario (item prominente, paleta rose) -->
+                <div class="mt-2 mb-1 mx-2" style="height:1px;background:rgba(148,163,184,0.10);"></div>
+                <button onclick="handleLogout()" id="sidebar-logout-btn" class="sidebar-link w-full text-left" style="color:#FDA4AF;" onmouseover="this.style.background='rgba(244,63,94,0.10)';this.style.color='#FECDD3';" onmouseout="this.style.background='';this.style.color='#FDA4AF';">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                    <span>Cerrar sesión</span>
+                </button>
+
                 <!-- Superadmin Section -->
                 <div id="superadmin-nav-section" class="mt-4 pt-4 border-t border-slate-700/50">
                     <p class="px-3 mb-2 text-[10px] font-semibold tracking-widest uppercase text-amber-400/70">Superadmin</p>
@@ -5079,11 +5093,36 @@
         }
 
         async function handleLogout() {
-            await _sb.auth.signOut();
+            try {
+                await _sb.auth.signOut();
+            } catch (e) {
+                console.warn('CondoIA: signOut error', e);
+            }
             currentUser = null;
             currentProfile = null;
-            document.getElementById('app-container').classList.add('hidden');
-            document.getElementById('login-screen').classList.remove('hidden');
+            condominioId = null;
+
+            // Limpiar inputs del login para próximo usuario
+            const el = (id) => document.getElementById(id);
+            ['login-email','login-password','register-email','register-password','register-name','reset-email'].forEach(id => {
+                const e = el(id); if (e) e.value = '';
+            });
+
+            // Ocultar mensajes residuales
+            const msg = el('auth-message');
+            if (msg) { msg.classList.add('hidden'); msg.textContent = ''; }
+
+            // Volver a tab "Iniciar Sesión" por defecto
+            if (typeof switchAuthTab === 'function') {
+                try { switchAuthTab('login'); } catch (e) {}
+            }
+
+            // Toggle screens
+            el('app-container')?.classList.add('hidden');
+            el('login-screen')?.classList.remove('hidden');
+
+            // Scroll arriba para que se vea el login completo
+            window.scrollTo({ top: 0, behavior: 'instant' });
         }
 
         // Check for existing session on page load

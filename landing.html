@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CondoIA — Plataforma inteligente para administrar condominios en Chile</title>
+    <meta name="description" content="CondoIA digitaliza la administración de condominios bajo la Ley 21.442 con IA: gastos comunes, asambleas virtuales, morosidad, mantenimiento y portal para copropietarios.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              indigo: { 50:'#EEF2FF', 100:'#E0E7FF', 500:'#6366F1', 600:'#4F46E5', 700:'#4338CA', 900:'#312E81' },
+              violet: { 500:'#8B5CF6', 600:'#7C3AED', 700:'#6D28D9' },
+              cyan:   { 400:'#22D3EE', 500:'#06B6D4', 600:'#0891B2' },
+              emerald:{ 400:'#34D399', 500:'#10B981', 600:'#059669' },
+              amber:  { 400:'#FBBF24', 500:'#F59E0B' },
+              rose:   { 500:'#F43F5E' },
+              slate:  { 50:'#F8FAFC', 100:'#F1F5F9', 200:'#E2E8F0', 400:'#94A3B8', 600:'#475569', 700:'#334155', 800:'#1E293B', 900:'#0F172A', 950:'#020617' }
+            },
+            fontFamily: {
+              sans: ['Inter','ui-sans-serif','system-ui','sans-serif'],
+              display: ['"Plus Jakarta Sans"','Inter','sans-serif']
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      * { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+      h1, h2, h3, .font-display { font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; letter-spacing: -0.025em; }
+
+      /* Mesh gradient hero */
+      .hero-mesh { position: relative; overflow: hidden; background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%); }
+      .hero-mesh::before {
+        content:''; position:absolute; top:-20%; right:-10%; width:600px; height:600px;
+        background: radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 65%);
+        filter: blur(40px); animation: floatBlob 16s ease-in-out infinite;
+      }
+      .hero-mesh::after {
+        content:''; position:absolute; bottom:-20%; left:-10%; width:540px; height:540px;
+        background: radial-gradient(circle, rgba(6,182,212,0.14) 0%, transparent 65%);
+        filter: blur(50px); animation: floatBlob 22s ease-in-out infinite reverse;
+      }
+      @keyframes floatBlob {
+        0%,100% { transform: translate(0,0) scale(1); }
+        33%     { transform: translate(30px,-40px) scale(1.08); }
+        66%     { transform: translate(-25px,30px) scale(0.95); }
+      }
+
+      /* CTA primario */
+      .btn-primary {
+        background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+        box-shadow: 0 1px 0 rgba(255,255,255,0.22) inset, 0 8px 24px -8px rgba(99,102,241,0.55);
+        transition: all .2s cubic-bezier(.4,0,.2,1);
+      }
+      .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 1px 0 rgba(255,255,255,0.28) inset, 0 14px 32px -10px rgba(99,102,241,0.7);
+      }
+
+      /* CTA secundario */
+      .btn-secondary {
+        background: white;
+        border: 1px solid #E2E8F0;
+        color: #1E293B;
+        transition: all .2s ease;
+      }
+      .btn-secondary:hover { border-color:#A5B4FC; background:#F8FAFC; }
+
+      /* Card */
+      .feature-card { transition: all .25s cubic-bezier(.4,0,.2,1); border:1px solid #E2E8F0; }
+      .feature-card:hover { transform: translateY(-2px); border-color:#A5B4FC; box-shadow: 0 12px 32px -12px rgba(99,102,241,0.18); }
+
+      /* Pricing card popular */
+      .pricing-popular {
+        position: relative;
+        background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+        border: 1px solid #C7D2FE;
+        box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 20px 40px -16px rgba(99,102,241,0.25);
+      }
+      .pricing-popular::before {
+        content:''; position:absolute; inset:-1px; border-radius:24px; padding:1px;
+        background: linear-gradient(135deg, #6366F1, #06B6D4); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor; mask-composite: exclude; pointer-events:none;
+      }
+
+      /* Pill */
+      .pill {
+        display: inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px;
+        font-size:12px; font-weight:600; background:#EEF2FF; color:#4338CA; border:1px solid #C7D2FE;
+      }
+      .pill-dot { width:6px; height:6px; border-radius:999px; background:#06B6D4; box-shadow:0 0 0 2px rgba(6,182,212,0.18); }
+
+      /* Screenshot frame */
+      .screen-frame {
+        position: relative;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow:
+          0 0 0 1px rgba(15,23,42,0.08),
+          0 30px 60px -20px rgba(15,23,42,0.18),
+          0 18px 36px -18px rgba(99,102,241,0.22);
+      }
+
+      /* Section padding */
+      .section { padding: 96px 0; }
+      @media (max-width: 768px) { .section { padding: 64px 0; } }
+
+      /* Fade up on scroll (con CSS solamente) */
+      @keyframes fadeUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform:translateY(0); } }
+      .fade-up { animation: fadeUp .6s cubic-bezier(.16,1,.3,1) both; }
+
+      /* Grid pattern */
+      .grid-pattern {
+        background-image:
+          linear-gradient(rgba(15,23,42,0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(15,23,42,0.04) 1px, transparent 1px);
+        background-size: 48px 48px;
+      }
+    </style>
+</head>
+<body class="bg-white text-slate-900">
+
+<!-- ============================================ NAVBAR -->
+<nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-2.5">
+      <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,#4F46E5,#7C3AED 60%,#06B6D4 130%);box-shadow:0 4px 12px -4px rgba(99,102,241,0.45);">
+        <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-4h6v4"/>
+          <rect x="9" y="9" width="2" height="2" fill="currentColor" stroke="none"/>
+          <rect x="13" y="9" width="2" height="2" fill="currentColor" stroke="none"/>
+          <rect x="9" y="13" width="2" height="2" fill="currentColor" stroke="none"/>
+          <rect x="13" y="13" width="2" height="2" fill="currentColor" stroke="none"/>
+        </svg>
+      </div>
+      <span class="font-display font-bold text-lg text-slate-900">CondoIA</span>
+    </div>
+    <div class="hidden md:flex items-center gap-7 text-[14px] text-slate-600 font-medium">
+      <a href="#features" class="hover:text-slate-900 transition">Funcionalidades</a>
+      <a href="#beneficios" class="hover:text-slate-900 transition">Beneficios</a>
+      <a href="#planes" class="hover:text-slate-900 transition">Planes</a>
+      <a href="#faq" class="hover:text-slate-900 transition">Preguntas</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="https://condo-ia.vercel.app/" class="hidden sm:inline-block text-[13px] font-semibold text-slate-700 hover:text-slate-900 transition px-3 py-2">Iniciar sesión</a>
+      <a href="#planes" class="btn-primary text-white text-[13px] font-semibold px-4 py-2 rounded-lg">Empezar gratis</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================ HERO -->
+<section class="hero-mesh grid-pattern relative">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 section relative z-10">
+    <div class="text-center max-w-3xl mx-auto fade-up">
+      <span class="pill mb-6"><span class="pill-dot"></span>Cumplimiento Ley 21.442 · Chile</span>
+      <h1 class="font-display text-[44px] md:text-[60px] leading-[1.05] font-extrabold text-slate-900">
+        La administración de tu condominio,<br><span style="background:linear-gradient(135deg,#4F46E5,#7C3AED,#06B6D4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">ahora con inteligencia artificial.</span>
+      </h1>
+      <p class="mt-6 text-lg md:text-xl text-slate-600 leading-relaxed max-w-2xl mx-auto">
+        Digitaliza gastos comunes, asambleas, morosidad y mantenciones en una sola plataforma. Tu administrador, tesorero y secretario ya no son personas: son agentes de IA disponibles 24/7.
+      </p>
+      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a href="https://condo-ia.vercel.app/" class="btn-primary text-white font-semibold px-6 py-3 rounded-xl text-[15px] inline-flex items-center gap-2">
+          Probar demo en vivo
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </a>
+        <a href="#planes" class="btn-secondary font-semibold px-6 py-3 rounded-xl text-[15px]">Ver planes</a>
+      </div>
+      <p class="mt-4 text-[13px] text-slate-500">Sin tarjeta de crédito · Plan gratuito hasta 20 unidades</p>
+    </div>
+
+    <!-- App screenshot mock -->
+    <div class="mt-16 fade-up" style="animation-delay:.15s;">
+      <div class="screen-frame max-w-5xl mx-auto bg-slate-950 p-6 md:p-8" style="background:linear-gradient(180deg,#0F172A 0%,#020617 100%);">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="w-3 h-3 rounded-full bg-rose-500/80"></span>
+          <span class="w-3 h-3 rounded-full bg-amber-400/80"></span>
+          <span class="w-3 h-3 rounded-full bg-emerald-500/80"></span>
+        </div>
+        <!-- Dashboard mock -->
+        <div class="grid grid-cols-12 gap-4">
+          <!-- Sidebar mock -->
+          <div class="col-span-3 hidden md:block">
+            <div class="rounded-xl p-4" style="background:#0b1220;border:1px solid rgba(148,163,184,0.07);">
+              <div class="flex items-center gap-2 mb-4">
+                <div class="w-7 h-7 rounded-lg" style="background:linear-gradient(135deg,#4F46E5,#7C3AED 60%,#06B6D4 130%);"></div>
+                <div>
+                  <div class="text-white text-[13px] font-bold leading-none">CondoIA</div>
+                  <div class="text-[10px] text-slate-500 mt-0.5">Gestión Inteligente</div>
+                </div>
+              </div>
+              <div class="space-y-1">
+                <div class="text-[9px] uppercase tracking-wider text-slate-500 font-bold px-2 mt-3 mb-1">General</div>
+                <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-[12px] font-semibold text-white" style="background:rgba(99,102,241,0.16);box-shadow:0 0 0 1px rgba(99,102,241,0.28) inset;">
+                  <span class="w-3 h-3 rounded bg-violet-500/60"></span>Dashboard
+                </div>
+                <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-[12px] text-slate-400">
+                  <span class="w-3 h-3 rounded bg-slate-700"></span>Emergencias
+                </div>
+                <div class="text-[9px] uppercase tracking-wider text-slate-500 font-bold px-2 mt-3 mb-1">Comunidad</div>
+                <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-[12px] text-slate-400">
+                  <span class="w-3 h-3 rounded bg-slate-700"></span>Copropietarios
+                </div>
+                <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-[12px] text-slate-400">
+                  <span class="w-3 h-3 rounded bg-slate-700"></span>Asambleas
+                </div>
+                <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-[12px] text-slate-400">
+                  <span class="w-3 h-3 rounded bg-slate-700"></span>Compromisos
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Main area mock -->
+          <div class="col-span-12 md:col-span-9">
+            <h2 class="text-white font-display text-xl font-bold mb-3">Dashboard</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div class="rounded-xl p-3" style="background:rgba(30,41,59,0.6);border:1px solid rgba(148,163,184,0.08);">
+                <div class="flex items-start justify-between mb-2">
+                  <span class="text-[10px] text-slate-400 font-medium">Ingresos del Mes</span>
+                  <div class="w-5 h-5 rounded-md flex items-center justify-center" style="background:rgba(16,185,129,0.15);"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span></div>
+                </div>
+                <p class="font-display text-xl font-bold text-white">$4.2M</p>
+                <span class="text-[10px] font-semibold mt-1 inline-block" style="color:#34D399;">↑ 8%</span>
+              </div>
+              <div class="rounded-xl p-3" style="background:rgba(30,41,59,0.6);border:1px solid rgba(148,163,184,0.08);">
+                <div class="flex items-start justify-between mb-2">
+                  <span class="text-[10px] text-slate-400 font-medium">Gastos Mes</span>
+                  <div class="w-5 h-5 rounded-md flex items-center justify-center" style="background:rgba(244,63,94,0.15);"><span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span></div>
+                </div>
+                <p class="font-display text-xl font-bold text-white">$3.8M</p>
+                <span class="text-[10px] text-slate-400 mt-1 inline-block">OK</span>
+              </div>
+              <div class="rounded-xl p-3" style="background:rgba(30,41,59,0.6);border:1px solid rgba(148,163,184,0.08);">
+                <div class="flex items-start justify-between mb-2">
+                  <span class="text-[10px] text-slate-400 font-medium">Morosidad</span>
+                  <div class="w-5 h-5 rounded-md flex items-center justify-center" style="background:rgba(245,158,11,0.15);"><span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span></div>
+                </div>
+                <p class="font-display text-xl font-bold text-white">3</p>
+                <span class="text-[10px] font-semibold mt-1 inline-block" style="color:#FBBF24;">Atención</span>
+              </div>
+              <div class="rounded-xl p-3" style="background:rgba(30,41,59,0.6);border:1px solid rgba(148,163,184,0.08);">
+                <div class="flex items-start justify-between mb-2">
+                  <span class="text-[10px] text-slate-400 font-medium">Mantenciones</span>
+                  <div class="w-5 h-5 rounded-md flex items-center justify-center" style="background:rgba(99,102,241,0.15);"><span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span></div>
+                </div>
+                <p class="font-display text-xl font-bold text-white">8</p>
+                <span class="text-[10px] font-semibold mt-1 inline-block" style="color:#A5B4FC;">Activas</span>
+              </div>
+            </div>
+            <div class="mt-4 rounded-xl p-4" style="background:rgba(30,41,59,0.55);border:1px solid rgba(148,163,184,0.08);">
+              <div class="text-white text-[13px] font-semibold mb-3">Consolidación Mensual</div>
+              <div class="flex items-end justify-between gap-1 h-20">
+                <div class="flex-1 rounded-t" style="background:linear-gradient(180deg,#4F46E5,#7C3AED);height:55%;"></div>
+                <div class="flex-1 rounded-t" style="background:linear-gradient(180deg,#4F46E5,#7C3AED);height:70%;"></div>
+                <div class="flex-1 rounded-t" style="background:linear-gradient(180deg,#4F46E5,#7C3AED);height:42%;"></div>
+                <div class="flex-1 rounded-t" style="background:linear-gradient(180deg,#4F46E5,#7C3AED);height:80%;"></div>
+                <div class="flex-1 rounded-t" style="background:linear-gradient(180deg,#4F46E5,#7C3AED);height:65%;"></div>
+                <div class="flex-1 rounded-t" style="background:linear-gradient(180deg,#06B6D4,#22D3EE);height:90%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ LOGOS / TRUST -->
+<section class="py-10 bg-slate-50 border-y border-slate-100">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <p class="text-center text-[12px] uppercase tracking-wider text-slate-500 font-semibold mb-4">Construido sobre tecnología enterprise</p>
+    <div class="flex flex-wrap items-center justify-center gap-x-12 gap-y-4 opacity-60">
+      <span class="text-[15px] font-bold text-slate-700">Anthropic Claude</span>
+      <span class="text-[15px] font-bold text-slate-700">Supabase</span>
+      <span class="text-[15px] font-bold text-slate-700">Vercel</span>
+      <span class="text-[15px] font-bold text-slate-700">Next.js 15</span>
+      <span class="text-[15px] font-bold text-slate-700">PostgreSQL</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ BENEFICIOS -->
+<section id="beneficios" class="section">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="text-center max-w-2xl mx-auto mb-14">
+      <span class="pill mb-4">Beneficios</span>
+      <h2 class="font-display text-[36px] md:text-[44px] font-extrabold text-slate-900 leading-tight">Por qué CondoIA es distinto a los demás</h2>
+      <p class="mt-4 text-lg text-slate-600">No es otro software de administración. Es el primer sistema con IA nativa diseñado bajo la Ley 21.442.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Card 1 -->
+      <div class="feature-card bg-white rounded-2xl p-7">
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5" style="background:linear-gradient(135deg,#EEF2FF,#E0E7FF);">
+          <svg class="w-5 h-5" fill="none" stroke="#4F46E5" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+        </div>
+        <h3 class="font-display text-xl font-bold text-slate-900 mb-2">3 agentes IA especializados</h3>
+        <p class="text-[15px] text-slate-600 leading-relaxed">Administrador, Tesorero y Secretario virtuales que generan certificados, informes financieros y actas de asamblea automáticamente, 24/7.</p>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="feature-card bg-white rounded-2xl p-7">
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5" style="background:linear-gradient(135deg,#ECFEFF,#CFFAFE);">
+          <svg class="w-5 h-5" fill="none" stroke="#06B6D4" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <h3 class="font-display text-xl font-bold text-slate-900 mb-2">100% Ley 21.442</h3>
+        <p class="text-[15px] text-slate-600 leading-relaxed">Cada función está mapeada a un artículo de la Ley de Copropiedad Inmobiliaria. Asambleas (Art. 17-21), cobranza (Art. 27), certificados (Art. 36).</p>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="feature-card bg-white rounded-2xl p-7">
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5" style="background:linear-gradient(135deg,#ECFDF5,#D1FAE5);">
+          <svg class="w-5 h-5" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+        </div>
+        <h3 class="font-display text-xl font-bold text-slate-900 mb-2">Transparencia financiera total</h3>
+        <p class="text-[15px] text-slate-600 leading-relaxed">Cada copropietario ve en tiempo real ingresos, gastos, presupuesto y balance. Sin Excel ocultos, sin sospechas, sin opacidad.</p>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="feature-card bg-white rounded-2xl p-7">
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5" style="background:linear-gradient(135deg,#F5F3FF,#EDE9FE);">
+          <svg class="w-5 h-5" fill="none" stroke="#7C3AED" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        </div>
+        <h3 class="font-display text-xl font-bold text-slate-900 mb-2">Roles diferenciados</h3>
+        <p class="text-[15px] text-slate-600 leading-relaxed">Vista distinta para administrador, tesorero, secretario, copropietario y arrendatario. Cada uno ve solo lo que le corresponde, con RBAC nativo.</p>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="feature-card bg-white rounded-2xl p-7">
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5" style="background:linear-gradient(135deg,#FFFBEB,#FEF3C7);">
+          <svg class="w-5 h-5" fill="none" stroke="#F59E0B" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <h3 class="font-display text-xl font-bold text-slate-900 mb-2">Asambleas virtuales nativas</h3>
+        <p class="text-[15px] text-slate-600 leading-relaxed">Quórum automático según Art. 18, votación digital trazable, generación de actas con IA. Sin Zoom externo, sin papel, sin disputas.</p>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="feature-card bg-white rounded-2xl p-7">
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5" style="background:linear-gradient(135deg,#FDF2F8,#FCE7F3);">
+          <svg class="w-5 h-5" fill="none" stroke="#F43F5E" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        </div>
+        <h3 class="font-display text-xl font-bold text-slate-900 mb-2">Sistema de emergencias LIVE</h3>
+        <p class="text-[15px] text-slate-600 leading-relaxed">Alertas integradas con SAE Chile, DMC y CONAF. Botón SOS para residentes que notifica al administrador y carabineros del cuadrante.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ FEATURES VISUAL -->
+<section id="features" class="section bg-slate-50">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div>
+        <span class="pill mb-4">Funcionalidades</span>
+        <h2 class="font-display text-[36px] font-extrabold text-slate-900 leading-tight">Diseñado para superar a ComunidadFeliz, Kastor y Edifito.</h2>
+        <p class="mt-4 text-lg text-slate-600 leading-relaxed">No reinventamos la rueda — la mejoramos. CondoIA toma lo mejor de la competencia y agrega IA donde realmente importa.</p>
+        <ul class="mt-8 space-y-4">
+          <li class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <div>
+              <h4 class="font-semibold text-slate-900">Cobranza extrajudicial automática</h4>
+              <p class="text-[14px] text-slate-600">Cálculo de intereses por mora según Ley 21.442 Art. 27, certificado de deuda con firma electrónica.</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <div>
+              <h4 class="font-semibold text-slate-900">Importación CSV/Excel</h4>
+              <p class="text-[14px] text-slate-600">Importa tu base actual desde Excel, ComunidadFeliz, Edifito en minutos. Sin reentrar nada a mano.</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <div>
+              <h4 class="font-semibold text-slate-900">Integraciones con WebPay, Khipu y bancos chilenos</h4>
+              <p class="text-[14px] text-slate-600">Tus copropietarios pagan en 1 click. La conciliación bancaria es automática.</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <div>
+              <h4 class="font-semibold text-slate-900">UX accesible AAA, multi-generacional</h4>
+              <p class="text-[14px] text-slate-600">Tipografía grande, contraste AAA, botones táctiles de 48px. Pensado para usuarios desde 12 hasta 80+ años.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="relative">
+        <div class="screen-frame bg-slate-950 p-5" style="background:linear-gradient(180deg,#0F172A 0%,#020617 100%);">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="w-2.5 h-2.5 rounded-full bg-rose-500/80"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-400/80"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
+            <span class="text-[10px] text-slate-500 ml-2">condo-ia.vercel.app/asambleas</span>
+          </div>
+          <div class="space-y-3">
+            <div class="text-white font-display text-lg font-bold">Próxima Asamblea</div>
+            <div class="rounded-xl p-4" style="background:rgba(30,41,59,0.6);border:1px solid rgba(99,102,241,0.18);">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-white text-sm font-semibold">Asamblea Ordinaria 2026</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold" style="background:rgba(16,185,129,0.16);color:#34D399;">Confirmada</span>
+              </div>
+              <div class="text-[12px] text-slate-400">28 de mayo · 19:30 hrs</div>
+              <div class="text-[12px] text-slate-400 mt-1">Quórum requerido: 50%+1 (Art. 18)</div>
+              <div class="mt-3 flex items-center gap-2">
+                <div class="flex -space-x-1.5">
+                  <div class="w-6 h-6 rounded-full" style="background:linear-gradient(135deg,#4F46E5,#7C3AED);border:2px solid #0F172A;"></div>
+                  <div class="w-6 h-6 rounded-full" style="background:linear-gradient(135deg,#06B6D4,#22D3EE);border:2px solid #0F172A;"></div>
+                  <div class="w-6 h-6 rounded-full" style="background:linear-gradient(135deg,#10B981,#34D399);border:2px solid #0F172A;"></div>
+                </div>
+                <span class="text-[11px] text-slate-400">+18 confirmaron</span>
+              </div>
+            </div>
+            <div class="rounded-xl p-3" style="background:rgba(30,41,59,0.4);border:1px solid rgba(148,163,184,0.08);">
+              <div class="text-[11px] text-slate-400 mb-1">Tabla / Agenda</div>
+              <ul class="text-[12px] text-slate-300 space-y-1">
+                <li>· Aprobación memoria 2025</li>
+                <li>· Presupuesto 2026</li>
+                <li>· Elección nuevo comité (Art. 20)</li>
+                <li>· Obras extraordinarias fachada</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ PLANES -->
+<section id="planes" class="section">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="text-center max-w-2xl mx-auto mb-14">
+      <span class="pill mb-4">Planes</span>
+      <h2 class="font-display text-[36px] md:text-[44px] font-extrabold text-slate-900 leading-tight">Precios transparentes, sin sorpresas</h2>
+      <p class="mt-4 text-lg text-slate-600">Cancela cuando quieras. Migración asistida en todos los planes pagos.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+      <!-- Plan Comunidad -->
+      <div class="rounded-3xl p-7 bg-white border border-slate-200">
+        <div class="flex items-center gap-2 mb-2">
+          <h3 class="font-display text-xl font-bold text-slate-900">Comunidad</h3>
+          <span class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">Gratis</span>
+        </div>
+        <p class="text-[13px] text-slate-500 mb-5">Para condominios pequeños que recién parten</p>
+        <div class="flex items-baseline gap-1 mb-1">
+          <span class="font-display text-[44px] font-extrabold text-slate-900">$0</span>
+          <span class="text-slate-500 text-[14px]">CLP / mes</span>
+        </div>
+        <p class="text-[12px] text-slate-500 mb-6">Hasta 20 unidades</p>
+        <a href="https://condo-ia.vercel.app/" class="btn-secondary block text-center font-semibold py-2.5 rounded-xl text-[14px] w-full mb-6">Empezar gratis</a>
+        <ul class="space-y-2.5 text-[14px]">
+          <li class="flex items-start gap-2 text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>Gestión de gastos comunes</li>
+          <li class="flex items-start gap-2 text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>Portal de copropietarios</li>
+          <li class="flex items-start gap-2 text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>Comunicación básica</li>
+          <li class="flex items-start gap-2 text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>Certificado de deuda</li>
+          <li class="flex items-start gap-2 text-slate-400"><span class="text-slate-300 mt-0.5">·</span>Sin agentes IA</li>
+          <li class="flex items-start gap-2 text-slate-400"><span class="text-slate-300 mt-0.5">·</span>Sin asambleas virtuales</li>
+        </ul>
+      </div>
+
+      <!-- Plan Profesional (POPULAR) -->
+      <div class="pricing-popular rounded-3xl p-7 relative">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[11px] font-bold text-white" style="background:linear-gradient(135deg,#4F46E5,#7C3AED);box-shadow:0 4px 12px -4px rgba(99,102,241,0.5);">
+          Más popular
+        </div>
+        <h3 class="font-display text-xl font-bold text-slate-900 mb-2">Profesional</h3>
+        <p class="text-[13px] text-slate-500 mb-5">Para condominios medianos que quieren IA</p>
+        <div class="flex items-baseline gap-1 mb-1">
+          <span class="font-display text-[44px] font-extrabold" style="background:linear-gradient(135deg,#4F46E5,#7C3AED);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">$49.990</span>
+          <span class="text-slate-500 text-[14px]">CLP / mes</span>
+        </div>
+        <p class="text-[12px] text-slate-500 mb-6">Hasta 100 unidades · 30 días gratis</p>
+        <a href="https://condo-ia.vercel.app/" class="btn-primary block text-center text-white font-semibold py-2.5 rounded-xl text-[14px] w-full mb-6">Probar 30 días gratis</a>
+        <ul class="space-y-2.5 text-[14px]">
+          <li class="flex items-start gap-2 text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>Todo el plan Comunidad</li>
+          <li class="flex items-start gap-2 text-slate-900 font-semibold"><span class="text-indigo-500 mt-0.5">✓</span>3 agentes IA completos</li>
+          <li class="flex items-start gap-2 text-slate-900 font-semibold"><span class="text-indigo-500 mt-0.5">✓</span>Asambleas virtuales nativas</li>
+          <li class="flex items-start gap-2 text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>Firma electrónica (Ley 19.799)</li>
+          <li class="flex items-start gap-2 text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>Reportes financieros IA</li>
+          <li class="flex items-start gap-2 text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>WebPay + Khipu integrados</li>
+          <li class="flex items-start gap-2 text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>Sistema emergencias LIVE</li>
+        </ul>
+      </div>
+
+      <!-- Plan Enterprise -->
+      <div class="rounded-3xl p-7 bg-white border border-slate-200">
+        <h3 class="font-display text-xl font-bold text-slate-900 mb-2">Enterprise</h3>
+        <p class="text-[13px] text-slate-500 mb-5">Para administradoras con +50 comunidades</p>
+        <div class="flex items-baseline gap-1 mb-1">
+          <span class="font-display text-[28px] font-extrabold text-slate-900">Conversemos</span>
+        </div>
+        <p class="text-[12px] text-slate-500 mb-6">Precio personalizado por volumen</p>
+        <a href="#contacto" class="btn-secondary block text-center font-semibold py-2.5 rounded-xl text-[14px] w-full mb-6">Contactar ventas</a>
+        <ul class="space-y-2.5 text-[14px]">
+          <li class="flex items-start gap-2 text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>Todo el plan Profesional</li>
+          <li class="flex items-start gap-2 text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>Unidades ilimitadas</li>
+          <li class="flex items-start gap-2 text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>Multi-tenant para tu cartera</li>
+          <li class="flex items-start gap-2 text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>API REST + webhooks</li>
+          <li class="flex items-start gap-2 text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>Integración SII + bancos</li>
+          <li class="flex items-start gap-2 text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>SLA 99.9% + soporte prioritario</li>
+          <li class="flex items-start gap-2 text-slate-700"><span class="text-emerald-500 mt-0.5">✓</span>White-label opcional</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="text-center text-[13px] text-slate-500 mt-10">
+      Todos los planes incluyen migración asistida desde tu sistema actual (Excel, ComunidadFeliz, Edifito, Kastor).<br>
+      Precios netos. Facturación electrónica SII. Cancela cuando quieras sin penalización.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================ FAQ -->
+<section id="faq" class="section bg-slate-50">
+  <div class="max-w-3xl mx-auto px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <span class="pill mb-4">Preguntas frecuentes</span>
+      <h2 class="font-display text-[36px] font-extrabold text-slate-900 leading-tight">¿Tienes dudas? Acá las despejamos</h2>
+    </div>
+    <div class="space-y-3">
+      <details class="bg-white rounded-xl border border-slate-200 p-5 group">
+        <summary class="flex items-center justify-between cursor-pointer list-none">
+          <h3 class="font-semibold text-slate-900">¿Es legal en Chile reemplazar al administrador por una IA?</h3>
+          <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <p class="mt-3 text-[14px] text-slate-600 leading-relaxed">La IA es un asistente del administrador certificado humano, no su reemplazo. El administrador certificado sigue siendo el responsable legal según la Ley 21.442 Art. 36. La IA genera borradores que el humano firma con firma electrónica simple (Ley 19.799).</p>
+      </details>
+      <details class="bg-white rounded-xl border border-slate-200 p-5 group">
+        <summary class="flex items-center justify-between cursor-pointer list-none">
+          <h3 class="font-semibold text-slate-900">¿Mis datos están seguros?</h3>
+          <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <p class="mt-3 text-[14px] text-slate-600 leading-relaxed">Datos alojados en Supabase (Sao Paulo, latencia óptima para Chile). Cifrado en tránsito (TLS 1.3) y en reposo (AES-256). Aislamiento por condominio vía Row Level Security. Cumplimiento Ley 19.628 y Ley 21.719 de Protección de Datos.</p>
+      </details>
+      <details class="bg-white rounded-xl border border-slate-200 p-5 group">
+        <summary class="flex items-center justify-between cursor-pointer list-none">
+          <h3 class="font-semibold text-slate-900">¿Cuánto cuesta migrar desde mi sistema actual?</h3>
+          <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <p class="mt-3 text-[14px] text-slate-600 leading-relaxed">Migración gratuita en todos los planes pagos. Importamos copropietarios, unidades, histórico financiero y documentos. El proceso dura entre 24 y 72 horas según volumen.</p>
+      </details>
+      <details class="bg-white rounded-xl border border-slate-200 p-5 group">
+        <summary class="flex items-center justify-between cursor-pointer list-none">
+          <h3 class="font-semibold text-slate-900">¿Qué pasa si Anthropic baja Claude o cambia precios?</h3>
+          <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <p class="mt-3 text-[14px] text-slate-600 leading-relaxed">Arquitectura agnóstica al proveedor de IA. Si cambia el modelo, migramos a alternativas equivalentes (OpenAI, Google, modelos open-source) sin que el usuario lo note. Los precios al cliente se mantienen estables por contrato anual.</p>
+      </details>
+      <details class="bg-white rounded-xl border border-slate-200 p-5 group">
+        <summary class="flex items-center justify-between cursor-pointer list-none">
+          <h3 class="font-semibold text-slate-900">¿Puedo probar antes de pagar?</h3>
+          <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <p class="mt-3 text-[14px] text-slate-600 leading-relaxed">Sí. El plan Profesional tiene 30 días gratis sin tarjeta. Y siempre puedes probar la demo en vivo con cuentas de Administrador y Copropietario sin registrarte: <a href="https://condo-ia.vercel.app/" class="text-indigo-600 hover:underline">condo-ia.vercel.app</a></p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ CTA FINAL -->
+<section id="contacto" class="section relative overflow-hidden" style="background:linear-gradient(135deg,#312E81 0%,#4F46E5 50%,#7C3AED 100%);">
+  <div class="max-w-4xl mx-auto px-6 lg:px-8 relative z-10 text-center">
+    <h2 class="font-display text-[36px] md:text-[44px] font-extrabold text-white leading-tight">¿Listo para modernizar tu condominio?</h2>
+    <p class="mt-4 text-lg text-indigo-100 max-w-2xl mx-auto">Únete a las administradoras que ya están usando IA para reducir horas de trabajo, eliminar errores manuales y entregar transparencia a sus copropietarios.</p>
+    <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+      <a href="https://condo-ia.vercel.app/" class="bg-white text-indigo-700 font-semibold px-6 py-3 rounded-xl text-[15px] inline-flex items-center gap-2 hover:bg-indigo-50 transition">
+        Probar demo en vivo
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+      </a>
+      <a href="mailto:hola@condoia.cl" class="bg-white/10 text-white font-semibold px-6 py-3 rounded-xl text-[15px] border border-white/20 hover:bg-white/15 transition">
+        Hablar con ventas
+      </a>
+    </div>
+    <p class="mt-6 text-[13px] text-indigo-200">hola@condoia.cl · +56 9 8815 6948 · Santiago, Chile</p>
+  </div>
+</section>
+
+<!-- ============================================ FOOTER -->
+<footer class="bg-slate-900 text-slate-400 py-12">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,#4F46E5,#7C3AED 60%,#06B6D4 130%);">
+          <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-4h6v4"/>
+          </svg>
+        </div>
+        <div>
+          <div class="text-white font-display font-bold text-[15px] leading-tight">CondoIA</div>
+          <div class="text-[11px] text-slate-500 leading-tight">Gestión Inteligente · Chile</div>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center gap-6 text-[13px]">
+        <a href="#features" class="hover:text-white transition">Funcionalidades</a>
+        <a href="#planes" class="hover:text-white transition">Planes</a>
+        <a href="#faq" class="hover:text-white transition">FAQ</a>
+        <a href="https://condo-ia.vercel.app/" class="hover:text-white transition">Demo</a>
+      </div>
+    </div>
+    <hr class="border-slate-800 my-8">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-3 text-[12px] text-slate-500">
+      <div>© 2026 CondoIA · Plataforma certificada bajo Ley 21.442 de Copropiedad Inmobiliaria</div>
+      <div class="flex items-center gap-4">
+        <a href="#" class="hover:text-slate-300">Privacidad</a>
+        <a href="#" class="hover:text-slate-300">Términos</a>
+        <a href="#" class="hover:text-slate-300">Seguridad</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

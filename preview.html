@@ -1566,11 +1566,19 @@
                     <div class="flex items-center justify-center gap-2 mb-3">
                         <span class="text-slate-500 text-[11px] uppercase tracking-wider font-semibold">o explora primero</span>
                     </div>
-                    <button onclick="handleDemoLogin()" id="demo-btn"
-                        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-semibold transition-all w-full sm:w-auto justify-center" style="background:rgba(255,103,2,0.08);border:1px solid rgba(255,103,2,0.22);color:#fdba74;">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                        Entrar como Administrador Demo
-                    </button>
+                    <div class="grid grid-cols-1 gap-2">
+                        <button onclick="handleDemoLogin()" id="demo-btn"
+                            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-semibold transition-all w-full justify-center" style="background:rgba(255,103,2,0.08);border:1px solid rgba(255,103,2,0.22);color:#fdba74;">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                            Entrar como Administrador Demo
+                        </button>
+                        <button onclick="handleDemoCopropietario()" id="demo-copro-btn"
+                            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-semibold transition-all w-full justify-center" style="background:rgba(65,232,180,0.08);border:1px solid rgba(65,232,180,0.22);color:#6ee7b7;">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                            Entrar como Copropietario Demo
+                        </button>
+                    </div>
+                    <p class="text-[11px] text-slate-500 mt-3">María González · Depto 304 · saldo pendiente $55.000</p>
                 </div>
             </div>
 
@@ -4737,6 +4745,52 @@
             if (banner) {
                 banner.classList.remove('hidden');
             }
+        }
+
+        // Login demo genérico — reutilizable para admin y copropietario
+        async function _demoLoginAs(email, password, btnId) {
+            const btn = document.getElementById(btnId);
+            const originalLabel = btn.innerHTML;
+            btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg> Conectando...';
+            btn.disabled = true;
+
+            const healthy = await checkBackendHealth();
+            if (!healthy) {
+                showBackendOfflineNotice();
+                showAuthMessage(
+                    'El backend (Supabase) no está disponible. Revisa la configuración en preview.html o restaura el proyecto en supabase.com.',
+                    'error'
+                );
+                btn.innerHTML = originalLabel;
+                btn.disabled = false;
+                return;
+            }
+
+            try {
+                const { data, error } = await _sb.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+                if (data?.user) {
+                    await onAuthSuccess(data.user);
+                    return;
+                }
+            } catch (err) {
+                const msg = err && err.message ? err.message : String(err);
+                if (/Failed to fetch|NetworkError|TypeError/i.test(msg)) {
+                    showBackendOfflineNotice();
+                    showAuthMessage('No se pudo contactar al servidor (Supabase). Tu proyecto puede estar pausado o eliminado.', 'error');
+                } else if (/Invalid login credentials/i.test(msg)) {
+                    showAuthMessage('Las credenciales demo no coinciden. Verifica que el usuario ' + email + ' exista en Supabase Auth.', 'error');
+                } else {
+                    showAuthMessage('Error: ' + msg, 'error');
+                }
+            } finally {
+                btn.innerHTML = originalLabel;
+                btn.disabled = false;
+            }
+        }
+
+        async function handleDemoCopropietario() {
+            await _demoLoginAs('copropietario@condoia.cl', 'CondoIA2026!', 'demo-copro-btn');
         }
 
         async function handleDemoLogin() {
